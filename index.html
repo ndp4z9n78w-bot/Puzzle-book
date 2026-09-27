@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v10.3 — Vector PDF + Better How-To</title>
+<title>Offline Puzzle Studio v10.4 — Clean Pages + Page Numbers</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -40,7 +40,7 @@ button{border:0;border-radius:7px;padding:9px 11px;cursor:pointer;font-weight:70
 .hidden{display:none!important}
 .sheet h2{font-size:22px;text-align:center;margin:0 0 8px}
 .sheet .subtitle{text-align:center;font-size:12px;color:#555;margin-bottom:14px}
-.pagenum{position:absolute;bottom:.23in;left:0;right:0;text-align:center;font-size:11px}
+.pagenum{position:absolute;bottom:.34in;left:0;right:0;text-align:center;font-size:12px;font-weight:600;z-index:5}
 .puzzle-wrap{display:flex;justify-content:center;align-items:center;min-height:0;height:calc(100% - .72in);overflow:hidden}
 .sudoku{border-collapse:collapse}
 .sudoku td{width:.55in;height:.55in;text-align:center;vertical-align:middle;font-size:26px;border:1px solid #555}
@@ -285,8 +285,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v10.3</span></h1><div class="build-version">Exact build: v10.3 • Vector PDF + Better How-To</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v10.3</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v10.4</span></h1><div class="build-version">Exact build: v10.4 • Clean Pages + Page Numbers</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v10.4</div>
 <div class="wrap">
 <section class="panel controls">
 <label>Puzzle type</label>
@@ -528,7 +528,7 @@ details summary{cursor:pointer;font-weight:700}
 Load Project<input id="load" type="file" accept=".json" style="display:none">
 </label>
 
-<p class="small"><b>Offline:</b> no internet, server, account, or installation is required.</p><p class="small"><b>KDP Book Builder:</b> mix Easy, Medium, and Hard puzzles in one interior, add front matter and section dividers, and send all answer keys to the back automatically.</p><p class="small"><b>Expanded library:</b> word, number, logic, Sudoku-variant, and math puzzle generators.</p><p class="small"><b>Quality tools:</b> unique-solution proof where applicable, structural validation, duplicate checks, solution checks, customization, and publication warnings.</p><p class="small"><b>Difficulty:</b> Book difficulty is controlled by the Easy / Medium / Hard puzzle counts, or per-row difficulty in Mixed Puzzle Book. The old standalone difficulty selector has been removed.</p><p class="small"><b>Presets & editing:</b> choose a book preset, use Large Print, open Book Overview, regenerate individual puzzles, delete them, or move them up/down without rebuilding the whole book.</p><p class="small"><b>Variety:</b> High/Maximum variety changes pattern families, sequence rules, cage layouts, path styles, search directions, and cryptogram mappings so large books feel less repetitive.</p><p class="small"><b>KDP readiness:</b> Preflight now checks puzzle/solution matching, mixed-book counts, page-count consistency, frames/safe-area heuristics, blank pages, section starts, and export readiness.</p><p class="small"><b>Mixed books:</b> choose puzzle type, difficulty, and quantity for every mixed-book row. <b>Design:</b> frame templates, page typography, multi-puzzle layouts, mirrored page numbers, right-hand section starts, spread preview, and final preflight checks.</p>
+<p class="small"><b>Offline:</b> no internet, server, account, or installation is required.</p><p class="small"><b>KDP Book Builder:</b> mix Easy, Medium, and Hard puzzles in one interior, add front matter and section dividers, and send all answer keys to the back automatically.</p><p class="small"><b>Expanded library:</b> word, number, logic, Sudoku-variant, and math puzzle generators.</p><p class="small"><b>Quality tools:</b> validation still runs behind the scenes for Quality Check and Preflight, but verification labels are no longer printed on puzzle pages.</p><p class="small"><b>Difficulty:</b> Book difficulty is controlled by the Easy / Medium / Hard puzzle counts, or per-row difficulty in Mixed Puzzle Book. The old standalone difficulty selector has been removed.</p><p class="small"><b>Presets & editing:</b> choose a book preset, use Large Print, open Book Overview, regenerate individual puzzles, delete them, or move them up/down without rebuilding the whole book.</p><p class="small"><b>Variety:</b> High/Maximum variety changes pattern families, sequence rules, cage layouts, path styles, search directions, and cryptogram mappings so large books feel less repetitive.</p><p class="small"><b>KDP readiness:</b> Preflight now checks puzzle/solution matching, mixed-book counts, page-count consistency, frames/safe-area heuristics, blank pages, section starts, and export readiness.</p><p class="small"><b>Mixed books:</b> choose puzzle type, difficulty, and quantity for every mixed-book row. <b>Design:</b> frame templates, page typography, multi-puzzle layouts, mirrored page numbers, right-hand section starts, spread preview, and final preflight checks.</p>
 <p class="small"><b>Validation:</b> Sudoku, Kakuro, and Slitherlink are solver-checked. The generator rejects a puzzle unless it finds exactly one solution. Mazes are generated with a verified entrance-to-exit path.</p>
 <p class="small"><b>Smart assembly:</b> tiny sections avoid wasteful divider pages, larger section dividers stay right-page aligned, solution pages adapt their density to each puzzle type, and PDF/JSON exports receive organized filenames automatically.</p><p class="small"><b>How-to pages:</b> Each puzzle type now gets its own instruction page with multiple worked examples. Sudoku includes row, column, and 3×3 box elimination examples.<br><b>PDF:</b> choose “Create PDF,” then select <b>Save as PDF</b>. For KDP interiors, keep browser scaling at 100% and margins set to none/default as appropriate.</p>
 </section>
@@ -547,7 +547,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='10.3';
+const PUZZLE_STUDIO_VERSION='10.4';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]};
@@ -1553,7 +1553,7 @@ function textPdfCommands(sheet,pw,ph){
     acceptNode(node){
       if(!node.nodeValue||!node.nodeValue.trim())return NodeFilter.FILTER_REJECT;
       const p=node.parentElement;
-      if(!p||p.closest('svg')||!isVisibleEl(p))return NodeFilter.FILTER_REJECT;
+      if(!p||p.closest('svg')||p.closest('.pagenum')||!isVisibleEl(p))return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;
     }
   });
@@ -1646,6 +1646,20 @@ function svgPdfCommands(sheet,pw,ph){
   }
   return out;
 }
+
+function pageNumberPdfCommand(sheet,pw,ph){
+  const el=sheet.querySelector('.pagenum');
+  if(!el||!isVisibleEl(el))return '';
+  const value=pdfAscii(el.textContent||'').trim();
+  if(!value)return '';
+  const size=10;
+  const margin=.34*72;
+  let x=pw/2-approxTextWidth(value,size)/2;
+  if(sheet.classList.contains('page-left'))x=.42*72;
+  if(sheet.classList.contains('page-right'))x=pw-.42*72-approxTextWidth(value,size);
+  const y=margin;
+  return `BT /F2 ${pdfN(size)} Tf ${pdfN(x)} ${pdfN(y)} Td (${pdfEsc(value)}) Tj ET\n`;
+}
 function sheetVectorStream(sheet,pw,ph){
   let out='0 0 0 RG 0 0 0 rg\n';
   if($('pageFrame').checked && sheet.classList.contains('frame-enabled')){
@@ -1656,6 +1670,7 @@ function sheetVectorStream(sheet,pw,ph){
   out+=borderPdfCommands(sheet,pw,ph);
   out+=svgPdfCommands(sheet,pw,ph);
   out+=textPdfCommands(sheet,pw,ph);
+  out+=pageNumberPdfCommand(sheet,pw,ph);
   return out;
 }
 function buildVectorPdf(streams){
@@ -2103,12 +2118,7 @@ function instructionBookHtml(items){
 
 function addPageNum(s,n){if($('numbers').checked){let x=document.createElement('div');x.className='pagenum';x.textContent=n;s.appendChild(x);
  if($('mirrorPageNumbers').checked){s.classList.add(n%2===0?'page-left':'page-right')}}}
-function addValidation(s,item){
- let x=document.createElement('div');x.className='validation';
- let tier=item.validationTier|| (item.validated?'structural':'unknown');
- let label=tier==='unique'?'Unique solution verified':tier==='structural'?'Structure verified':tier==='known-answer'?'Known solution generated':tier==='failed'?'Validation failed':'Validation status unknown';
- x.textContent=(item.validated?'✓ ':'⚠ ')+label;s.appendChild(x)
-}
+
 function sudokuTable(grid){let t=document.createElement('table');t.className='sudoku';grid.forEach(row=>{let tr=t.insertRow();row.forEach(v=>{let td=tr.insertCell();td.textContent=v||''})});return t}
 function mazeSvg(item,answer){
  let g=item.grid,n=g.length,S=720,cell=S/n,svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox',`0 0 ${S} ${S}`);svg.setAttribute('class','maze');
@@ -2260,7 +2270,7 @@ function render(){
      if(item.type==='takuzu')w.appendChild(genericTable(item.puzzle,{small:true}));
      if(item.type==='magicsquare')w.appendChild(genericTable(item.puzzle));
      if(item.type==='missingnumber'){let d=document.createElement('div');d.className='sequence';d.textContent=item.puzzle.map(x=>x==null?'?':x).join('   ');w.appendChild(d)}
-     addValidation(s,item);append(s,true);
+     append(s,true);
    }
  }
 
@@ -2782,7 +2792,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=10.3',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=10.4',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 </script>
