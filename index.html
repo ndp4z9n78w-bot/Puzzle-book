@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio 9.2 — Simplified Difficulty Controls</title>
+<title>Offline Puzzle Studio 10 — Smarter Book Assembly</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -219,10 +219,44 @@ details summary{cursor:pointer;font-weight:700}
 .build-progress-track{height:7px;background:#e5e5e5;border-radius:999px;overflow:hidden;margin-top:10px}
 .build-progress-bar{height:100%;width:0%;background:#333;transition:width .15s ease}
 @keyframes puzzleSpin{to{transform:rotate(360deg)}}
+
+.howto-example{
+  margin:10px 0 16px;
+  padding:10px 12px;
+  border:1px solid #bbb;
+  border-radius:8px;
+  background:#fafafa;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+.howto-example b{display:block;margin-bottom:4px}
+.howto-mini-grid{
+  border-collapse:collapse;
+  margin:8px auto;
+  font-size:13px;
+}
+.howto-mini-grid td{
+  width:24px;height:24px;
+  border:1px solid #777;
+  text-align:center;
+  padding:0;
+}
+.howto-inline{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.04em;
+}
+.instructions-section{
+  break-inside:avoid;
+  page-break-inside:avoid;
+  margin-bottom:18px;
+}
+
+.smart-summary{margin-top:6px;padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fafafa}
+.smart-summary .summary-line{margin:2px 0}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio 9.2 <span class="badge">Simplified Difficulty Controls</span></h1></header>
+<header><h1>Offline Puzzle Studio 10 <span class="badge">Smarter Book Assembly</span></h1></header>
 <div class="wrap">
 <section class="panel controls">
 <label>Puzzle type</label>
@@ -348,6 +382,7 @@ details summary{cursor:pointer;font-weight:700}
 
 <label><input id="mirrorPageNumbers" type="checkbox" checked style="width:auto"> Mirror page numbers on left/right pages</label>
 <label><input id="startSectionsRight" type="checkbox" checked style="width:auto"> Start section dividers on right-hand pages</label>
+<label><input id="balanceSections" type="checkbox" checked style="width:auto"> Smart section balancing</label>
 
 <label><input id="pageFrame" type="checkbox" checked style="width:auto"> Use page frame</label>
 <label>Frame inset</label>
@@ -375,8 +410,9 @@ details summary{cursor:pointer;font-weight:700}
 
 <label>Solutions per page</label>
 <select id="solutionsPerPage">
+<option value="smart" selected>Smart by puzzle type</option>
 <option value="1">1 per page</option>
-<option value="2" selected>2 per page</option>
+<option value="2">2 per page</option>
 <option value="4">4 per page</option>
 </select>
 
@@ -431,7 +467,7 @@ details summary{cursor:pointer;font-weight:700}
   <label><input id="solutionsTitlePage" type="checkbox" checked style="width:auto"> Solutions title page</label>
 </div>
 
-<div class="book-summary" id="bookSummary">60 puzzles selected.</div>
+<div class="book-summary" id="bookSummary">60 puzzles selected.</div><div id="bookBreakdown" class="small" style="margin-top:7px;line-height:1.45"></div>
 
 <div class="row">
 <div><label><input id="solutions" type="checkbox" checked style="width:auto"> Include solutions</label></div>
@@ -464,7 +500,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 
 <p class="small"><b>Offline:</b> no internet, server, account, or installation is required.</p><p class="small"><b>KDP Book Builder:</b> mix Easy, Medium, and Hard puzzles in one interior, add front matter and section dividers, and send all answer keys to the back automatically.</p><p class="small"><b>Expanded library:</b> word, number, logic, Sudoku-variant, and math puzzle generators.</p><p class="small"><b>Quality tools:</b> unique-solution proof where applicable, structural validation, duplicate checks, solution checks, customization, and publication warnings.</p><p class="small"><b>Difficulty:</b> Book difficulty is controlled by the Easy / Medium / Hard puzzle counts, or per-row difficulty in Mixed Puzzle Book. The old standalone difficulty selector has been removed.</p><p class="small"><b>Presets & editing:</b> choose a book preset, use Large Print, open Book Overview, regenerate individual puzzles, delete them, or move them up/down without rebuilding the whole book.</p><p class="small"><b>Variety:</b> High/Maximum variety changes pattern families, sequence rules, cage layouts, path styles, search directions, and cryptogram mappings so large books feel less repetitive.</p><p class="small"><b>KDP readiness:</b> Preflight now checks puzzle/solution matching, mixed-book counts, page-count consistency, frames/safe-area heuristics, blank pages, section starts, and export readiness.</p><p class="small"><b>Mixed books:</b> choose puzzle type, difficulty, and quantity for every mixed-book row. <b>Design:</b> frame templates, page typography, multi-puzzle layouts, mirrored page numbers, right-hand section starts, spread preview, and final preflight checks.</p>
 <p class="small"><b>Validation:</b> Sudoku, Kakuro, and Slitherlink are solver-checked. The generator rejects a puzzle unless it finds exactly one solution. Mazes are generated with a verified entrance-to-exit path.</p>
-<p class="small"><b>PDF:</b> choose “Create PDF,” then select <b>Save as PDF</b>. For KDP interiors, keep browser scaling at 100% and margins set to none/default as appropriate.</p>
+<p class="small"><b>Smart assembly:</b> tiny sections avoid wasteful divider pages, larger section dividers stay right-page aligned, solution pages adapt their density to each puzzle type, and PDF/JSON exports receive organized filenames automatically.</p><p class="small"><b>How-to page:</b> Instructions now include a simple worked example for every puzzle type in the book. Mixed books automatically include each unique puzzle type.<br><b>PDF:</b> choose “Create PDF,” then select <b>Save as PDF</b>. For KDP interiors, keep browser scaling at 100% and margins set to none/default as appropriate.</p>
 </section>
 
 <section class="panel preview">
@@ -1325,13 +1361,10 @@ function collectDocumentCss(){
   document.querySelectorAll('style').forEach(s=>{css+=s.textContent+'\n'});
   return css;
 }
-function dataUrlToBytes(url){
-  const base64=url.split(',')[1]||'';
-  const bin=atob(base64),out=new Uint8Array(bin.length);
-  for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);
-  return out;
+async function blobToBytes(blob){
+  return new Uint8Array(await blob.arrayBuffer());
 }
-async function sheetToJpeg(sheet,scale=2.5){
+async function sheetToJpeg(sheet,scale=2){
   const cs=getComputedStyle(sheet);
   const width=Math.round(parseFloat(cs.width));
   const height=Math.round(parseFloat(cs.height));
@@ -1351,8 +1384,9 @@ async function sheetToJpeg(sheet,scale=2.5){
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(width*scale)}" height="${Math.ceil(height*scale)}" viewBox="0 0 ${width} ${height}">
     <foreignObject x="0" y="0" width="${width}" height="${height}">${xhtml}</foreignObject>
   </svg>`;
-  const blob=new Blob([svg],{type:'image/svg+xml;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
+  const svgBlob=new Blob([svg],{type:'image/svg+xml;charset=utf-8'});
+  const url=URL.createObjectURL(svgBlob);
+
   try{
     const img=new Image();
     await new Promise((resolve,reject)=>{
@@ -1360,6 +1394,7 @@ async function sheetToJpeg(sheet,scale=2.5){
       img.onerror=()=>reject(new Error('Could not render a book page.'));
       img.src=url;
     });
+
     const canvas=document.createElement('canvas');
     canvas.width=Math.ceil(width*scale);
     canvas.height=Math.ceil(height*scale);
@@ -1367,9 +1402,22 @@ async function sheetToJpeg(sheet,scale=2.5){
     ctx.fillStyle='#fff';
     ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.drawImage(img,0,0,canvas.width,canvas.height);
-    const jpeg=canvas.toDataURL('image/jpeg',0.94);
-    const result={bytes:dataUrlToBytes(jpeg),width:canvas.width,height:canvas.height};
-    canvas.width=1;canvas.height=1;
+
+    const jpegBlob=await new Promise((resolve,reject)=>{
+      canvas.toBlob(b=>b?resolve(b):reject(new Error('Could not encode PDF page.')),'image/jpeg',0.9);
+    });
+
+    const result={
+      bytes:await blobToBytes(jpegBlob),
+      width:canvas.width,
+      height:canvas.height
+    };
+
+    // Release the largest objects immediately.
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    canvas.width=1;
+    canvas.height=1;
+    img.src='';
     return result;
   }finally{
     URL.revokeObjectURL(url);
@@ -1442,27 +1490,98 @@ function buildJpegPdf(images){
   push(`trailer\n<< /Size ${objCount+1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
   return new Blob(parts,{type:'application/pdf'});
 }
-function safePdfName(){
-  let name=($('bookTitle').value||'Puzzle Book').trim().replace(/[\\/:*?"<>|]+/g,'').replace(/\s+/g,' ').slice(0,80);
-  return (name||'Puzzle Book')+'.pdf';
+
+function trimLabel(){
+  const v=$('pageSize').value;
+  return v==='trim7x10'?'7x10':v==='trim8x10'?'8x10':v==='a4'?'A4':'8.5x11';
 }
+function cleanFilePart(s){
+  return (s||'Puzzle Book')
+    .trim()
+    .replace(/[^A-Za-z0-9]+/g,'_')
+    .replace(/^_+|_+$/g,'')
+    .slice(0,60)||'Puzzle_Book';
+}
+function exportBaseName(){
+  const title=cleanFilePart($('bookTitle').value||'Puzzle Book');
+  const count=(project.items&&project.items.length)||
+    ($('mixedMode')?.checked
+      ?mixRows.reduce((s,r)=>s+(+r.count||0),0)
+      :(['easyCount','mediumCount','hardCount'].reduce((s,id)=>s+(+$(id).value||0),0)));
+  const kind=$('mixedMode')?.checked?'Mixed':(PUZZLE_OPTIONS.find(x=>x[0]===$('type').value)?.[1]||'Puzzles');
+  const k=cleanFilePart(kind);
+  const date=new Date().toISOString().slice(0,10);
+  return `${title}_${k}_${count}Puzzles_${trimLabel()}_${date}`;
+}
+function solutionCapacity(type){
+  const chosen=$('solutionsPerPage').value;
+  if(chosen!=='smart')return Math.max(1,+chosen||1);
+  if(['maze','kakuro','slither','wordsearch','numbersearch','nonogram','killer','irregular','kenken'].includes(type))return 1;
+  if(['sudoku','diagonal','hidato','takuzu'].includes(type))return 2;
+  return 4;
+}
+function solutionPageBatches(items){
+  const out=[];
+  let i=0;
+  while(i<items.length){
+    const cap=solutionCapacity(items[i].type);
+    const batch=[i];
+    let j=i+1;
+    while(j<items.length && batch.length<cap && solutionCapacity(items[j].type)>=cap){
+      batch.push(j);j++;
+    }
+    out.push(batch);i=j;
+  }
+  return out;
+}
+function countSolutionPages(items){
+  if(!$('solutions').checked)return 0;
+  return solutionPageBatches(items||[]).length;
+}
+function plannedRows(){
+  if($('mixedMode')?.checked)return mixRows.map(r=>({type:r.type,difficulty:r.difficulty||'Medium',count:Math.max(1,+r.count||1)}));
+  return [
+    {type:$('type').value,difficulty:'Easy',count:Math.max(0,+$('easyCount').value||0)},
+    {type:$('type').value,difficulty:'Medium',count:Math.max(0,+$('mediumCount').value||0)},
+    {type:$('type').value,difficulty:'Hard',count:Math.max(0,+$('hardCount').value||0)}
+  ].filter(r=>r.count>0);
+}
+function safePdfName(){return exportBaseName()+'.pdf'}
 async function createPdfDirect(){
   const btn=$('pdf'),progress=$('pdfProgress'),sheets=[...document.querySelectorAll('#pages .sheet')];
   if(!sheets.length){alert('Build a book first.');return}
+
   btn.disabled=true;
   progress.classList.add('active');
   const oldText=btn.textContent;
   btn.textContent='Creating PDF…';
+
+  // Adaptive quality keeps large books within Safari/iPhone memory limits.
+  const total=sheets.length;
+  const scale=total<=30?2.0:total<=60?1.65:total<=100?1.4:1.2;
+  const qualityLabel=scale>=1.9?'high':scale>=1.6?'balanced':scale>=1.35?'large-book':'maximum-size';
+
   try{
     const images=[];
-    for(let i=0;i<sheets.length;i++){
-      progress.textContent=`Rendering PDF page ${i+1} of ${sheets.length}…`;
-      await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
-      images.push(await sheetToJpeg(sheets[i],2.5));
+    for(let i=0;i<total;i++){
+      progress.textContent=`Rendering PDF page ${i+1} of ${total} • ${qualityLabel} mode`;
+      await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,12)));
+      images.push(await sheetToJpeg(sheets[i],scale));
+
+      // Give iOS Safari a chance to reclaim temporary image/canvas memory.
+      if((i+1)%4===0){
+        await new Promise(r=>setTimeout(r,60));
+      }
     }
-    progress.textContent='Building PDF file…';
-    await new Promise(r=>setTimeout(r,0));
+
+    progress.textContent='Assembling PDF file…';
+    await new Promise(r=>setTimeout(r,30));
+
     const pdf=buildJpegPdf(images);
+
+    // Drop page-image references as soon as PDF blob exists.
+    images.length=0;
+
     const url=URL.createObjectURL(pdf);
     const a=document.createElement('a');
     a.href=url;
@@ -1471,17 +1590,19 @@ async function createPdfDirect(){
     document.body.appendChild(a);
     a.click();
     a.remove();
+
     setTimeout(()=>URL.revokeObjectURL(url),60000);
-    progress.textContent=`PDF created successfully • ${(pdf.size/1024/1024).toFixed(1)} MB`;
+    progress.textContent=`PDF created successfully • ${total} pages • ${(pdf.size/1024/1024).toFixed(1)} MB`;
   }catch(err){
     console.error(err);
-    progress.textContent='PDF creation failed. Try a smaller book or reload the app.';
-    alert('Could not create the PDF. If this is a very large book, try generating fewer pages at once.');
+    progress.textContent='PDF creation failed. Try again after closing other Safari tabs, or export a smaller section.';
+    alert('The PDF could not be created. On iPhone this is usually a memory limit. Close other Safari tabs/apps and try again. Very large books may need to be exported in smaller sections.');
   }finally{
     btn.disabled=false;
     btn.textContent=oldText;
   }
 }
+
 let dynamicPrintStyle=null;
 function printPageDimensions(){
   let v=$('pageSize').value;
@@ -1603,26 +1724,78 @@ function makeSpecial(kind,title,body,extra=''){
 }
 function instructionHtml(type){
  const map={
-  sudoku:`<div class="instructions"><h3>How to Play Sudoku</h3><p>Fill every row, column, and 3×3 box with the numbers 1–9. No number may repeat within a row, column, or box.</p><h3>Tips</h3><ul><li>Start with rows, columns, or boxes that already contain many numbers.</li><li>Use elimination before guessing.</li><li>Hard puzzles may require several logical steps before a number becomes certain.</li></ul></div>`,
-  maze:`<div class="instructions"><h3>How to Solve the Mazes</h3><p>Start at the opening on the left edge and find a continuous path to the opening on the right edge. Do not cross through walls.</p><h3>Tips</h3><ul><li>Trace lightly in pencil.</li><li>When you reach a dead end, backtrack to the last branch.</li><li>Solutions are collected at the back of the book.</li></ul></div>`,
-  kakuro:`<div class="instructions"><h3>How to Play Kakuro</h3><p>Fill the white cells with digits 1–9 so that each horizontal or vertical run adds to its clue. Digits may not repeat within a run.</p><h3>Tips</h3><ul><li>Short runs with extreme sums are often easiest to solve first.</li><li>Use both the across and down clues for every white cell.</li><li>Solutions are collected at the back of the book.</li></ul></div>`,
-  slither:`<div class="instructions"><h3>How to Play Slitherlink</h3><p>Draw one single closed loop along the dotted grid. Each number tells you how many of that cell’s four sides belong to the loop.</p><h3>Rules</h3><ul><li>The loop may not branch.</li><li>The loop may not cross itself.</li><li>There is exactly one continuous closed loop.</li></ul></div>`
-,
-  wordsearch:`<div class="instructions"><h3>How to Play Word Search</h3><p>Find every listed word hidden in the letter grid. Words may run horizontally, vertically, or diagonally, forward or backward.</p></div>`,
-  numbersearch:`<div class="instructions"><h3>How to Play Number Search</h3><p>Find each listed number sequence hidden in the grid. Sequences may run in any straight direction.</p></div>`,
-  cryptogram:`<div class="instructions"><h3>How to Solve Cryptograms</h3><p>Each letter in the original message has been replaced by another letter. Decode the substitution to reveal the quotation or phrase.</p></div>`,
-  nonogram:`<div class="instructions"><h3>How to Play Nonograms</h3><p>Use the row and column clues to determine which cells are filled. Each clue gives the lengths of consecutive filled groups.</p></div>`,
-  killer:`<div class="instructions"><h3>How to Play Killer Sudoku</h3><p>Follow normal Sudoku rules. In addition, each outlined cage must add to its small total, and digits may not repeat within a cage.</p></div>`,
-  diagonal:`<div class="instructions"><h3>How to Play Diagonal Sudoku</h3><p>Use normal Sudoku rules, and also make sure both main diagonals contain 1–9 exactly once.</p></div>`,
-  irregular:`<div class="instructions"><h3>How to Play Irregular Sudoku</h3><p>Fill 1–9 so each row, column, and outlined irregular region contains every digit exactly once.</p></div>`,
-  mini:`<div class="instructions"><h3>How to Play Mini Sudoku</h3><p>Fill the smaller grid so every row, column, and box contains each allowed digit exactly once.</p></div>`,
-  kenken:`<div class="instructions"><h3>How to Play KenKen</h3><p>Fill the grid so each row and column contains every number once. The numbers in each cage must combine using the shown operation to make the target.</p></div>`,
-  hidato:`<div class="instructions"><h3>How to Play Hidato</h3><p>Fill the missing numbers so consecutive values touch horizontally, vertically, or diagonally.</p></div>`,
-  takuzu:`<div class="instructions"><h3>How to Play Takuzu</h3><p>Fill the grid with 0s and 1s. Each row and column must contain equal numbers of 0s and 1s, no three identical digits may be adjacent, and no two rows or columns may be identical.</p></div>`,
-  magicsquare:`<div class="instructions"><h3>How to Play Magic Squares</h3><p>Fill the missing values so every row, column, and main diagonal has the same total.</p></div>`,
-  missingnumber:`<div class="instructions"><h3>How to Play Missing Number</h3><p>Study the number pattern and determine the missing value.</p></div>` };
+  sudoku:`<div class="instructions-section"><h3>How to Play Sudoku</h3><p>Fill every row, column, and 3×3 box with the numbers 1–9. No number may repeat within a row, column, or box.</p>
+  <div class="howto-example"><b>Example</b><p>If a row already contains 1, 2, 3, 4, 5, 6, 7, and 9, the empty square must be <b>8</b>.</p><div class="howto-inline">1 2 3 | 4 5 6 | 7 _ 9 → 8</div></div>
+  <h3>Tips</h3><ul><li>Start with rows, columns, or boxes that already contain many numbers.</li><li>Use elimination before guessing.</li><li>Hard puzzles may require several logical steps before a number becomes certain.</li></ul></div>`,
+
+  maze:`<div class="instructions-section"><h3>How to Solve Mazes</h3><p>Start at the opening marked Start and find a continuous path to the Finish without crossing walls.</p>
+  <div class="howto-example"><b>Example</b><p>At a fork, try one branch. If it reaches a dead end, return to the last fork and try the other route.</p><div class="howto-inline">START → fork → dead end ↩ → other path → FINISH</div></div>
+  <h3>Tips</h3><ul><li>Trace lightly in pencil.</li><li>Backtrack whenever a path closes.</li><li>The solution at the back shows the complete route.</li></ul></div>`,
+
+  kakuro:`<div class="instructions-section"><h3>How to Play Kakuro</h3><p>Fill white cells with digits 1–9 so each horizontal or vertical run adds to its clue. Digits may not repeat within a run.</p>
+  <div class="howto-example"><b>Example</b><p>A two-cell run totaling <b>4</b> can only be <b>1 + 3</b> (in either order). It cannot be 2 + 2 because digits cannot repeat.</p><div class="howto-inline">4 → [1][3] ✓ &nbsp;&nbsp; [2][2] ✗</div></div>
+  <h3>Tips</h3><ul><li>Short runs with very high or low sums are often easiest.</li><li>Use both across and down clues to narrow each cell.</li></ul></div>`,
+
+  slither:`<div class="instructions-section"><h3>How to Play Slitherlink</h3><p>Draw one closed loop along the grid lines. Each number tells how many of that cell’s four sides are part of the loop.</p>
+  <div class="howto-example"><b>Example</b><p>A cell marked <b>3</b> must have exactly three of its four borders used by the loop. A cell marked <b>0</b> has none.</p><div class="howto-inline">0 = no sides &nbsp;&nbsp; 3 = exactly three sides</div></div>
+  <h3>Rules</h3><ul><li>The loop may not branch.</li><li>The loop may not cross itself.</li><li>There is one continuous closed loop.</li></ul></div>`,
+
+  wordsearch:`<div class="instructions-section"><h3>How to Play Word Search</h3><p>Find every listed word hidden in the letter grid. Words may run horizontally, vertically, diagonally, forward, or backward.</p>
+  <div class="howto-example"><b>Example</b><p>If the word is <b>BIRD</b>, it might appear left-to-right as B-I-R-D, downward, diagonally, or backward as D-R-I-B.</p><div class="howto-inline">B → I → R → D</div></div></div>`,
+
+  numbersearch:`<div class="instructions-section"><h3>How to Play Number Search</h3><p>Find each listed number sequence hidden in the grid. Sequences may run in any straight direction.</p>
+  <div class="howto-example"><b>Example</b><p>For the target <b>4281</b>, look for 4 next to 2, then continue in that same direction through 8 and 1.</p><div class="howto-inline">4 → 2 → 8 → 1</div></div></div>`,
+
+  cryptogram:`<div class="instructions-section"><h3>How to Solve Cryptograms</h3><p>Each letter in the original message has been replaced by another letter. Decode the substitution to reveal the phrase.</p>
+  <div class="howto-example"><b>Example</b><p>If you discover that <b>X = T</b> and <b>Q = H</b>, then the cipher pair <b>XQ</b> decodes to <b>TH</b>. The same cipher letter always represents the same original letter within that puzzle.</p><div class="howto-inline">X Q → T H</div></div></div>`,
+
+  nonogram:`<div class="instructions-section"><h3>How to Play Nonograms</h3><p>Use row and column clues to determine which cells are filled. Each clue gives the lengths of consecutive filled groups.</p>
+  <div class="howto-example"><b>Example</b><p>A clue of <b>3</b> means three neighboring filled cells. A clue of <b>2 1</b> means a group of two, at least one blank cell, then a group of one.</p><div class="howto-inline">3 → ■■■ &nbsp;&nbsp; 2 1 → ■■ □ ■</div></div></div>`,
+
+  killer:`<div class="instructions-section"><h3>How to Play Killer Sudoku</h3><p>Follow normal Sudoku rules. Each outlined cage must also add to its small total, with no repeated digit inside a cage.</p>
+  <div class="howto-example"><b>Example</b><p>A two-cell cage totaling <b>3</b> must contain <b>1 and 2</b>. Their order depends on the row and column constraints.</p><div class="howto-inline">Cage 3 → {1,2}</div></div></div>`,
+
+  diagonal:`<div class="instructions-section"><h3>How to Play Diagonal Sudoku</h3><p>Use normal Sudoku rules, and both main diagonals must also contain 1–9 exactly once.</p>
+  <div class="howto-example"><b>Example</b><p>A number already used on the top-left to bottom-right diagonal cannot appear again anywhere else on that same diagonal.</p><div class="howto-inline">↘ 1–9 once &nbsp;&nbsp; ↙ 1–9 once</div></div></div>`,
+
+  irregular:`<div class="instructions-section"><h3>How to Play Irregular Sudoku</h3><p>Fill 1–9 so each row, column, and outlined irregular region contains every digit exactly once.</p>
+  <div class="howto-example"><b>Example</b><p>Treat each outlined shape like a normal Sudoku 3×3 box—even when the region bends or stretches.</p></div></div>`,
+
+  mini:`<div class="instructions-section"><h3>How to Play Mini Sudoku</h3><p>Fill the smaller grid so every row, column, and box contains each allowed digit exactly once.</p>
+  <div class="howto-example"><b>Example</b><p>In a 4×4 puzzle using 1–4, if a row contains 1, 2, and 4, the remaining cell must be <b>3</b>.</p><div class="howto-inline">1 2 _ 4 → 3</div></div></div>`,
+
+  kenken:`<div class="instructions-section"><h3>How to Play KenKen / Calcudoku</h3><p>Fill each row and column with every number once. The values in each cage must combine using the shown operation to make the target.</p>
+  <div class="howto-example"><b>Example</b><p>A two-cell cage marked <b>6×</b> could contain <b>2 and 3</b>. A cage marked <b>1−</b> needs two numbers whose difference is 1.</p><div class="howto-inline">6× → 2×3 &nbsp;&nbsp; 1− → |3−2|</div></div></div>`,
+
+  hidato:`<div class="instructions-section"><h3>How to Play Hidato</h3><p>Fill the missing numbers so consecutive values touch horizontally, vertically, or diagonally.</p>
+  <div class="howto-example"><b>Example</b><p>If 12 and 14 are already shown, place <b>13</b> in a cell that touches both.</p><div class="howto-inline">12 → 13 → 14</div></div></div>`,
+
+  takuzu:`<div class="instructions-section"><h3>How to Play Takuzu</h3><p>Fill the grid with 0s and 1s. Every row and column has equal numbers of each, no three identical digits may touch in a row, and no two complete rows or columns may match.</p>
+  <div class="howto-example"><b>Example</b><p>If you see <b>0 0 _</b>, the empty cell must be <b>1</b>, because three 0s in a row are not allowed.</p><div class="howto-inline">0 0 _ → 0 0 1</div></div></div>`,
+
+  magicsquare:`<div class="instructions-section"><h3>How to Play Magic Squares</h3><p>Fill missing values so every row, column, and main diagonal has the same total.</p>
+  <div class="howto-example"><b>Example</b><p>If the magic total is 15 and a row already contains 8 and 1, the missing number must be <b>6</b>.</p><div class="howto-inline">8 + 1 + _ = 15 → 6</div></div></div>`,
+
+  missingnumber:`<div class="instructions-section"><h3>How to Play Missing Number</h3><p>Study the pattern and determine the missing value.</p>
+  <div class="howto-example"><b>Example</b><p>For <b>2, 4, 6, _, 10</b>, each number increases by 2, so the missing number is <b>8</b>.</p><div class="howto-inline">2, 4, 6, ?, 10 → 8</div></div></div>`
+ };
  return map[type]||'';
 }
+
+function instructionBookHtml(items){
+  const unique=[];
+  for(const item of items||[]){
+    if(item && !unique.includes(item.type))unique.push(item.type);
+  }
+  if(!unique.length)return '<div class="instructions"><p>Build the book to generate instructions.</p></div>';
+  if(unique.length===1)return `<div class="instructions">${instructionHtml(unique[0])}</div>`;
+
+  return `<div class="instructions">
+    <p>This mixed puzzle book contains several puzzle types. Use the examples below as a quick reference.</p>
+    ${unique.map(t=>instructionHtml(t)).join('')}
+  </div>`;
+}
+
 function addPageNum(s,n){if($('numbers').checked){let x=document.createElement('div');x.className='pagenum';x.textContent=n;s.appendChild(x);
  if($('mirrorPageNumbers').checked){s.classList.add(n%2===0?'page-left':'page-right')}}}
 function addValidation(s,item){
@@ -1723,7 +1896,7 @@ function render(){
    }
    if($('instructionsPage').checked){
      let s=applyFrameClass(document.createElement('div'));s.className='sheet '+pageClass()+' frame-enabled';
-     s.innerHTML=`<h2>How to Use This Book</h2>${instructionHtml(project.items[0].type)}`;
+     s.innerHTML=`<h2>How to Use This Book</h2>${instructionBookHtml(project.items)}`;
      append(s,false);
    }
  }
@@ -1734,10 +1907,14 @@ function render(){
    let items=isBook?(mixed?project.items.filter(x=>x.type===group):project.items.filter(x=>x.difficulty===group)):project.items;
    if(!items.length)continue;
    if(isBook && $('sectionPages').checked){
-     if($('startSectionsRight').checked && page%2===0)page=addBlankPage(root,page);
-     let sectionName=mixed?(PUZZLE_OPTIONS.find(x=>x[0]===group)?.[1]||group):group;
-     let body=`<p>${items.length} ${mixed?'':group.toLowerCase()+' '}${items[0].type==='maze'?'mazes':'puzzles'}</p>`;
-     append(makeSpecial('section',sectionName,body),false);
+     const smartBalance=$('balanceSections')?.checked;
+     const tinySection=smartBalance && items.length<=2;
+     if(!tinySection){
+       if(($('startSectionsRight').checked||smartBalance) && page%2===0)page=addBlankPage(root,page);
+       let sectionName=mixed?(PUZZLE_OPTIONS.find(x=>x[0]===group)?.[1]||group):group;
+       let body=`<p>${items.length} ${mixed?'':group.toLowerCase()+' '}${items[0].type==='maze'?'mazes':'puzzles'}</p>`;
+       append(makeSpecial('section',sectionName,body),false);
+     }
    }
    let ppp=Math.max(1,+$('puzzlesPerPage').value||1);
    if(ppp>1 && items.every(x=>supportsMultiPerPage(x.type))){
@@ -1782,14 +1959,27 @@ function render(){
    if(isBook && $('solutionsTitlePage').checked){
      append(makeSpecial('solutions','Solutions','<p>Answers for every puzzle in this book.</p>'),false);
    }
-   let per=Math.max(1,+$('solutionsPerPage').value||1);
-   for(let start=0;start<project.items.length;start+=per){
+
+   const batches=solutionPageBatches(project.items);
+   for(const batch of batches){
+     const first=batch[0],last=batch[batch.length-1],per=batch.length;
      let s=applyFrameClass(document.createElement('div'));s.className='sheet '+pageClass()+($('pageFrame').checked?' frame-enabled':'');
-     let titleEl=document.createElement('h2');titleEl.textContent=`${title} — Solutions ${start+1}${Math.min(start+per,project.items.length)>start+1?'–'+Math.min(start+per,project.items.length):''}`;s.appendChild(titleEl);
-     let grid=document.createElement('div');grid.className='solution-grid '+(per===1?'one':per===2?'two':'four');s.appendChild(grid);
-     for(let i=start;i<Math.min(start+per,project.items.length);i++){
-       let item=project.items[i],box=document.createElement('div');box.className='solution-mini '+(per===1?'one':per===2?'two':'four');
-       let lab=document.createElement('div');lab.style.textAlign='center';lab.style.fontSize='12px';lab.style.marginBottom='6px';lab.textContent=`Solution ${i+1} • ${item.difficulty||''}`;box.appendChild(lab);
+     let titleEl=document.createElement('h2');
+     titleEl.textContent=`${title} — Solutions ${first+1}${last>first?'–'+(last+1):''}`;
+     s.appendChild(titleEl);
+
+     let grid=document.createElement('div');
+     grid.className='solution-grid '+(per===1?'one':per===2?'two':'four');
+     s.appendChild(grid);
+
+     for(const i of batch){
+       let item=project.items[i],box=document.createElement('div');
+       box.className='solution-mini '+(per===1?'one':per===2?'two':'four');
+       let lab=document.createElement('div');
+       lab.style.textAlign='center';lab.style.fontSize='12px';lab.style.marginBottom='6px';
+       lab.textContent=`Solution ${i+1} • ${item.difficulty||''}`;
+       box.appendChild(lab);
+
        if(item.type==='sudoku')box.appendChild(sudokuTable(item.solution));
        if(item.type==='maze')box.appendChild(mazeSvg(item,true));
        if(item.type==='kakuro')box.appendChild(kakuroTable(item,true));
@@ -1805,7 +1995,9 @@ function render(){
        if(item.type==='hidato')box.appendChild(genericTable(item.solution,{small:true}));
        if(item.type==='takuzu')box.appendChild(genericTable(item.solution,{small:true}));
        if(item.type==='magicsquare')box.appendChild(genericTable(item.solution));
-       if(item.type==='missingnumber'){let d=document.createElement('div');d.className='sequence';d.textContent=item.solution.join('   ');box.appendChild(d)}
+       if(item.type==='missingnumber'){
+         let d=document.createElement('div');d.className='sequence';d.textContent=item.solution.join('   ');box.appendChild(d)
+       }
        grid.appendChild(box);
      }
      append(s,true);
@@ -1824,28 +2016,55 @@ function render(){
 }
 function applyZoom(){document.querySelectorAll('.sheet').forEach(s=>s.style.zoom=zoom)}
 function updateSummary(){
- let mode=$('buildMode').value;
- if($('mixedMode')?.checked){
-   let n=mixRows.reduce((s,r)=>s+(+r.count||0),0);
-   let combos=mixRows.length;
-   let byDiff=['Easy','Medium','Hard'].map(d=>[d,mixRows.filter(r=>r.difficulty===d).reduce((s,r)=>s+(+r.count||0),0)]).filter(x=>x[1]>0);
-   let diffText=byDiff.map(([d,c])=>`${c} ${d}`).join(' • ');
-   $('bookSummary').textContent=`Mixed book: ${n} puzzles across ${combos} selection${combos===1?'':'s'}${diffText?' • '+diffText:''}.`;
-   return
+ const rows=plannedRows();
+ const n=rows.reduce((s,r)=>s+r.count,0);
+ const byDiff=['Easy','Medium','Hard'].map(d=>[d,rows.filter(r=>r.difficulty===d).reduce((s,r)=>s+r.count,0)]).filter(x=>x[1]>0);
+ const byType={};
+ rows.forEach(r=>byType[r.type]=(byType[r.type]||0)+r.count);
+
+ const diffText=byDiff.map(([d,c])=>`${d} ${c}`).join(' • ');
+ const typeText=Object.entries(byType).map(([t,c])=>`${PUZZLE_OPTIONS.find(x=>x[0]===t)?.[1]||t} ${c}`).join(' • ');
+
+ let front=[$('titlePage').checked,$('copyrightPage').checked,$('instructionsPage').checked].filter(Boolean).length;
+ let activeSections=$('mixedMode')?.checked?Object.keys(byType).length:byDiff.length;
+ let dividers=$('sectionPages').checked?activeSections:0;
+ if($('balanceSections')?.checked && $('sectionPages').checked){
+   // Smart balancing omits dedicated divider pages for sections with only 1–2 puzzles.
+   if($('mixedMode')?.checked){
+     dividers=Object.entries(byType).filter(([,c])=>c>2).length;
+   }else{
+     dividers=byDiff.filter(([,c])=>c>2).length;
+   }
  }
- if(mode==='quick'){
-   let n=Math.max(1,Math.min(100,+$('count').value||1));
-   $('bookSummary').textContent=`Quick batch: ${n} ${$('difficulty').value.toLowerCase()} puzzle${n===1?'':'s'}.`;
- }else{
-   let e=Math.max(0,+$('easyCount').value||0),m=Math.max(0,+$('mediumCount').value||0),h=Math.max(0,+$('hardCount').value||0),n=e+m+h;
-   let front=[$('titlePage').checked,$('copyrightPage').checked,$('instructionsPage').checked].filter(Boolean).length;
-   let dividers=$('sectionPages').checked?[e,m,h].filter(x=>x>0).length:0;
-   let spp=Math.max(1,+$('solutionsPerPage').value||1);let solutions=$('solutions').checked?Math.ceil(n/spp):0;
-   let solTitle=$('solutions').checked&&$('solutionsTitlePage').checked?1:0;
-   let notes=$('notesPage').checked?1:0;
-   let approx=front+dividers+n+solutions+solTitle+notes;
-   $('bookSummary').textContent=`${n} puzzles selected • approximately ${approx} interior pages with current options.`;
+ let puzzlePages=n;
+ const ppp=Math.max(1,+$('puzzlesPerPage').value||1);
+ if(ppp>1){
+   // Estimate per planned row so incompatible types remain one-per-page.
+   puzzlePages=rows.reduce((sum,r)=>sum+(supportsMultiPerPage(r.type)?Math.ceil(r.count/ppp):r.count),0);
  }
+
+ let solutionPages=0;
+ if($('solutions').checked){
+   if($('solutionsPerPage').value==='smart'){
+     solutionPages=rows.reduce((sum,r)=>sum+Math.ceil(r.count/solutionCapacity(r.type)),0);
+   }else{
+     const sp=Math.max(1,+$('solutionsPerPage').value||1);
+     solutionPages=Math.ceil(n/sp);
+   }
+ }
+ const solTitle=$('solutions').checked&&$('solutionsTitlePage').checked?1:0;
+ const notes=$('notesPage').checked?1:0;
+ const approx=front+dividers+puzzlePages+solutionPages+solTitle+notes;
+
+ $('bookSummary').textContent=`${n} puzzles selected • about ${approx} interior pages • ${trimLabel()}.`;
+ const balanceNote=$('balanceSections')?.checked?'Smart section balancing ON':'Smart section balancing OFF';
+ const solutionNote=$('solutionsPerPage').value==='smart'?'Smart solution density ON':`${$('solutionsPerPage').value} solutions/page`;
+ $('bookBreakdown').innerHTML=`<div class="smart-summary">
+   <div class="summary-line"><b>Difficulty:</b> ${diffText||'None selected'}</div>
+   <div class="summary-line"><b>Puzzle mix:</b> ${typeText||'None selected'}</div>
+   <div class="summary-line"><b>Assembly:</b> ${balanceNote} • ${solutionNote}</div>
+   <div class="summary-line"><b>Estimated pages:</b> ${approx} (before final rendered preflight)</div>
+ </div>`;
 }
 
 function setBuildProgress(active,current=0,total=0,label='Preparing book…',sub=''){
@@ -1947,8 +2166,8 @@ async function build(){
 $('generate').onclick=build;$('clear').onclick=()=>{project={items:[]};render()};$('pdf').onclick=createPdfDirect;
 $('zoomIn').onclick=()=>{zoom=Math.min(1.3,zoom+.1);applyZoom()};$('zoomOut').onclick=()=>{zoom=Math.max(.4,zoom-.1);applyZoom()};
 $('pageSize').onchange=render;$('solutions').onchange=render;$('numbers').onchange=render;$('bookTitle').oninput=render;
-$('save').onclick=()=>{let data={version:3,settings:{
- type:$('type').value,difficulty:$('difficulty').value,pageSize:$('pageSize').value,bookTitle:$('bookTitle').value,
+$('save').onclick=()=>{let data={version:4,settings:{
+ type:$('type').value,pageSize:$('pageSize').value,bookTitle:$('bookTitle').value,
  subtitle:$('subtitle').value,authorName:$('authorName').value,buildMode:$('buildMode').value,count:$('count').value,
  easyCount:$('easyCount').value,mediumCount:$('mediumCount').value,hardCount:$('hardCount').value,
  solutions:$('solutions').checked,numbers:$('numbers').checked,titlePage:$('titlePage').checked,
@@ -1959,11 +2178,11 @@ $('save').onclick=()=>{let data={version:3,settings:{
  pageFrame:$('pageFrame').checked,frameInset:$('frameInset').value,frameWidth:$('frameWidth').value,frameRadius:$('frameRadius').value,
  themeName:$('themeName').value,frameTemplate:$('frameTemplate').value,titleSize:$('titleSize').value,
  contentSpacing:$('contentSpacing').value,puzzlesPerPage:$('puzzlesPerPage').value,
- mirrorPageNumbers:$('mirrorPageNumbers').checked,startSectionsRight:$('startSectionsRight').checked,kdpProfile:$('kdpProfile').value,varietyLevel:$('varietyLevel').value,largePrint:$('largePrint').checked},project};
- let blob=new Blob([JSON.stringify(data)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='puzzle-project.json';a.click();URL.revokeObjectURL(a.href)};
+ mirrorPageNumbers:$('mirrorPageNumbers').checked,startSectionsRight:$('startSectionsRight').checked,balanceSections:$('balanceSections').checked,kdpProfile:$('kdpProfile').value,varietyLevel:$('varietyLevel').value,largePrint:$('largePrint').checked},project};
+ let blob=new Blob([JSON.stringify(data)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=exportBaseName()+'_Project.json';a.click();URL.revokeObjectURL(a.href)};
 $('load').onchange=e=>{let f=e.target.files[0];if(!f)return;let rd=new FileReader();rd.onload=()=>{try{let d=JSON.parse(rd.result),s=d.settings||{};project=d.project||{items:[]};
  for(let k of ['type','pageSize','bookTitle','subtitle','authorName','buildMode','count','easyCount','mediumCount','hardCount','startPageNumber','solutionsPerPage','copyrightText','gridOverride','customWords','customCryptograms','frameInset','frameWidth','frameRadius','themeName','frameTemplate','titleSize','contentSpacing','puzzlesPerPage','kdpProfile','varietyLevel'])if(s[k]!=null)$(k).value=s[k];
- for(let k of ['solutions','numbers','titlePage','copyrightPage','instructionsPage','sectionPages','solutionsTitlePage','notesPage','mixedMode','pageFrame','mirrorPageNumbers','startSectionsRight','largePrint'])if(s[k]!=null)$(k).checked=s[k];
+ for(let k of ['solutions','numbers','titlePage','copyrightPage','instructionsPage','sectionPages','solutionsTitlePage','notesPage','mixedMode','pageFrame','mirrorPageNumbers','startSectionsRight','balanceSections','largePrint'])if(s[k]!=null)$(k).checked=s[k];
  if(Array.isArray(s.mixRows))mixRows=s.mixRows;renderMixRows();syncMode();render()}catch(err){alert('Could not load that project file.')}};rd.readAsText(f)};
 
 function puzzleFingerprint(item){
@@ -2061,8 +2280,11 @@ function countExpectedRenderedPages(){
       for(const g of groups){
         const items=project.items.filter(x=>x.type===g);
         if($('sectionPages').checked){
-          if($('startSectionsRight').checked && ((Math.max(1,+$('startPageNumber').value||1)+pages)%2===0))pages++;
-          pages++;
+          const tiny=$('balanceSections')?.checked && items.length<=2;
+          if(!tiny){
+            if(($('startSectionsRight').checked||$('balanceSections')?.checked) && ((Math.max(1,+$('startPageNumber').value||1)+pages)%2===0))pages++;
+            pages++;
+          }
         }
         const ppp=Math.max(1,+$('puzzlesPerPage').value||1);
         if(ppp>1 && items.every(x=>supportsMultiPerPage(x.type))) pages+=Math.ceil(items.length/ppp);
@@ -2073,8 +2295,11 @@ function countExpectedRenderedPages(){
         const items=project.items.filter(x=>x.difficulty===g);
         if(!items.length)continue;
         if($('sectionPages').checked){
-          if($('startSectionsRight').checked && ((Math.max(1,+$('startPageNumber').value||1)+pages)%2===0))pages++;
-          pages++;
+          const tiny=$('balanceSections')?.checked && items.length<=2;
+          if(!tiny){
+            if(($('startSectionsRight').checked||$('balanceSections')?.checked) && ((Math.max(1,+$('startPageNumber').value||1)+pages)%2===0))pages++;
+            pages++;
+          }
         }
         const ppp=Math.max(1,+$('puzzlesPerPage').value||1);
         if(ppp>1 && items.every(x=>supportsMultiPerPage(x.type))) pages+=Math.ceil(items.length/ppp);
@@ -2086,7 +2311,7 @@ function countExpectedRenderedPages(){
   }
   if($('solutions').checked){
     if(isBook && $('solutionsTitlePage').checked)pages++;
-    pages+=Math.ceil(n/Math.max(1,+$('solutionsPerPage').value||1));
+    pages+=countSolutionPages(project.items);
   }
   if(isBook && $('notesPage').checked)pages++;
   return pages;
@@ -2163,7 +2388,10 @@ function runPreflight(){
  }
 
  // Section starts
- if($('startSectionsRight').checked)passes.push('Section dividers are configured to begin on right-hand pages.');
+ if($('balanceSections')?.checked)passes.push('Smart section balancing is enabled; tiny sections avoid standalone divider pages and larger section dividers are right-page aligned.');
+ else if($('startSectionsRight').checked)passes.push('Section dividers are configured to begin on right-hand pages.');
+
+ if($('solutionsPerPage').value==='smart')passes.push('Solution density is automatically adjusted by puzzle type.');
 
  // Multi-puzzle compatibility
  const ppp=Math.max(1,+$('puzzlesPerPage').value||1);
@@ -2235,7 +2463,7 @@ $('addMix').onclick=()=>{mixRows.push({type:'sudoku',difficulty:'Medium',count:1
 $('mixedMode').onchange=()=>{$('mixedControls').classList.toggle('hidden',!$('mixedMode').checked);updateSummary()};
 $('saveTheme').onclick=saveThemeNow;
 $('loadTheme').onclick=()=>{let n=($('themeName').value||'').trim();if(n)loadThemeByName(n)};
-for(let id of ['pageFrame','frameInset','frameWidth','frameRadius','frameTemplate','titleSize','contentSpacing','puzzlesPerPage','mirrorPageNumbers','startSectionsRight','kdpProfile','varietyLevel','largePrint'])$(id).addEventListener('change',render);
+for(let id of ['pageFrame','frameInset','frameWidth','frameRadius','frameTemplate','titleSize','contentSpacing','puzzlesPerPage','mirrorPageNumbers','startSectionsRight','balanceSections','kdpProfile','varietyLevel','largePrint'])$(id).addEventListener('change',()=>{render();updateSummary()});
 renderMixRows();refreshThemeList();
 for(let id of ['startPageNumber','solutionsPerPage','notesPage','copyrightText','gridOverride','customWords','customCryptograms']){
  let el=$(id);if(el){el.addEventListener('change',()=>{updateSummary();render()});}
