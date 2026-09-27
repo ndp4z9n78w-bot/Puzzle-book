@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio 10.1 — iPhone PDF Reliability</title>
+<title>Offline Puzzle Studio v10.2 — Cache + Version Fix</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -253,10 +253,18 @@ details summary{cursor:pointer;font-weight:700}
 
 .smart-summary{margin-top:6px;padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fafafa}
 .smart-summary .summary-line{margin:2px 0}
+
+.build-version{
+  margin-top:6px;
+  font-size:12px;
+  font-weight:700;
+  opacity:.8;
+}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio 10.1 <span class="badge">iPhone PDF Reliability</span></h1></header>
+<header><h1>Offline Puzzle Studio <span class="badge">v10.2</span></h1><div class="build-version">Exact build: v10.2 • Cache + iPhone PDF Reliability</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v10.2</div>
 <div class="wrap">
 <section class="panel controls">
 <label>Puzzle type</label>
@@ -517,6 +525,8 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
+const PUZZLE_STUDIO_VERSION='10.2';
+
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]};
 const clone=x=>JSON.parse(JSON.stringify(x));
@@ -2517,6 +2527,12 @@ for(let id of ['startPageNumber','solutionsPerPage','notesPage','copyrightText',
 }
 syncMode();
 build();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js?v=10.2',{updateViaCache:'none'}).catch(()=>{});
+  });
+}
 </script>
 </body>
 </html>
