@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio 10 — Smarter Book Assembly</title>
+<title>Offline Puzzle Studio 10.1 — iPhone PDF Reliability</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -256,7 +256,7 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio 10 <span class="badge">Smarter Book Assembly</span></h1></header>
+<header><h1>Offline Puzzle Studio 10.1 <span class="badge">iPhone PDF Reliability</span></h1></header>
 <div class="wrap">
 <section class="panel controls">
 <label>Puzzle type</label>
@@ -1364,64 +1364,112 @@ function collectDocumentCss(){
 async function blobToBytes(blob){
   return new Uint8Array(await blob.arrayBuffer());
 }
-async function sheetToJpeg(sheet,scale=2){
+function dataUrlToBytes(url){
+  const base64=(url.split(',')[1]||'');
+  const bin=atob(base64),out=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);
+  return out;
+}
+async function canvasToJpegBytes(canvas,quality=.86){
+  // Preferred path on modern Safari.
+  if(canvas.toBlob){
+    try{
+      const blob=await new Promise((resolve,reject)=>{
+        canvas.toBlob(b=>b?resolve(b):reject(new Error('JPEG blob unavailable')),'image/jpeg',quality);
+      });
+      return await blobToBytes(blob);
+    }catch(e){}
+  }
+  // Fallback path for iOS/WebKit edge cases.
+  const data=canvas.toDataURL('image/jpeg',quality);
+  return dataUrlToBytes(data);
+}
+async function sheetToJpegOnce(sheet,scale=1){
   const cs=getComputedStyle(sheet);
-  const width=Math.round(parseFloat(cs.width));
-  const height=Math.round(parseFloat(cs.height));
+  const width=Math.max(1,Math.round(parseFloat(cs.width)));
+  const height=Math.max(1,Math.round(parseFloat(cs.height)));
+
   const clone=sheet.cloneNode(true);
   clone.style.zoom='1';
   clone.style.transform='none';
   clone.style.margin='0';
   clone.style.boxShadow='none';
 
-  const css=collectDocumentCss()
-    .replace(/@media\s+print\s*\{[\s\S]*?\}\s*/g,'');
-  const xhtml=`<div xmlns="http://www.w3.org/1999/xhtml">
-    <style>${css}
-      html,body{margin:0!important;padding:0!important;background:#fff!important}
-      .sheet{margin:0!important;zoom:1!important;transform:none!important;box-shadow:none!important}
-    </style>${clone.outerHTML}</div>`;
+  // Inline only the CSS we need. Keeping the entire application CSS inside every SVG
+  // can cause WebKit to fail before the first page is drawn.
+  const pageCss=`
+    *{box-sizing:border-box}
+    body{margin:0}
+    .sheet{position:relative;margin:0!important;box-shadow:none!important;overflow:hidden!important;background:#fff;color:#111}
+    .sheet h1,.sheet h2,.sheet h3,.sheet p{color:#111}
+    table{border-collapse:collapse}
+    .sudoku td,.generic-grid td{border:1px solid #222;text-align:center}
+    .puzzle-wrap{display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .solution-grid{display:grid;gap:12px}
+    .solution-grid.two{grid-template-columns:1fr 1fr}
+    .solution-grid.four{grid-template-columns:1fr 1fr}
+    .frame-enabled:after{content:"";position:absolute;pointer-events:none;inset:var(--frameInset,.22in);border:var(--frameWidth,2px) solid #111;border-radius:var(--frameRadius,0px)}
+    .howto-example{border:1px solid #bbb;border-radius:8px;padding:10px}
+    .howto-mini-grid td{border:1px solid #777}
+    svg{max-width:100%;height:auto}
+  `;
+
+  const xhtml=`<div xmlns="http://www.w3.org/1999/xhtml"><style>${pageCss}</style>${clone.outerHTML}</div>`;
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(width*scale)}" height="${Math.ceil(height*scale)}" viewBox="0 0 ${width} ${height}">
     <foreignObject x="0" y="0" width="${width}" height="${height}">${xhtml}</foreignObject>
   </svg>`;
+
   const svgBlob=new Blob([svg],{type:'image/svg+xml;charset=utf-8'});
   const url=URL.createObjectURL(svgBlob);
 
   try{
     const img=new Image();
     await new Promise((resolve,reject)=>{
-      img.onload=resolve;
-      img.onerror=()=>reject(new Error('Could not render a book page.'));
+      let done=false;
+      const timer=setTimeout(()=>{if(!done){done=true;reject(new Error('Page render timed out'))}},8000);
+      img.onload=()=>{if(!done){done=true;clearTimeout(timer);resolve()}};
+      img.onerror=()=>{if(!done){done=true;clearTimeout(timer);reject(new Error('WebKit could not rasterize page'))}};
       img.src=url;
     });
 
+    const cw=Math.max(1,Math.ceil(width*scale)),ch=Math.max(1,Math.ceil(height*scale));
     const canvas=document.createElement('canvas');
-    canvas.width=Math.ceil(width*scale);
-    canvas.height=Math.ceil(height*scale);
+    canvas.width=cw;canvas.height=ch;
+
     const ctx=canvas.getContext('2d',{alpha:false});
+    if(!ctx)throw new Error('Canvas unavailable');
     ctx.fillStyle='#fff';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.drawImage(img,0,0,canvas.width,canvas.height);
+    ctx.fillRect(0,0,cw,ch);
+    ctx.drawImage(img,0,0,cw,ch);
 
-    const jpegBlob=await new Promise((resolve,reject)=>{
-      canvas.toBlob(b=>b?resolve(b):reject(new Error('Could not encode PDF page.')),'image/jpeg',0.9);
-    });
+    const bytes=await canvasToJpegBytes(canvas, scale<=.8?.78:.84);
+    const result={bytes,width:cw,height:ch};
 
-    const result={
-      bytes:await blobToBytes(jpegBlob),
-      width:canvas.width,
-      height:canvas.height
-    };
-
-    // Release the largest objects immediately.
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    canvas.width=1;
-    canvas.height=1;
+    ctx.clearRect(0,0,cw,ch);
+    canvas.width=1;canvas.height=1;
     img.src='';
     return result;
   }finally{
     URL.revokeObjectURL(url);
   }
+}
+async function sheetToJpeg(sheet,preferredScale=1){
+  const tries=[];
+  for(const s of [preferredScale,1.0,.8,.65]){
+    if(s<=preferredScale+.001 && !tries.includes(s))tries.push(s);
+  }
+  if(!tries.length)tries.push(.8,.65);
+
+  let lastErr=null;
+  for(const scale of tries){
+    try{
+      return await sheetToJpegOnce(sheet,scale);
+    }catch(err){
+      lastErr=err;
+      await new Promise(r=>setTimeout(r,120));
+    }
+  }
+  throw lastErr||new Error('Could not render page');
 }
 function pdfPhysicalPoints(){
   const v=$('pageSize').value;
@@ -1556,30 +1604,28 @@ async function createPdfDirect(){
   const oldText=btn.textContent;
   btn.textContent='Creating PDF…';
 
-  // Adaptive quality keeps large books within Safari/iPhone memory limits.
   const total=sheets.length;
-  const scale=total<=30?2.0:total<=60?1.65:total<=100?1.4:1.2;
-  const qualityLabel=scale>=1.9?'high':scale>=1.6?'balanced':scale>=1.35?'large-book':'maximum-size';
+  const preferredScale=total<=25?1.6:total<=50?1.25:total<=80?1.0:.8;
+  const mode=total<=25?'high':total<=50?'balanced':total<=80?'low-memory':'ultra-low-memory';
 
   try{
     const images=[];
-    for(let i=0;i<total;i++){
-      progress.textContent=`Rendering PDF page ${i+1} of ${total} • ${qualityLabel} mode`;
-      await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,12)));
-      images.push(await sheetToJpeg(sheets[i],scale));
 
-      // Give iOS Safari a chance to reclaim temporary image/canvas memory.
-      if((i+1)%4===0){
-        await new Promise(r=>setTimeout(r,60));
-      }
+    for(let i=0;i<total;i++){
+      progress.textContent=`Rendering PDF page ${i+1} of ${total} • ${mode} mode`;
+      await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,25)));
+
+      const im=await sheetToJpeg(sheets[i],preferredScale);
+      images.push(im);
+
+      // More frequent pauses for iPhone Safari.
+      if((i+1)%2===0)await new Promise(r=>setTimeout(r,90));
     }
 
     progress.textContent='Assembling PDF file…';
-    await new Promise(r=>setTimeout(r,30));
+    await new Promise(r=>setTimeout(r,80));
 
     const pdf=buildJpegPdf(images);
-
-    // Drop page-image references as soon as PDF blob exists.
     images.length=0;
 
     const url=URL.createObjectURL(pdf);
@@ -1595,8 +1641,9 @@ async function createPdfDirect(){
     progress.textContent=`PDF created successfully • ${total} pages • ${(pdf.size/1024/1024).toFixed(1)} MB`;
   }catch(err){
     console.error(err);
-    progress.textContent='PDF creation failed. Try again after closing other Safari tabs, or export a smaller section.';
-    alert('The PDF could not be created. On iPhone this is usually a memory limit. Close other Safari tabs/apps and try again. Very large books may need to be exported in smaller sections.');
+    const msg=(err&&err.message)?err.message:'Unknown rendering error';
+    progress.textContent=`PDF stopped: ${msg}`;
+    alert(`The PDF stopped while rendering. Error: ${msg}. Try closing other Safari tabs/apps and retry. Puzzle Studio will automatically retry pages at lower resolution before giving up.`);
   }finally{
     btn.disabled=false;
     btn.textContent=oldText;
