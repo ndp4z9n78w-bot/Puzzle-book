@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio 9 — Presets & Book Overview</title>
+<title>Offline Puzzle Studio 9.2 — Simplified Difficulty Controls</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -195,10 +195,34 @@ details summary{cursor:pointer;font-weight:700}
 .overview-preview table{transform:scale(.45);transform-origin:center}
 .large-print .sudoku td,.large-print .generic-grid td{font-size:22px}
 .large-print .sheet h2{font-size:28px!important}
+
+.build-progress{
+  display:none;
+  margin-top:10px;
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:9px;
+  background:#fafafa;
+}
+.build-progress.active{display:block}
+.spinner{
+  width:28px;height:28px;
+  border:4px solid #ddd;
+  border-top-color:#222;
+  border-radius:50%;
+  animation:puzzleSpin .8s linear infinite;
+  flex:0 0 auto;
+}
+.build-progress-row{display:flex;align-items:center;gap:10px}
+.build-progress-text{font-size:13px;font-weight:700}
+.build-progress-sub{font-size:12px;color:#666;margin-top:3px}
+.build-progress-track{height:7px;background:#e5e5e5;border-radius:999px;overflow:hidden;margin-top:10px}
+.build-progress-bar{height:100%;width:0%;background:#333;transition:width .15s ease}
+@keyframes puzzleSpin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio 9 <span class="badge">Presets + Book Overview</span></h1></header>
+<header><h1>Offline Puzzle Studio 9.2 <span class="badge">Simplified Difficulty Controls</span></h1></header>
 <div class="wrap">
 <section class="panel controls">
 <label>Puzzle type</label>
@@ -221,9 +245,6 @@ details summary{cursor:pointer;font-weight:700}
 <option value="magicsquare">Magic Squares</option>
 <option value="missingnumber">Missing Number</option>
 </select>
-
-<label>Difficulty</label>
-<select id="difficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option></select>
 
 <label>Build mode</label>
 <select id="buildMode">
@@ -421,6 +442,16 @@ details summary{cursor:pointer;font-weight:700}
 <button class="primary" id="generate">Build Book</button>
 <button class="secondary" id="clear">Clear</button>
 </div>
+<div id="buildProgress" class="build-progress" aria-live="polite">
+  <div class="build-progress-row">
+    <div class="spinner"></div>
+    <div>
+      <div id="buildProgressText" class="build-progress-text">Preparing book…</div>
+      <div id="buildProgressSub" class="build-progress-sub">Starting generator</div>
+    </div>
+  </div>
+  <div class="build-progress-track"><div id="buildProgressBar" class="build-progress-bar"></div></div>
+</div>
 
 <button class="secondary" id="qc" style="width:100%;margin-top:10px">Run Quality Check</button>
 <div id="qcResults" class="qc-box">Quality check has not been run yet.</div>
@@ -431,7 +462,7 @@ details summary{cursor:pointer;font-weight:700}
 Load Project<input id="load" type="file" accept=".json" style="display:none">
 </label>
 
-<p class="small"><b>Offline:</b> no internet, server, account, or installation is required.</p><p class="small"><b>KDP Book Builder:</b> mix Easy, Medium, and Hard puzzles in one interior, add front matter and section dividers, and send all answer keys to the back automatically.</p><p class="small"><b>Expanded library:</b> word, number, logic, Sudoku-variant, and math puzzle generators.</p><p class="small"><b>Quality tools:</b> unique-solution proof where applicable, structural validation, duplicate checks, solution checks, customization, and publication warnings.</p><p class="small"><b>Presets & editing:</b> choose a book preset, use Large Print, open Book Overview, regenerate individual puzzles, delete them, or move them up/down without rebuilding the whole book.</p><p class="small"><b>Variety:</b> High/Maximum variety changes pattern families, sequence rules, cage layouts, path styles, search directions, and cryptogram mappings so large books feel less repetitive.</p><p class="small"><b>KDP readiness:</b> Preflight now checks puzzle/solution matching, mixed-book counts, page-count consistency, frames/safe-area heuristics, blank pages, section starts, and export readiness.</p><p class="small"><b>Mixed books:</b> choose puzzle type, difficulty, and quantity for every mixed-book row. <b>Design:</b> frame templates, page typography, multi-puzzle layouts, mirrored page numbers, right-hand section starts, spread preview, and final preflight checks.</p>
+<p class="small"><b>Offline:</b> no internet, server, account, or installation is required.</p><p class="small"><b>KDP Book Builder:</b> mix Easy, Medium, and Hard puzzles in one interior, add front matter and section dividers, and send all answer keys to the back automatically.</p><p class="small"><b>Expanded library:</b> word, number, logic, Sudoku-variant, and math puzzle generators.</p><p class="small"><b>Quality tools:</b> unique-solution proof where applicable, structural validation, duplicate checks, solution checks, customization, and publication warnings.</p><p class="small"><b>Difficulty:</b> Book difficulty is controlled by the Easy / Medium / Hard puzzle counts, or per-row difficulty in Mixed Puzzle Book. The old standalone difficulty selector has been removed.</p><p class="small"><b>Presets & editing:</b> choose a book preset, use Large Print, open Book Overview, regenerate individual puzzles, delete them, or move them up/down without rebuilding the whole book.</p><p class="small"><b>Variety:</b> High/Maximum variety changes pattern families, sequence rules, cage layouts, path styles, search directions, and cryptogram mappings so large books feel less repetitive.</p><p class="small"><b>KDP readiness:</b> Preflight now checks puzzle/solution matching, mixed-book counts, page-count consistency, frames/safe-area heuristics, blank pages, section starts, and export readiness.</p><p class="small"><b>Mixed books:</b> choose puzzle type, difficulty, and quantity for every mixed-book row. <b>Design:</b> frame templates, page typography, multi-puzzle layouts, mirrored page numbers, right-hand section starts, spread preview, and final preflight checks.</p>
 <p class="small"><b>Validation:</b> Sudoku, Kakuro, and Slitherlink are solver-checked. The generator rejects a puzzle unless it finds exactly one solution. Mazes are generated with a verified entrance-to-exit path.</p>
 <p class="small"><b>PDF:</b> choose “Create PDF,” then select <b>Save as PDF</b>. For KDP interiors, keep browser scaling at 100% and margins set to none/default as appropriate.</p>
 </section>
@@ -758,7 +789,7 @@ const CRYPTO_PHRASES=[
 "LEARNING NEVER EXHAUSTS THE MIND",
 "COURAGE IS GRACE UNDER PRESSURE",
 "QUALITY IS NOT AN ACT IT IS A HABIT",
-"DO WHAT YOU CAN WITH WHAT YOU HAVE WHERE YOU ARE"
+"DO WHAT YOU CAN WITH WHAT YOU HAVE WHERE YOU ARE",
 "A JOURNEY OF A THOUSAND MILES BEGINS WITH A SINGLE STEP",
 "KNOWLEDGE SPEAKS BUT WISDOM LISTENS",
 "SMALL DEEDS DONE ARE BETTER THAN GREAT DEEDS PLANNED",
@@ -1502,8 +1533,10 @@ function applyPreset(name){
   }
   syncMode();updateSummary();render();
 }
-function regenerateItemAt(index){
+async function regenerateItemAt(index){
   const old=project.items[index];if(!old)return;
+  setBuildProgress(true,0,1,'Regenerating puzzle…',`Puzzle ${index+1}`);
+  await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,20)));
   const type=old.type,diff=old.difficulty||'Medium';
   let item=
     type==='sudoku'?makeSudoku(diff):
@@ -1524,6 +1557,8 @@ function regenerateItemAt(index){
     type==='magicsquare'?makeMagicSquare(diff):
     makeMissingNumber(diff);
   item.difficulty=diff;project.items[index]=item;render();renderOverview();
+  setBuildProgress(true,1,1,'Puzzle regenerated',`Puzzle ${index+1} updated`);
+  setTimeout(()=>setBuildProgress(false),900);
 }
 function removeItemAt(index){
   project.items.splice(index,1);render();renderOverview();
@@ -1812,6 +1847,16 @@ function updateSummary(){
    $('bookSummary').textContent=`${n} puzzles selected • approximately ${approx} interior pages with current options.`;
  }
 }
+
+function setBuildProgress(active,current=0,total=0,label='Preparing book…',sub=''){
+  const box=$('buildProgress');
+  if(!box)return;
+  box.classList.toggle('active',active);
+  $('buildProgressText').textContent=label;
+  $('buildProgressSub').textContent=sub||'';
+  const pct=total?Math.max(0,Math.min(100,(current/total)*100)):0;
+  $('buildProgressBar').style.width=pct+'%';
+}
 async function build(){
  let mode=$('buildMode').value,plan=[];
  if($('mixedMode').checked){
@@ -1823,20 +1868,37 @@ async function build(){
  }else{
    let type=$('type').value;
    if(mode==='quick'){
-     let count=Math.max(1,Math.min(100,+$('count').value||1)),diff=$('difficulty').value;
+     let count=Math.max(1,Math.min(100,+$('count').value||1)),diff='Medium';
      for(let i=0;i<count;i++)plan.push({type,diff});
    }else{
      for(let [diff,id] of [['Easy','easyCount'],['Medium','mediumCount'],['Hard','hardCount']]){
-       let n=Math.max(0,Math.min(100,+$(id).value||0));for(let i=0;i<n;i++)plan.push({type,diff})
+       let n=Math.max(0,Math.min(100,+$(id).value||0));
+       for(let i=0;i<n;i++)plan.push({type,diff})
      }
    }
  }
  if(!plan.length){alert('Choose at least one puzzle.');return}
- let arr=[];$('status').textContent='Building and validating book...';$('generate').disabled=true;
+
+ let arr=[];
+ $('generate').disabled=true;
+ $('generate').textContent='Building…';
+ setBuildProgress(true,0,plan.length,'Building your puzzle book…',`0 of ${plan.length} puzzles`);
+ $('status').textContent='Building and validating book...';
+
  try{
+   // Give Safari time to paint the spinner before heavy generation starts.
+   await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,40)));
+
    for(let i=0;i<plan.length;i++){
-     let {type,diff}=plan[i];await new Promise(r=>setTimeout(r,0));
-     $('status').textContent=`Generating ${i+1} of ${plan.length} • ${diff} • ${PUZZLE_OPTIONS.find(x=>x[0]===type)?.[1]||type}...`;
+     let {type,diff}=plan[i];
+     const label=PUZZLE_OPTIONS.find(x=>x[0]===type)?.[1]||type;
+
+     setBuildProgress(true,i,plan.length,`Generating ${label}`,`${i+1} of ${plan.length} • ${diff}`);
+     $('status').textContent=`Generating ${i+1} of ${plan.length} • ${diff} • ${label}...`;
+
+     // Yield to the browser so spinner/progress stays visible on iPhone.
+     await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
+
      let item=
        type==='sudoku'?makeSudoku(diff):
        type==='maze'?makeMaze(diff):
@@ -1855,12 +1917,34 @@ async function build(){
        type==='takuzu'?makeTakuzu(diff):
        type==='magicsquare'?makeMagicSquare(diff):
        makeMissingNumber(diff);
-     item.difficulty=diff;arr.push(item)
+
+     item.difficulty=diff;
+     arr.push(item);
+
+     setBuildProgress(true,i+1,plan.length,'Generating and validating…',`${i+1} of ${plan.length} complete`);
    }
-   project={items:arr};render()
- }finally{$('generate').disabled=false}
+
+   setBuildProgress(true,plan.length,plan.length,'Laying out book pages…','Almost finished');
+   await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,20)));
+
+   project={items:arr};
+   render();
+
+   setBuildProgress(true,plan.length,plan.length,'Book complete',`${arr.length} puzzles generated`);
+   $('status').textContent=`Book complete • ${arr.length} puzzles generated`;
+
+   setTimeout(()=>setBuildProgress(false),1400);
+ }catch(err){
+   console.error(err);
+   setBuildProgress(true,0,1,'Build stopped','An error occurred while generating the book.');
+   $('status').textContent='Build stopped — see error message.';
+   alert('The book generator stopped because of an error. Try a smaller batch or another puzzle type.');
+ }finally{
+   $('generate').disabled=false;
+   $('generate').textContent='Build Book';
+ }
 }
-$('generate').onclick=build;$('clear').onclick=()=>{project={items:[]};render()};$('pdf').onclick=createPdfDirect;requestAnimationFrame(()=>window.print())};
+$('generate').onclick=build;$('clear').onclick=()=>{project={items:[]};render()};$('pdf').onclick=createPdfDirect;
 $('zoomIn').onclick=()=>{zoom=Math.min(1.3,zoom+.1);applyZoom()};$('zoomOut').onclick=()=>{zoom=Math.max(.4,zoom-.1);applyZoom()};
 $('pageSize').onchange=render;$('solutions').onchange=render;$('numbers').onchange=render;$('bookTitle').oninput=render;
 $('save').onclick=()=>{let data={version:3,settings:{
@@ -1878,7 +1962,7 @@ $('save').onclick=()=>{let data={version:3,settings:{
  mirrorPageNumbers:$('mirrorPageNumbers').checked,startSectionsRight:$('startSectionsRight').checked,kdpProfile:$('kdpProfile').value,varietyLevel:$('varietyLevel').value,largePrint:$('largePrint').checked},project};
  let blob=new Blob([JSON.stringify(data)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='puzzle-project.json';a.click();URL.revokeObjectURL(a.href)};
 $('load').onchange=e=>{let f=e.target.files[0];if(!f)return;let rd=new FileReader();rd.onload=()=>{try{let d=JSON.parse(rd.result),s=d.settings||{};project=d.project||{items:[]};
- for(let k of ['type','difficulty','pageSize','bookTitle','subtitle','authorName','buildMode','count','easyCount','mediumCount','hardCount','startPageNumber','solutionsPerPage','copyrightText','gridOverride','customWords','customCryptograms','frameInset','frameWidth','frameRadius','themeName','frameTemplate','titleSize','contentSpacing','puzzlesPerPage','kdpProfile','varietyLevel'])if(s[k]!=null)$(k).value=s[k];
+ for(let k of ['type','pageSize','bookTitle','subtitle','authorName','buildMode','count','easyCount','mediumCount','hardCount','startPageNumber','solutionsPerPage','copyrightText','gridOverride','customWords','customCryptograms','frameInset','frameWidth','frameRadius','themeName','frameTemplate','titleSize','contentSpacing','puzzlesPerPage','kdpProfile','varietyLevel'])if(s[k]!=null)$(k).value=s[k];
  for(let k of ['solutions','numbers','titlePage','copyrightPage','instructionsPage','sectionPages','solutionsTitlePage','notesPage','mixedMode','pageFrame','mirrorPageNumbers','startSectionsRight','largePrint'])if(s[k]!=null)$(k).checked=s[k];
  if(Array.isArray(s.mixRows))mixRows=s.mixRows;renderMixRows();syncMode();render()}catch(err){alert('Could not load that project file.')}};rd.readAsText(f)};
 
@@ -2137,7 +2221,7 @@ function syncMode(){
  updateSummary();
 }
 $('buildMode').onchange=syncMode;
-for(let id of ['easyCount','mediumCount','hardCount','count','difficulty','type','solutions','titlePage','copyrightPage','instructionsPage','sectionPages','solutionsTitlePage']){
+for(let id of ['easyCount','mediumCount','hardCount','count','type','solutions','titlePage','copyrightPage','instructionsPage','sectionPages','solutionsTitlePage']){
  let el=$(id);if(el){el.addEventListener(el.type==='checkbox'?'change':'input',updateSummary);el.addEventListener('change',updateSummary)}
 }
 for(let id of ['subtitle','authorName'])$(id).addEventListener('input',render);
