@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v10.2 — Cache + Version Fix</title>
+<title>Offline Puzzle Studio v10.3 — Vector PDF + Better How-To</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -260,11 +260,33 @@ details summary{cursor:pointer;font-weight:700}
   font-weight:700;
   opacity:.8;
 }
+
+.howto-example-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+  margin-top:10px;
+}
+.howto-step{
+  padding:9px 11px;
+  border:1px solid #bbb;
+  border-radius:8px;
+  background:#fafafa;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+.howto-step strong{display:block;margin-bottom:3px}
+.howto-rule{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-weight:700;
+  letter-spacing:.04em;
+  margin-top:5px;
+}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v10.2</span></h1><div class="build-version">Exact build: v10.2 • Cache + iPhone PDF Reliability</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v10.2</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v10.3</span></h1><div class="build-version">Exact build: v10.3 • Vector PDF + Better How-To</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v10.3</div>
 <div class="wrap">
 <section class="panel controls">
 <label>Puzzle type</label>
@@ -508,7 +530,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 
 <p class="small"><b>Offline:</b> no internet, server, account, or installation is required.</p><p class="small"><b>KDP Book Builder:</b> mix Easy, Medium, and Hard puzzles in one interior, add front matter and section dividers, and send all answer keys to the back automatically.</p><p class="small"><b>Expanded library:</b> word, number, logic, Sudoku-variant, and math puzzle generators.</p><p class="small"><b>Quality tools:</b> unique-solution proof where applicable, structural validation, duplicate checks, solution checks, customization, and publication warnings.</p><p class="small"><b>Difficulty:</b> Book difficulty is controlled by the Easy / Medium / Hard puzzle counts, or per-row difficulty in Mixed Puzzle Book. The old standalone difficulty selector has been removed.</p><p class="small"><b>Presets & editing:</b> choose a book preset, use Large Print, open Book Overview, regenerate individual puzzles, delete them, or move them up/down without rebuilding the whole book.</p><p class="small"><b>Variety:</b> High/Maximum variety changes pattern families, sequence rules, cage layouts, path styles, search directions, and cryptogram mappings so large books feel less repetitive.</p><p class="small"><b>KDP readiness:</b> Preflight now checks puzzle/solution matching, mixed-book counts, page-count consistency, frames/safe-area heuristics, blank pages, section starts, and export readiness.</p><p class="small"><b>Mixed books:</b> choose puzzle type, difficulty, and quantity for every mixed-book row. <b>Design:</b> frame templates, page typography, multi-puzzle layouts, mirrored page numbers, right-hand section starts, spread preview, and final preflight checks.</p>
 <p class="small"><b>Validation:</b> Sudoku, Kakuro, and Slitherlink are solver-checked. The generator rejects a puzzle unless it finds exactly one solution. Mazes are generated with a verified entrance-to-exit path.</p>
-<p class="small"><b>Smart assembly:</b> tiny sections avoid wasteful divider pages, larger section dividers stay right-page aligned, solution pages adapt their density to each puzzle type, and PDF/JSON exports receive organized filenames automatically.</p><p class="small"><b>How-to page:</b> Instructions now include a simple worked example for every puzzle type in the book. Mixed books automatically include each unique puzzle type.<br><b>PDF:</b> choose “Create PDF,” then select <b>Save as PDF</b>. For KDP interiors, keep browser scaling at 100% and margins set to none/default as appropriate.</p>
+<p class="small"><b>Smart assembly:</b> tiny sections avoid wasteful divider pages, larger section dividers stay right-page aligned, solution pages adapt their density to each puzzle type, and PDF/JSON exports receive organized filenames automatically.</p><p class="small"><b>How-to pages:</b> Each puzzle type now gets its own instruction page with multiple worked examples. Sudoku includes row, column, and 3×3 box elimination examples.<br><b>PDF:</b> choose “Create PDF,” then select <b>Save as PDF</b>. For KDP interiors, keep browser scaling at 100% and margins set to none/default as appropriate.</p>
 </section>
 
 <section class="panel preview">
@@ -525,7 +547,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='10.2';
+const PUZZLE_STUDIO_VERSION='10.3';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]};
@@ -1481,6 +1503,190 @@ async function sheetToJpeg(sheet,preferredScale=1){
   }
   throw lastErr||new Error('Could not render page');
 }
+
+function pdfEsc(s){return String(s).replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)')}
+function pdfAscii(s){
+  return String(s)
+   .replace(/[“”]/g,'"').replace(/[‘’]/g,"'")
+   .replace(/[–—]/g,'-').replace(/•/g,'-')
+   .replace(/→/g,'->').replace(/←/g,'<-').replace(/↩/g,'')
+   .replace(/×/g,'x').replace(/÷/g,'/')
+   .replace(/■/g,'#').replace(/□/g,'.')
+   .replace(/✓/g,'OK').replace(/✗/g,'X')
+   .replace(/[^\x20-\x7E]/g,'?');
+}
+function pdfN(n){return Number(n||0).toFixed(2).replace(/\.?0+$/,'')}
+function colorRgb(css){
+  let m=String(css||'').match(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/i);
+  return m?[+m[1]/255,+m[2]/255,+m[3]/255]:[0,0,0];
+}
+function isVisibleEl(el){
+  const cs=getComputedStyle(el);
+  return cs.display!=='none'&&cs.visibility!=='hidden'&&parseFloat(cs.opacity||1)>0;
+}
+function relativePdfRect(el,sr,pw,ph){
+  const r=el.getBoundingClientRect(),sx=pw/sr.width,sy=ph/sr.height;
+  return {x:(r.left-sr.left)*sx,y:ph-(r.bottom-sr.top)*sy,w:r.width*sx,h:r.height*sy,sx,sy,r};
+}
+function pdfLine(x1,y1,x2,y2,w=.5){return `${pdfN(w)} w ${pdfN(x1)} ${pdfN(y1)} m ${pdfN(x2)} ${pdfN(y2)} l S\n`}
+function pdfRect(x,y,w,h,fill=false,stroke=true,lw=.5){
+  let op=fill&&stroke?'B':fill?'f':'S';
+  return `${pdfN(lw)} w ${pdfN(x)} ${pdfN(y)} ${pdfN(w)} ${pdfN(h)} re ${op}\n`;
+}
+function approxTextWidth(t,size){return pdfAscii(t).length*size*.49}
+function wrapPdfText(text,width,size){
+  text=pdfAscii(text).replace(/\s+/g,' ').trim();
+  if(!text)return [];
+  const maxChars=Math.max(4,Math.floor(width/(size*.49)));
+  const words=text.split(' '),lines=[];let line='';
+  for(const word of words){
+    if((line+' '+word).trim().length<=maxChars)line=(line+' '+word).trim();
+    else {if(line)lines.push(line);line=word}
+  }
+  if(line)lines.push(line);
+  return lines;
+}
+function textPdfCommands(sheet,pw,ph){
+  const sr=sheet.getBoundingClientRect(),sx=pw/sr.width;
+  let out='';
+  const walker=document.createTreeWalker(sheet,NodeFilter.SHOW_TEXT,{
+    acceptNode(node){
+      if(!node.nodeValue||!node.nodeValue.trim())return NodeFilter.FILTER_REJECT;
+      const p=node.parentElement;
+      if(!p||p.closest('svg')||!isVisibleEl(p))return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  let node;
+  while((node=walker.nextNode())){
+    const p=node.parentElement,pr=relativePdfRect(p,sr,pw,ph),cs=getComputedStyle(p);
+    if(pr.w<=0||pr.h<=0)continue;
+    let size=Math.max(5,Math.min(30,(parseFloat(cs.fontSize)||12)*sx));
+    let leading=size*1.2;
+    let lines=wrapPdfText(node.nodeValue,Math.max(12,pr.w-2),size);
+    if(!lines.length)continue;
+    let startY=pr.y+pr.h-size*.95;
+    const bold=(parseInt(cs.fontWeight)||400)>=600||['H1','H2','H3','B','STRONG'].includes(p.tagName);
+    const font=bold?'F2':'F1';
+    let align=cs.textAlign||'left';
+    for(let i=0;i<lines.length;i++){
+      let line=lines[i],x=pr.x+1,y=startY-i*leading;
+      let tw=approxTextWidth(line,size);
+      if(align==='center')x=pr.x+(pr.w-tw)/2;
+      else if(align==='right')x=pr.x+pr.w-tw-1;
+      if(y<2)break;
+      out+=`BT /${font} ${pdfN(size)} Tf ${pdfN(x)} ${pdfN(y)} Td (${pdfEsc(line)}) Tj ET\n`;
+    }
+  }
+  return out;
+}
+function borderPdfCommands(sheet,pw,ph){
+  const sr=sheet.getBoundingClientRect();let out='';
+  const els=[...sheet.querySelectorAll('td,th,.howto-step,.howto-example,.crypto-box,.sequence,.puzzle-card')];
+  for(const el of els){
+    if(!isVisibleEl(el))continue;
+    const pr=relativePdfRect(el,sr,pw,ph),cs=getComputedStyle(el);
+    if(pr.w<=0||pr.h<=0)continue;
+    const bg=colorRgb(cs.backgroundColor);
+    const bgAlpha=/rgba/.test(cs.backgroundColor)?parseFloat((cs.backgroundColor.match(/rgba\([^,]+,[^,]+,[^,]+,\s*([.\d]+)/)||[])[1]||1):1;
+    if(bgAlpha>0 && (bg[0]<.96||bg[1]<.96||bg[2]<.96)){
+      out+=`${pdfN(bg[0])} ${pdfN(bg[1])} ${pdfN(bg[2])} rg\n${pdfRect(pr.x,pr.y,pr.w,pr.h,true,false)}0 0 0 rg\n`;
+    }
+    const sides=[
+      ['Top',pr.x,pr.y+pr.h,pr.x+pr.w,pr.y+pr.h],
+      ['Bottom',pr.x,pr.y,pr.x+pr.w,pr.y],
+      ['Left',pr.x,pr.y,pr.x,pr.y+pr.h],
+      ['Right',pr.x+pr.w,pr.y,pr.x+pr.w,pr.y+pr.h]
+    ];
+    for(const [name,x1,y1,x2,y2] of sides){
+      const style=cs['border'+name+'Style'],width=parseFloat(cs['border'+name+'Width'])||0;
+      if(style&&style!=='none'&&width>0){
+        out+=pdfLine(x1,y1,x2,y2,Math.max(.35,width*pr.sx));
+      }
+    }
+  }
+  return out;
+}
+function svgPdfCommands(sheet,pw,ph){
+  const sr=sheet.getBoundingClientRect();let out='';
+  for(const svg of sheet.querySelectorAll('svg')){
+    if(!isVisibleEl(svg))continue;
+    const svr=relativePdfRect(svg,sr,pw,ph);
+    let vb=(svg.getAttribute('viewBox')||`0 0 ${svg.clientWidth||1} ${svg.clientHeight||1}`).trim().split(/\s+/).map(Number);
+    if(vb.length!==4)vb=[0,0,1,1];
+    const [vx,vy,vw,vh]=vb,tx=x=>svr.x+(x-vx)/vw*svr.w,ty=y=>svr.y+svr.h-(y-vy)/vh*svr.h;
+    const sw=(v)=>Math.max(.3,(+v||1)/vw*svr.w);
+    for(const el of svg.children){
+      const tag=el.tagName.toLowerCase();
+      if(tag==='rect'){
+        let x=+el.getAttribute('x')||0,y=+el.getAttribute('y')||0,w=+el.getAttribute('width')||0,h=+el.getAttribute('height')||0;
+        let fill=el.getAttribute('fill');
+        if(fill&&fill!=='none'&&fill!=='white'&&fill!=='#fff'&&fill!=='#ffffff'){
+          out+=`0 0 0 rg\n${pdfRect(tx(x),ty(y+h),w/vw*svr.w,h/vh*svr.h,true,false)}\n`;
+        }
+      }else if(tag==='line'){
+        out+=pdfLine(tx(+el.getAttribute('x1')),ty(+el.getAttribute('y1')),tx(+el.getAttribute('x2')),ty(+el.getAttribute('y2')),sw(el.getAttribute('stroke-width')));
+      }else if(tag==='circle'){
+        let cx=tx(+el.getAttribute('cx')),cy=ty(+el.getAttribute('cy')),r=Math.max(.6,(+el.getAttribute('r')||1)/vw*svr.w);
+        out+=pdfRect(cx-r,cy-r,r*2,r*2,true,false);
+      }else if(tag==='polyline'){
+        let pts=(el.getAttribute('points')||'').trim().split(/\s+/).map(p=>p.split(',').map(Number)).filter(p=>p.length===2);
+        if(pts.length){
+          out+=`${pdfN(sw(el.getAttribute('stroke-width')))} w ${pdfN(tx(pts[0][0]))} ${pdfN(ty(pts[0][1]))} m `;
+          for(let i=1;i<pts.length;i++)out+=`${pdfN(tx(pts[i][0]))} ${pdfN(ty(pts[i][1]))} l `;
+          out+='S\n';
+        }
+      }else if(tag==='text'){
+        let val=pdfAscii(el.textContent||''),size=Math.max(5,(+el.getAttribute('font-size')||12)/vw*svr.w);
+        let x=tx(+el.getAttribute('x')),y=ty(+el.getAttribute('y'));
+        if(el.getAttribute('text-anchor')==='middle')x-=approxTextWidth(val,size)/2;
+        out+=`BT /F1 ${pdfN(size)} Tf ${pdfN(x)} ${pdfN(y)} Td (${pdfEsc(val)}) Tj ET\n`;
+      }
+    }
+  }
+  return out;
+}
+function sheetVectorStream(sheet,pw,ph){
+  let out='0 0 0 RG 0 0 0 rg\n';
+  if($('pageFrame').checked && sheet.classList.contains('frame-enabled')){
+    const inset=(parseFloat($('frameInset').value)||.22)*72;
+    const lw=Math.max(.5,parseFloat($('frameWidth').value)||2);
+    out+=pdfRect(inset,inset,pw-inset*2,ph-inset*2,false,true,lw);
+  }
+  out+=borderPdfCommands(sheet,pw,ph);
+  out+=svgPdfCommands(sheet,pw,ph);
+  out+=textPdfCommands(sheet,pw,ph);
+  return out;
+}
+function buildVectorPdf(streams){
+  const {w,h}=pdfPhysicalPoints();
+  const parts=[],offsets=[0];let total=0;
+  const push=x=>{const b=typeof x==='string'?asciiBytes(x):x;parts.push(b);total+=b.length};
+  push('%PDF-1.4\n');
+  const pageNums=[],contentNums=[];
+  for(let i=0;i<streams.length;i++){pageNums.push(5+i*2);contentNums.push(6+i*2)}
+  const objCount=4+streams.length*2;
+  const start=n=>{offsets[n]=total;push(`${n} 0 obj\n`)},end=()=>push('endobj\n');
+
+  start(1);push('<< /Type /Catalog /Pages 2 0 R >>\n');end();
+  start(2);push(`<< /Type /Pages /Count ${streams.length} /Kids [${pageNums.map(n=>n+' 0 R').join(' ')}] >>\n`);end();
+  start(3);push('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\n');end();
+  start(4);push('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>\n');end();
+
+  streams.forEach((stream,i)=>{
+    const sb=asciiBytes(stream);
+    start(pageNums[i]);
+    push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pdfN(w)} ${pdfN(h)}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${contentNums[i]} 0 R >>\n`);
+    end();
+    start(contentNums[i]);push(`<< /Length ${sb.length} >>\nstream\n`);push(sb);push('\nendstream\n');end();
+  });
+
+  const xref=total;
+  push(`xref\n0 ${objCount+1}\n0000000000 65535 f \n`);
+  for(let i=1;i<=objCount;i++)push(String(offsets[i]||0).padStart(10,'0')+' 00000 n \n');
+  push(`trailer\n<< /Size ${objCount+1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
+  return new Blob(parts,{type:'application/pdf'});
+}
 function pdfPhysicalPoints(){
   const v=$('pageSize').value;
   if(v==='a4')return {w:210/25.4*72,h:297/25.4*72};
@@ -1608,55 +1814,28 @@ function safePdfName(){return exportBaseName()+'.pdf'}
 async function createPdfDirect(){
   const btn=$('pdf'),progress=$('pdfProgress'),sheets=[...document.querySelectorAll('#pages .sheet')];
   if(!sheets.length){alert('Build a book first.');return}
-
-  btn.disabled=true;
-  progress.classList.add('active');
-  const oldText=btn.textContent;
-  btn.textContent='Creating PDF…';
-
-  const total=sheets.length;
-  const preferredScale=total<=25?1.6:total<=50?1.25:total<=80?1.0:.8;
-  const mode=total<=25?'high':total<=50?'balanced':total<=80?'low-memory':'ultra-low-memory';
-
+  btn.disabled=true;const oldText=btn.textContent;btn.textContent='Creating PDF…';progress.classList.add('active');
   try{
-    const images=[];
-
-    for(let i=0;i<total;i++){
-      progress.textContent=`Rendering PDF page ${i+1} of ${total} • ${mode} mode`;
-      await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,25)));
-
-      const im=await sheetToJpeg(sheets[i],preferredScale);
-      images.push(im);
-
-      // More frequent pauses for iPhone Safari.
-      if((i+1)%2===0)await new Promise(r=>setTimeout(r,90));
+    const {w,h}=pdfPhysicalPoints(),streams=[];
+    for(let i=0;i<sheets.length;i++){
+      progress.textContent=`Writing vector PDF page ${i+1} of ${sheets.length}…`;
+      await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
+      streams.push(sheetVectorStream(sheets[i],w,h));
     }
-
-    progress.textContent='Assembling PDF file…';
-    await new Promise(r=>setTimeout(r,80));
-
-    const pdf=buildJpegPdf(images);
-    images.length=0;
-
-    const url=URL.createObjectURL(pdf);
-    const a=document.createElement('a');
-    a.href=url;
-    a.download=safePdfName();
-    a.style.display='none';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-
+    progress.textContent='Assembling vector PDF…';
+    await new Promise(r=>setTimeout(r,20));
+    const pdf=buildVectorPdf(streams);
+    const url=URL.createObjectURL(pdf),a=document.createElement('a');
+    a.href=url;a.download=safePdfName();a.style.display='none';document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),60000);
-    progress.textContent=`PDF created successfully • ${total} pages • ${(pdf.size/1024/1024).toFixed(1)} MB`;
+    progress.textContent=`PDF created • ${sheets.length} pages • ${(pdf.size/1024/1024).toFixed(1)} MB • vector mode`;
   }catch(err){
     console.error(err);
-    const msg=(err&&err.message)?err.message:'Unknown rendering error';
+    const msg=err?.message||'Unknown PDF error';
     progress.textContent=`PDF stopped: ${msg}`;
-    alert(`The PDF stopped while rendering. Error: ${msg}. Try closing other Safari tabs/apps and retry. Puzzle Studio will automatically retry pages at lower resolution before giving up.`);
+    alert(`PDF creation stopped: ${msg}`);
   }finally{
-    btn.disabled=false;
-    btn.textContent=oldText;
+    btn.disabled=false;btn.textContent=oldText;
   }
 }
 
@@ -1781,64 +1960,133 @@ function makeSpecial(kind,title,body,extra=''){
 }
 function instructionHtml(type){
  const map={
-  sudoku:`<div class="instructions-section"><h3>How to Play Sudoku</h3><p>Fill every row, column, and 3×3 box with the numbers 1–9. No number may repeat within a row, column, or box.</p>
-  <div class="howto-example"><b>Example</b><p>If a row already contains 1, 2, 3, 4, 5, 6, 7, and 9, the empty square must be <b>8</b>.</p><div class="howto-inline">1 2 3 | 4 5 6 | 7 _ 9 → 8</div></div>
-  <h3>Tips</h3><ul><li>Start with rows, columns, or boxes that already contain many numbers.</li><li>Use elimination before guessing.</li><li>Hard puzzles may require several logical steps before a number becomes certain.</li></ul></div>`,
+  sudoku:`<div class="instructions-section">
+    <h3>How to Play Sudoku</h3>
+    <p>Fill every row, column, and 3×3 box with the numbers 1–9. Each number can appear only once in each row, column, and box.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1 — Row elimination</strong>
+        <p>A row contains every number except 8, so the empty square must be 8.</p>
+        <div class="howto-rule">1 2 3 | 4 5 6 | 7 _ 9  →  8</div>
+      </div>
+      <div class="howto-step"><strong>Example 2 — Column elimination</strong>
+        <p>If a column already contains 1, 2, 3, 4, 6, 7, 8, and 9, the only possible number for its empty cell is 5.</p>
+        <div class="howto-rule">Missing from column: 5</div>
+      </div>
+      <div class="howto-step"><strong>Example 3 — Box elimination</strong>
+        <p>Suppose a 3×3 box is missing 2 and 6. One empty cell shares a row that already contains 6, so that cell must be 2. The other cell becomes 6.</p>
+        <div class="howto-rule">Candidates {2,6} → row blocks 6 → place 2</div>
+      </div>
+    </div>
+    <h3>Good way to start</h3>
+    <ul>
+      <li>Look first for rows, columns, or boxes with only one or two empty cells.</li>
+      <li>For each empty cell, eliminate numbers already used in its row, column, and box.</li>
+      <li>Use pencil candidates when more than one value is possible.</li>
+      <li>Avoid guessing until logical elimination no longer gives you a move.</li>
+    </ul>
+  </div>`,
 
-  maze:`<div class="instructions-section"><h3>How to Solve Mazes</h3><p>Start at the opening marked Start and find a continuous path to the Finish without crossing walls.</p>
-  <div class="howto-example"><b>Example</b><p>At a fork, try one branch. If it reaches a dead end, return to the last fork and try the other route.</p><div class="howto-inline">START → fork → dead end ↩ → other path → FINISH</div></div>
-  <h3>Tips</h3><ul><li>Trace lightly in pencil.</li><li>Backtrack whenever a path closes.</li><li>The solution at the back shows the complete route.</li></ul></div>`,
+  maze:`<div class="instructions-section"><h3>How to Solve Mazes</h3><p>Travel from Start to Finish without crossing any wall.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1 — Dead end</strong><p>If a corridor closes, return to the last fork and take the other branch.</p><div class="howto-rule">START → fork → dead end ↩ → other branch</div></div>
+      <div class="howto-step"><strong>Example 2 — Trace carefully</strong><p>At a three-way junction, lightly mark the route you try so you do not keep repeating the same dead end.</p></div>
+    </div><h3>Tip</h3><p>Working backward from Finish can sometimes reveal a useful route.</p></div>`,
 
-  kakuro:`<div class="instructions-section"><h3>How to Play Kakuro</h3><p>Fill white cells with digits 1–9 so each horizontal or vertical run adds to its clue. Digits may not repeat within a run.</p>
-  <div class="howto-example"><b>Example</b><p>A two-cell run totaling <b>4</b> can only be <b>1 + 3</b> (in either order). It cannot be 2 + 2 because digits cannot repeat.</p><div class="howto-inline">4 → [1][3] ✓ &nbsp;&nbsp; [2][2] ✗</div></div>
-  <h3>Tips</h3><ul><li>Short runs with very high or low sums are often easiest.</li><li>Use both across and down clues to narrow each cell.</li></ul></div>`,
+  kakuro:`<div class="instructions-section"><h3>How to Play Kakuro</h3><p>Fill white cells with digits 1–9 so each run adds to its clue. A digit cannot repeat within the same run.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1 — Sum of 4 in two cells</strong><p>The only non-repeating pair is 1 and 3.</p><div class="howto-rule">4 → 1 + 3</div></div>
+      <div class="howto-step"><strong>Example 2 — Sum of 17 in two cells</strong><p>The only non-repeating pair is 8 and 9.</p><div class="howto-rule">17 → 8 + 9</div></div>
+    </div><p>Use the crossing run to determine which order the digits belong in.</p></div>`,
 
-  slither:`<div class="instructions-section"><h3>How to Play Slitherlink</h3><p>Draw one closed loop along the grid lines. Each number tells how many of that cell’s four sides are part of the loop.</p>
-  <div class="howto-example"><b>Example</b><p>A cell marked <b>3</b> must have exactly three of its four borders used by the loop. A cell marked <b>0</b> has none.</p><div class="howto-inline">0 = no sides &nbsp;&nbsp; 3 = exactly three sides</div></div>
-  <h3>Rules</h3><ul><li>The loop may not branch.</li><li>The loop may not cross itself.</li><li>There is one continuous closed loop.</li></ul></div>`,
+  slither:`<div class="instructions-section"><h3>How to Play Slitherlink</h3><p>Draw one closed loop. A clue tells how many sides of that cell belong to the loop.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1 — A 0 clue</strong><p>No edge surrounding that cell may be used.</p><div class="howto-rule">0 → 0 surrounding edges</div></div>
+      <div class="howto-step"><strong>Example 2 — A 3 clue</strong><p>Exactly three of the cell's four borders must be part of the loop.</p><div class="howto-rule">3 → exactly 3 surrounding edges</div></div>
+    </div><p>The finished loop cannot branch, cross itself, or split into separate loops.</p></div>`,
 
-  wordsearch:`<div class="instructions-section"><h3>How to Play Word Search</h3><p>Find every listed word hidden in the letter grid. Words may run horizontally, vertically, diagonally, forward, or backward.</p>
-  <div class="howto-example"><b>Example</b><p>If the word is <b>BIRD</b>, it might appear left-to-right as B-I-R-D, downward, diagonally, or backward as D-R-I-B.</p><div class="howto-inline">B → I → R → D</div></div></div>`,
+  wordsearch:`<div class="instructions-section"><h3>How to Play Word Search</h3><p>Find every listed word in the letter grid.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1 — Forward</strong><div class="howto-rule">B → I → R → D</div></div>
+      <div class="howto-step"><strong>Example 2 — Backward</strong><p>The same word could appear in reverse.</p><div class="howto-rule">D → R → I → B</div></div>
+    </div><p>Words may be horizontal, vertical, diagonal, forward, or backward.</p></div>`,
 
-  numbersearch:`<div class="instructions-section"><h3>How to Play Number Search</h3><p>Find each listed number sequence hidden in the grid. Sequences may run in any straight direction.</p>
-  <div class="howto-example"><b>Example</b><p>For the target <b>4281</b>, look for 4 next to 2, then continue in that same direction through 8 and 1.</p><div class="howto-inline">4 → 2 → 8 → 1</div></div></div>`,
+  numbersearch:`<div class="instructions-section"><h3>How to Play Number Search</h3><p>Find every listed number sequence in the grid.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1</strong><div class="howto-rule">4 → 2 → 8 → 1</div></div>
+      <div class="howto-step"><strong>Example 2</strong><p>If the first two digits match, keep checking in the exact same direction for the rest of the sequence.</p></div>
+    </div></div>`,
 
-  cryptogram:`<div class="instructions-section"><h3>How to Solve Cryptograms</h3><p>Each letter in the original message has been replaced by another letter. Decode the substitution to reveal the phrase.</p>
-  <div class="howto-example"><b>Example</b><p>If you discover that <b>X = T</b> and <b>Q = H</b>, then the cipher pair <b>XQ</b> decodes to <b>TH</b>. The same cipher letter always represents the same original letter within that puzzle.</p><div class="howto-inline">X Q → T H</div></div></div>`,
+  cryptogram:`<div class="instructions-section"><h3>How to Solve Cryptograms</h3><p>Each cipher letter represents another letter. The substitution stays consistent throughout that puzzle.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1</strong><p>If X=T and Q=H, then XQ becomes TH.</p><div class="howto-rule">X Q → T H</div></div>
+      <div class="howto-step"><strong>Example 2</strong><p>A one-letter word is usually A or I. Repeated patterns can also reveal common words.</p></div>
+    </div></div>`,
 
-  nonogram:`<div class="instructions-section"><h3>How to Play Nonograms</h3><p>Use row and column clues to determine which cells are filled. Each clue gives the lengths of consecutive filled groups.</p>
-  <div class="howto-example"><b>Example</b><p>A clue of <b>3</b> means three neighboring filled cells. A clue of <b>2 1</b> means a group of two, at least one blank cell, then a group of one.</p><div class="howto-inline">3 → ■■■ &nbsp;&nbsp; 2 1 → ■■ □ ■</div></div></div>`,
+  nonogram:`<div class="instructions-section"><h3>How to Play Nonograms</h3><p>Row and column clues describe groups of consecutive filled cells.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1 — Single group</strong><div class="howto-rule">3 → ■ ■ ■</div></div>
+      <div class="howto-step"><strong>Example 2 — Multiple groups</strong><p>At least one blank separates the groups.</p><div class="howto-rule">2 1 → ■ ■ □ ■</div></div>
+      <div class="howto-step"><strong>Example 3 — Exact fit</strong><p>In a 5-cell row, clue 5 means every cell is filled.</p><div class="howto-rule">5 → ■ ■ ■ ■ ■</div></div>
+    </div></div>`,
 
-  killer:`<div class="instructions-section"><h3>How to Play Killer Sudoku</h3><p>Follow normal Sudoku rules. Each outlined cage must also add to its small total, with no repeated digit inside a cage.</p>
-  <div class="howto-example"><b>Example</b><p>A two-cell cage totaling <b>3</b> must contain <b>1 and 2</b>. Their order depends on the row and column constraints.</p><div class="howto-inline">Cage 3 → {1,2}</div></div></div>`,
+  killer:`<div class="instructions-section"><h3>How to Play Killer Sudoku</h3><p>Follow normal Sudoku rules and make each cage add to its target without repeating a digit inside a cage.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1</strong><div class="howto-rule">2-cell cage 3 → {1,2}</div></div>
+      <div class="howto-step"><strong>Example 2</strong><div class="howto-rule">2-cell cage 17 → {8,9}</div></div>
+    </div><p>Row, column, and box restrictions determine which cell receives which digit.</p></div>`,
 
-  diagonal:`<div class="instructions-section"><h3>How to Play Diagonal Sudoku</h3><p>Use normal Sudoku rules, and both main diagonals must also contain 1–9 exactly once.</p>
-  <div class="howto-example"><b>Example</b><p>A number already used on the top-left to bottom-right diagonal cannot appear again anywhere else on that same diagonal.</p><div class="howto-inline">↘ 1–9 once &nbsp;&nbsp; ↙ 1–9 once</div></div></div>`,
+  diagonal:`<div class="instructions-section"><h3>How to Play Diagonal Sudoku</h3><p>Use normal Sudoku rules, plus each main diagonal must contain 1–9 exactly once.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1</strong><p>If 7 already appears on a main diagonal, no other cell on that diagonal may be 7.</p></div>
+      <div class="howto-step"><strong>Example 2</strong><p>A cell on a diagonal must satisfy four restrictions at once: row, column, box, and diagonal.</p></div>
+    </div></div>`,
 
-  irregular:`<div class="instructions-section"><h3>How to Play Irregular Sudoku</h3><p>Fill 1–9 so each row, column, and outlined irregular region contains every digit exactly once.</p>
-  <div class="howto-example"><b>Example</b><p>Treat each outlined shape like a normal Sudoku 3×3 box—even when the region bends or stretches.</p></div></div>`,
+  irregular:`<div class="instructions-section"><h3>How to Play Irregular Sudoku</h3><p>Fill 1–9 so every row, column, and outlined irregular region contains each digit exactly once.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1</strong><p>Treat an outlined irregular shape exactly like a normal Sudoku 3×3 box.</p></div>
+      <div class="howto-step"><strong>Example 2</strong><p>If a region is missing only 4, its remaining empty cell must be 4 even if the region bends around the grid.</p></div>
+    </div></div>`,
 
-  mini:`<div class="instructions-section"><h3>How to Play Mini Sudoku</h3><p>Fill the smaller grid so every row, column, and box contains each allowed digit exactly once.</p>
-  <div class="howto-example"><b>Example</b><p>In a 4×4 puzzle using 1–4, if a row contains 1, 2, and 4, the remaining cell must be <b>3</b>.</p><div class="howto-inline">1 2 _ 4 → 3</div></div></div>`,
+  mini:`<div class="instructions-section"><h3>How to Play Mini Sudoku</h3><p>Use the same logic as Sudoku on a smaller grid.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1</strong><div class="howto-rule">1 2 _ 4 → 3</div></div>
+      <div class="howto-step"><strong>Example 2</strong><p>Check the row, column, and small box before placing a number.</p></div>
+    </div></div>`,
 
-  kenken:`<div class="instructions-section"><h3>How to Play KenKen / Calcudoku</h3><p>Fill each row and column with every number once. The values in each cage must combine using the shown operation to make the target.</p>
-  <div class="howto-example"><b>Example</b><p>A two-cell cage marked <b>6×</b> could contain <b>2 and 3</b>. A cage marked <b>1−</b> needs two numbers whose difference is 1.</p><div class="howto-inline">6× → 2×3 &nbsp;&nbsp; 1− → |3−2|</div></div></div>`,
+  kenken:`<div class="instructions-section"><h3>How to Play KenKen / Calcudoku</h3><p>Use each number once per row and column. Cage values must make the target using the shown operation.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1 — Multiplication</strong><div class="howto-rule">6× → 2 × 3</div></div>
+      <div class="howto-step"><strong>Example 2 — Subtraction</strong><div class="howto-rule">1− → |3 − 2|</div></div>
+      <div class="howto-step"><strong>Example 3 — Division</strong><div class="howto-rule">2÷ → 4 ÷ 2</div></div>
+    </div></div>`,
 
-  hidato:`<div class="instructions-section"><h3>How to Play Hidato</h3><p>Fill the missing numbers so consecutive values touch horizontally, vertically, or diagonally.</p>
-  <div class="howto-example"><b>Example</b><p>If 12 and 14 are already shown, place <b>13</b> in a cell that touches both.</p><div class="howto-inline">12 → 13 → 14</div></div></div>`,
+  hidato:`<div class="instructions-section"><h3>How to Play Hidato</h3><p>Fill the missing numbers so consecutive numbers touch horizontally, vertically, or diagonally.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1</strong><div class="howto-rule">12 → 13 → 14</div></div>
+      <div class="howto-step"><strong>Example 2</strong><p>If only one empty cell touches both 20 and 22, that cell must be 21.</p></div>
+    </div></div>`,
 
-  takuzu:`<div class="instructions-section"><h3>How to Play Takuzu</h3><p>Fill the grid with 0s and 1s. Every row and column has equal numbers of each, no three identical digits may touch in a row, and no two complete rows or columns may match.</p>
-  <div class="howto-example"><b>Example</b><p>If you see <b>0 0 _</b>, the empty cell must be <b>1</b>, because three 0s in a row are not allowed.</p><div class="howto-inline">0 0 _ → 0 0 1</div></div></div>`,
+  takuzu:`<div class="instructions-section"><h3>How to Play Takuzu</h3><p>Fill the grid with 0s and 1s. Rows and columns contain equal quantities of each digit, no three identical digits touch, and completed rows/columns must be unique.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1</strong><div class="howto-rule">0 0 _ → 0 0 1</div></div>
+      <div class="howto-step"><strong>Example 2</strong><div class="howto-rule">1 _ 1 → 1 0 1</div></div>
+    </div></div>`,
 
-  magicsquare:`<div class="instructions-section"><h3>How to Play Magic Squares</h3><p>Fill missing values so every row, column, and main diagonal has the same total.</p>
-  <div class="howto-example"><b>Example</b><p>If the magic total is 15 and a row already contains 8 and 1, the missing number must be <b>6</b>.</p><div class="howto-inline">8 + 1 + _ = 15 → 6</div></div></div>`,
+  magicsquare:`<div class="instructions-section"><h3>How to Play Magic Squares</h3><p>Every row, column, and main diagonal must equal the same magic total.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1</strong><div class="howto-rule">8 + 1 + _ = 15 → 6</div></div>
+      <div class="howto-step"><strong>Example 2</strong><p>If a column already totals 11 and the target is 15, the missing value is 4.</p><div class="howto-rule">11 + _ = 15 → 4</div></div>
+    </div></div>`,
 
-  missingnumber:`<div class="instructions-section"><h3>How to Play Missing Number</h3><p>Study the pattern and determine the missing value.</p>
-  <div class="howto-example"><b>Example</b><p>For <b>2, 4, 6, _, 10</b>, each number increases by 2, so the missing number is <b>8</b>.</p><div class="howto-inline">2, 4, 6, ?, 10 → 8</div></div></div>`
+  missingnumber:`<div class="instructions-section"><h3>How to Play Missing Number</h3><p>Identify the rule followed by the sequence, then fill in the missing value.</p>
+    <div class="howto-example-grid">
+      <div class="howto-step"><strong>Example 1 — Add the same amount</strong><div class="howto-rule">2, 4, 6, ?, 10 → 8</div></div>
+      <div class="howto-step"><strong>Example 2 — Multiply</strong><div class="howto-rule">3, 6, 12, ?, 48 → 24</div></div>
+      <div class="howto-step"><strong>Example 3 — Squares</strong><div class="howto-rule">1, 4, 9, ?, 25 → 16</div></div>
+    </div></div>`
  };
  return map[type]||'';
 }
-
 function instructionBookHtml(items){
   const unique=[];
   for(const item of items||[]){
@@ -1952,9 +2200,13 @@ function render(){
      append(makeSpecial('copyright','Copyright',body),false);
    }
    if($('instructionsPage').checked){
-     let s=applyFrameClass(document.createElement('div'));s.className='sheet '+pageClass()+' frame-enabled';
-     s.innerHTML=`<h2>How to Use This Book</h2>${instructionBookHtml(project.items)}`;
-     append(s,false);
+     const instructionTypes=[...new Set(project.items.map(x=>x.type))];
+     for(const instructionType of instructionTypes){
+       let s=applyFrameClass(document.createElement('div'));s.className='sheet '+pageClass()+($('pageFrame').checked?' frame-enabled':'');
+       const label=PUZZLE_OPTIONS.find(x=>x[0]===instructionType)?.[1]||instructionType;
+       s.innerHTML=`<h2>How to Play ${label}</h2>${instructionHtml(instructionType)}`;
+       append(s,false);
+     }
    }
  }
 
@@ -2082,7 +2334,7 @@ function updateSummary(){
  const diffText=byDiff.map(([d,c])=>`${d} ${c}`).join(' • ');
  const typeText=Object.entries(byType).map(([t,c])=>`${PUZZLE_OPTIONS.find(x=>x[0]===t)?.[1]||t} ${c}`).join(' • ');
 
- let front=[$('titlePage').checked,$('copyrightPage').checked,$('instructionsPage').checked].filter(Boolean).length;
+ let front=[$('titlePage').checked,$('copyrightPage').checked].filter(Boolean).length+($('instructionsPage').checked?new Set(plannedRows().map(r=>r.type)).size:0);
  let activeSections=$('mixedMode')?.checked?Object.keys(byType).length:byDiff.length;
  let dividers=$('sectionPages').checked?activeSections:0;
  if($('balanceSections')?.checked && $('sectionPages').checked){
@@ -2329,7 +2581,7 @@ function countExpectedRenderedPages(){
   if(isBook){
     if($('titlePage').checked)pages++;
     if($('copyrightPage').checked)pages++;
-    if($('instructionsPage').checked)pages++;
+    if($('instructionsPage').checked)pages+=new Set(project.items.map(x=>x.type)).size;
   }
   if(isBook){
     if(mixed){
@@ -2530,7 +2782,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=10.2',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=10.3',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 </script>
