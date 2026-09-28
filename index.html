@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v19.1 — Ornamental Mandala Rebuild</title>
+<title>Offline Puzzle Studio v19.2 — Shape Variety Mandalas</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -480,8 +480,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v19.1</span></h1><div class="build-version">Exact build: v19.1 • Hard Detail Pass • Dense Adult-Coloring Mandalas + Safe Fit</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v19.1</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v19.2</span></h1><div class="build-version">Exact build: v19.2 • Shape Variety Pass • Distinct Silhouettes + Dense Hard Mandalas</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v19.2</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -2963,20 +2963,29 @@ function scoreMandalaDesign(item,profile){
 function buildMandalaOnce(diff,profile){
   const choose=a=>a[Math.floor(Math.random()*a.length)];
   const rand=(a,b)=>a+Math.random()*(b-a);
+  // v19.2: recipe families now differ in silhouette AND shape vocabulary.
   const recipes={
     royalLotus:{label:'Royal Lotus',family:'lotus',group:'floral-botanical',sym:[8,10,12],seq:['lotus','petal','lotus','leaf','lotus','crown']},
     layeredDahlia:{label:'Layered Dahlia',family:'dahlia',group:'floral-botanical',sym:[10,12,14],seq:['round','petal','round','petal','round','scallop']},
     botanicalRosette:{label:'Botanical Rosette',family:'botanical',group:'floral-botanical',sym:[8,10,12],seq:['petal','leaf','lotus','leaf','petal','leaf']},
-    floralLace:{label:'Floral Lace',family:'lace',group:'ornate',sym:[8,10,12],seq:['petal','scallop','lotus','bead','petal','scallop']},
-    hennaLotus:{label:'Henna Lotus',family:'henna',group:'ornate',sym:[8,10,12],seq:['lotus','teardrop','leaf','lotus','teardrop','crown']},
+    floralLace:{label:'Floral Lace',family:'lace',group:'ornate',sym:[8,10,12],seq:['loop','scallop','lotus','bead','loop','scallop']},
+    hennaLotus:{label:'Henna Lotus',family:'henna',group:'ornate',sym:[8,10,12],seq:['lotus','teardrop','leaf','lotus','paisley','crown']},
     sunflowerCrown:{label:'Sunflower Crown',family:'sunflower',group:'floral-botanical',sym:[12,14,16],seq:['round','petal','round','leaf','petal','crown']},
-    roseWindow:{label:'Rose Window',family:'rose',group:'ornate',sym:[8,10,12],seq:['round','lotus','scallop','petal','lotus','scallop']},
-    starBloom:{label:'Star Bloom',family:'starbloom',group:'ornate',sym:[8,10],seq:['petal','lotus','point','petal','leaf','crown']}
+    roseWindow:{label:'Rose Window',family:'rose',group:'ornate',sym:[8,10,12],seq:['round','arch','scallop','round','arch','scallop']},
+    starBloom:{label:'Star Bloom',family:'starbloom',group:'ornate',sym:[8,10],seq:['kite','lotus','star','petal','diamond','crown']},
+    cloverMedallion:{label:'Clover Medallion',family:'bohemian',group:'floral-botanical',sym:[8,10],seq:['clover','round','clover','bead','round','clover']},
+    paisleyWheel:{label:'Paisley Wheel',family:'paisley',group:'ornate',sym:[8,10,12],seq:['paisley','leaf','paisley','bead','paisley','scallop']},
+    scallopedGarden:{label:'Scalloped Garden',family:'chrysanthemum',group:'floral-botanical',sym:[10,12,14],seq:['scallop','round','fan','scallop','round','fan']},
+    diamondLace:{label:'Diamond Lace',family:'diamond',group:'geometric',sym:[8,10,12],seq:['diamond','loop','kite','diamond','arch','diamond']},
+    roundedBloom:{label:'Rounded Bloom',family:'rose',group:'floral-botanical',sym:[8,10,12],seq:['round','clover','round','bead','clover','round']},
+    leafCrown:{label:'Leaf Crown',family:'botanical',group:'floral-botanical',sym:[8,10,12],seq:['leaf','teardrop','leaf','bead','leaf','crown']},
+    pinwheelFloral:{label:'Pinwheel Floral',family:'pinwheel',group:'ornate',sym:[8,10,12],seq:['swoop','leaf','swoop','teardrop','swoop','scallop']},
+    oceanShell:{label:'Ocean Shell',family:'ocean',group:'floral-botanical',sym:[8,10,12],seq:['fan','scallop','shell','bead','fan','shell']}
   };
   let keys=Object.keys(recipes), mood=profile.mood||'auto';
-  if(mood==='botanical')keys=['botanicalRosette','royalLotus','layeredDahlia','sunflowerCrown'];
-  if(mood==='floral')keys=['royalLotus','layeredDahlia','botanicalRosette','sunflowerCrown','roseWindow'];
-  if(mood==='ornate')keys=['floralLace','hennaLotus','roseWindow','starBloom'];
+  if(mood==='botanical')keys=['botanicalRosette','royalLotus','layeredDahlia','sunflowerCrown','scallopedGarden','roundedBloom','leafCrown','oceanShell'];
+  if(mood==='floral')keys=['royalLotus','layeredDahlia','botanicalRosette','sunflowerCrown','roseWindow','cloverMedallion','scallopedGarden','roundedBloom','leafCrown'];
+  if(mood==='ornate')keys=['floralLace','hennaLotus','roseWindow','starBloom','paisleyWheel','diamondLace','pinwheelFloral'];
   const recipeKey=choose(keys), r=recipes[recipeKey], symmetry=choose(r.sym);
   const complexity=profile.complexity||'balanced';
   const layerCount=complexity==='open'?5:complexity==='intricate'?7:6;
@@ -3043,8 +3052,7 @@ function mandalaSvg(item){
   svg.setAttribute('preserveAspectRatio','xMidYMid meet');
   const cx=210,cy=210,TAU=Math.PI*2;
   const detailLevel=(item.difficulty==='Hard'||item.coloringComplexity==='intricate')?2:(item.difficulty==='Medium'||item.coloringComplexity==='balanced')?1:0;
-  const pt=(r,a)=>[cx+Math.cos(a)*r,cy+Math.sin(a)*r];
-  const f=p=>p[0].toFixed(2)+' '+p[1].toFixed(2);
+  const pt=(r,a)=>[cx+Math.cos(a)*r,cy+Math.sin(a)*r], f=p=>p[0].toFixed(2)+' '+p[1].toFixed(2);
   const path=(d,w=.82,fill='white')=>{const e=document.createElementNS(ns,'path');e.setAttribute('d',d);e.setAttribute('fill',fill);e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e);return e};
   const circle=(r,w=.72)=>{const e=document.createElementNS(ns,'circle');e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('r',r);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e);return e};
   const petal=(ri,ro,a,span,round=.42)=>{const L=pt(ri,a-span/2),R=pt(ri,a+span/2),T=pt(ro,a),c1=pt(ri+(ro-ri)*.58,a-span*round),c2=pt(ri+(ro-ri)*.58,a+span*round),b=pt(ri+1.5,a);return `M ${f(L)} C ${f(c1)} ${f(pt(ro-(ro-ri)*.05,a-span*.07))} ${f(T)} C ${f(pt(ro-(ro-ri)*.05,a+span*.07))} ${f(c2)} ${f(R)} Q ${f(b)} ${f(L)} Z`};
@@ -3052,51 +3060,43 @@ function mandalaSvg(item){
   const leaf=(ri,ro,a,span,lean=0)=>{const L=pt(ri,a-span*.42),R=pt(ri,a+span*.42),T=pt(ro,a+lean*span),m=(ri+ro)*.56;return `M ${f(L)} C ${f(pt(m,a-span*.48))} ${f(pt(ro*.93,a-span*.16+lean*span))} ${f(T)} C ${f(pt(ro*.93,a+span*.16+lean*span))} ${f(pt(m,a+span*.48))} ${f(R)} Q ${f(pt(ri+1,a))} ${f(L)} Z`};
   const kite=(ri,ro,a,span)=>`M ${f(pt(ri,a))} L ${f(pt((ri+ro)*.53,a-span*.38))} L ${f(pt(ro,a))} L ${f(pt((ri+ro)*.53,a+span*.38))} Z`;
   const scallop=(ri,ro,a,span)=>{const L=pt(ri,a-span*.5),R=pt(ri,a+span*.5),T=pt(ro,a);return `M ${f(L)} Q ${f(pt(ro*.98,a-span*.30))} ${f(T)} Q ${f(pt(ro*.98,a+span*.30))} ${f(R)} Q ${f(pt(ri+1,a))} ${f(L)} Z`};
-  function ring(n,ri,ro,kind='petal',rot=0,width=.86,nested=false){
-    const step=TAU/n, span=step*width;
-    for(let i=0;i<n;i++){const a=rot+i*step;let d=kind==='round'?roundPetal(ri,ro,a,span):kind==='leaf'?leaf(ri,ro,a,span,(i%2?.10:-.10)):kind==='kite'?kite(ri,ro,a,span):kind==='scallop'?scallop(ri,ro,a,span):petal(ri,ro,a,span,kind==='lotus'?.28:.42);path(d,ro>165?.98:.78);const addInset=(nested||detailLevel>0)&&ro-ri>18;if(addInset){const ii=ri+(ro-ri)*.24,oo=ro-(ro-ri)*.16;path(kind==='leaf'?leaf(ii,oo,a,span*.54,0):kind==='round'?roundPetal(ii,oo,a,span*.54):kind==='scallop'?scallop(ii,oo,a,span*.54):kind==='kite'?kite(ii,oo,a,span*.54):petal(ii,oo,a,span*.54,.32),.48,'none');if(detailLevel===2&&ro-ri>27){const iii=ri+(ro-ri)*.48,ooo=ro-(ro-ri)*.31;if(ooo>iii+5)path(kind==='leaf'?leaf(iii,ooo,a,span*.30,0):petal(iii,ooo,a,span*.30,.30),.42,'none')}}}
-  }
+  const clover=(ri,ro,a,span)=>{const L=pt(ri,a-span*.45),R=pt(ri,a+span*.45),T=pt(ro,a),m=(ri+ro)*.58;return `M ${f(L)} C ${f(pt(m,a-span*.62))} ${f(pt(ro*.94,a-span*.42))} ${f(T)} C ${f(pt(ro*.94,a+span*.42))} ${f(pt(m,a+span*.62))} ${f(R)} C ${f(pt(m*.92,a+span*.18))} ${f(pt(m*.92,a-span*.18))} ${f(L)} Z`};
+  const paisley=(ri,ro,a,span)=>{const L=pt(ri,a-span*.34),R=pt(ri,a+span*.34),T=pt(ro,a-span*.10),M=pt((ri+ro)*.64,a+span*.28);return `M ${f(L)} C ${f(pt(ro*.83,a-span*.48))} ${f(pt(ro*.98,a-span*.30))} ${f(T)} C ${f(pt(ro*.86,a+span*.08))} ${f(M)} ${f(R)} C ${f(pt((ri+ro)*.48,a+span*.12))} ${f(pt((ri+ro)*.45,a-span*.12))} ${f(L)} Z`};
+  const fan=(ri,ro,a,span)=>{const L=pt(ri,a-span*.46),R=pt(ri,a+span*.46),O1=pt(ro,a-span*.40),O2=pt(ro,a+span*.40);return `M ${f(L)} Q ${f(pt((ri+ro)*.68,a-span*.50))} ${f(O1)} Q ${f(pt(ro*1.01,a))} ${f(O2)} Q ${f(pt((ri+ro)*.68,a+span*.50))} ${f(R)} Q ${f(pt(ri+1,a))} ${f(L)} Z`};
+  const loop=(ri,ro,a,span)=>{const L=pt(ri,a-span*.44),R=pt(ri,a+span*.44),T=pt(ro,a);return `M ${f(L)} C ${f(pt(ro*.82,a-span*.55))} ${f(pt(ro*.98,a-span*.20))} ${f(T)} C ${f(pt(ro*.98,a+span*.20))} ${f(pt(ro*.82,a+span*.55))} ${f(R)} C ${f(pt((ri+ro)*.48,a+span*.18))} ${f(pt((ri+ro)*.48,a-span*.18))} ${f(L)} Z`};
+  const swoop=(ri,ro,a,span,dir=1)=>{const L=pt(ri,a-span*.40),R=pt(ri,a+span*.40),T=pt(ro,a+dir*span*.18);return `M ${f(L)} C ${f(pt((ri+ro)*.62,a-dir*span*.58))} ${f(pt(ro*.96,a-dir*span*.22))} ${f(T)} C ${f(pt(ro*.82,a+dir*span*.34))} ${f(pt((ri+ro)*.52,a+dir*span*.44))} ${f(R)} Q ${f(pt(ri+1,a))} ${f(L)} Z`};
+  const shape=(kind,ri,ro,a,span,i=0)=>kind==='round'?roundPetal(ri,ro,a,span):kind==='leaf'?leaf(ri,ro,a,span,(i%2?.10:-.10)):kind==='kite'||kind==='diamond'||kind==='star'?kite(ri,ro,a,span):kind==='scallop'||kind==='shell'?scallop(ri,ro,a,span):kind==='clover'?clover(ri,ro,a,span):kind==='paisley'?paisley(ri,ro,a,span):kind==='fan'?fan(ri,ro,a,span):kind==='loop'||kind==='arch'?loop(ri,ro,a,span):kind==='swoop'?swoop(ri,ro,a,span,i%2?1:-1):petal(ri,ro,a,span,kind==='lotus'||kind==='teardrop'?.28:.42);
+  function ring(n,ri,ro,kind='petal',rot=0,width=.86,nested=false){const step=TAU/n,span=step*width;for(let i=0;i<n;i++){const a=rot+i*step;path(shape(kind,ri,ro,a,span,i),ro>165?.98:.78);const inset=(nested||detailLevel>0)&&ro-ri>18;if(inset){const ii=ri+(ro-ri)*.24,oo=ro-(ro-ri)*.16;path(shape(kind,ii,oo,a,span*.54,i),.48,'none');if(detailLevel===2&&ro-ri>29){const iii=ri+(ro-ri)*.50,ooo=ro-(ro-ri)*.31;if(ooo>iii+5)path(shape(kind,iii,ooo,a,span*.30,i),.42,'none')}}}}
   function beads(n,r,size=5,rot=0){for(let i=0;i<n;i++){const a=rot+i*TAU/n,p=pt(r,a),e=document.createElementNS(ns,'circle');e.setAttribute('cx',p[0]);e.setAttribute('cy',p[1]);e.setAttribute('r',size);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width','.7');e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e)}}
-  function center(n=10,style='flower'){circle(6,.9);const step=TAU/n;if(style==='sun'){ring(n,7,29,'round',0,.86,false);ring(n,25,45,'petal',step/2,.72,false)}else if(style==='star'){ring(n,7,34,'lotus',0,.68,false);ring(n,25,48,'kite',step/2,.70,false)}else{ring(n,7,32,'round',0,.86,false);ring(n,24,48,'lotus',step/2,.72,false)}}
-  const key=item.recipeKey||'royalLotus', baseN=Math.max(8,Math.min(16,item.symmetry||10)), n=detailLevel===2?Math.max(12,baseN):baseN, st=TAU/n;
-  // v19 deliberately uses different composition recipes instead of one shared band skeleton.
-  if(key==='royalLotus'){
-    center(n,'flower'); ring(n,43,76,'lotus',0,.78,true); ring(n,70,108,'round',st/2,.92,false); ring(n,102,143,'lotus',0,.80,true); ring(n,136,184,'lotus',st/2,.88,false);
-  }else if(key==='layeredDahlia'){
-    center(n,'sun'); ring(n*2,39,67,'round',st/4,.92,false); ring(n,61,100,'round',0,.96,true); ring(n*2,94,126,'round',st/4,.92,false); ring(n,119,158,'round',0,.98,true); ring(n,151,186,'scallop',st/2,.94,false);
-  }else if(key==='botanicalRosette'){
-    center(n,'flower'); ring(n,43,82,'leaf',st/2,.80,true); ring(n,75,111,'round',0,.88,false); beads(n*2,116,4,st/4); ring(n,121,159,'leaf',0,.84,true); ring(n,151,187,'leaf',st/2,.88,false);
-  }else if(key==='floralLace'){
-    center(n,'flower'); beads(n,48,4,st/2); ring(n,52,83,'scallop',0,.96,false); ring(n,77,111,'lotus',st/2,.78,true); beads(n*2,119,4,st/4); ring(n,126,157,'scallop',0,.98,false); ring(n,150,186,'round',st/2,.94,true);
-  }else if(key==='hennaLotus'){
-    center(n,'star'); ring(n,43,77,'lotus',st/2,.74,true); ring(n,70,105,'leaf',0,.76,false); ring(n,98,132,'kite',st/2,.72,true); ring(n,124,158,'leaf',0,.80,true); ring(n,151,188,'lotus',st/2,.82,false);
-  }else if(key==='sunflowerCrown'){
-    center(Math.max(12,n),'sun'); beads(Math.max(16,n*2),52,4,0); ring(Math.max(12,n),58,91,'round',st/2,.94,false); ring(Math.max(12,n),84,122,'petal',0,.82,true); beads(Math.max(16,n*2),130,4,st/4); ring(Math.max(12,n),137,187,'lotus',st/2,.86,false);
-  }else if(key==='roseWindow'){
-    center(n,'flower'); ring(n,40,78,'round',0,.98,true); ring(n,70,107,'scallop',st/2,.98,false); ring(n,99,137,'round',0,.98,true); ring(n,130,163,'scallop',st/2,.98,false); ring(n,156,187,'round',0,.98,false);
-  }else{
-    center(n,'star'); ring(n,42,82,'kite',0,.72,true); ring(n,73,111,'lotus',st/2,.74,false); ring(n,101,140,'kite',0,.72,true); ring(n,131,164,'scallop',st/2,.92,false); ring(n,156,188,'lotus',0,.78,false);
-  }
-  // Hard mandalas get a deliberate second detail pass: dense closed micro-petals,
-  // bead chains, and alternating ornamental cells. This raises coloring-region count
-  // without changing the safe outer radius or introducing loose/open strokes.
-  if(detailLevel===2){
-    const hn=Math.max(12,n), hs=TAU/hn;
-    ring(hn*2,50,68,'petal',hs/4,.62,true);
-    beads(hn*2,91,2.8,hs/4);
-    ring(hn*2,96,116,'lotus',0,.58,true);
-    beads(hn*2,139,2.7,hs/4);
-    ring(hn*2,143,161,'petal',hs/4,.56,true);
-    // Small closed diamonds bridge the outer band and remove oversized blank regions.
-    ring(hn,164,181,'kite',0,.48,true);
-  } else if(detailLevel===1){
-    const mn=Math.max(10,n), ms=TAU/mn;
-    beads(mn,92,3.2,ms/2);
-    ring(mn,132,151,'petal',ms/2,.60,true);
-  }
+  function center(n=10,style='flower'){circle(6,.9);const step=TAU/n;if(style==='sun'){ring(n,7,29,'round',0,.86,false);ring(n,25,45,'petal',step/2,.72,false)}else if(style==='star'){ring(n,7,34,'lotus',0,.68,false);ring(n,25,48,'kite',step/2,.70,false)}else if(style==='clover'){ring(Math.max(6,n/2),7,34,'clover',0,.92,true);ring(n,27,48,'round',step/2,.72,false)}else{ring(n,7,32,'round',0,.86,false);ring(n,24,48,'lotus',step/2,.72,false)}}
+  const key=item.recipeKey||'royalLotus',baseN=Math.max(8,Math.min(16,item.symmetry||10)),n=detailLevel===2?Math.max(12,baseN):baseN,st=TAU/n;
+  // Distinct base silhouettes. These intentionally do NOT share one universal skeleton.
+  if(key==='royalLotus'){center(n,'flower');ring(n,43,76,'lotus',0,.78,true);ring(n,70,108,'round',st/2,.92,false);ring(n,102,143,'lotus',0,.80,true);ring(n,136,184,'lotus',st/2,.88,false)}
+  else if(key==='layeredDahlia'){center(n,'sun');ring(n*2,39,67,'round',st/4,.92,false);ring(n,61,100,'round',0,.96,true);ring(n*2,94,126,'round',st/4,.92,false);ring(n,119,158,'round',0,.98,true);ring(n,151,186,'scallop',st/2,.94,false)}
+  else if(key==='botanicalRosette'){center(n,'flower');ring(n,43,82,'leaf',st/2,.80,true);ring(n,75,111,'round',0,.88,false);beads(n*2,116,4,st/4);ring(n,121,159,'leaf',0,.84,true);ring(n,151,187,'leaf',st/2,.88,false)}
+  else if(key==='floralLace'){center(n,'clover');ring(n,45,78,'loop',0,.90,true);beads(n*2,86,3,st/4);ring(n,92,126,'scallop',st/2,.96,true);ring(n,121,156,'loop',0,.88,true);ring(n,151,186,'clover',st/2,.90,false)}
+  else if(key==='hennaLotus'){center(n,'star');ring(n,43,77,'lotus',st/2,.74,true);ring(n,70,105,'paisley',0,.80,true);ring(n,98,132,'leaf',st/2,.72,true);ring(n,124,158,'paisley',0,.82,true);ring(n,151,188,'lotus',st/2,.82,false)}
+  else if(key==='sunflowerCrown'){center(Math.max(12,n),'sun');beads(Math.max(16,n*2),52,4,0);ring(Math.max(12,n),58,91,'round',st/2,.94,false);ring(Math.max(12,n),84,122,'petal',0,.82,true);beads(Math.max(16,n*2),130,4,st/4);ring(Math.max(12,n),137,187,'lotus',st/2,.86,false)}
+  else if(key==='roseWindow'){center(n,'flower');ring(n,40,78,'round',0,.98,true);ring(n,70,107,'loop',st/2,.94,true);ring(n,99,137,'scallop',0,.98,true);ring(n,130,163,'loop',st/2,.94,true);ring(n,156,187,'round',0,.98,false)}
+  else if(key==='cloverMedallion'){center(n,'clover');ring(Math.max(6,n/2),44,87,'clover',0,.98,true);ring(n,80,116,'round',st/2,.90,true);beads(n,123,4,0);ring(Math.max(6,n/2),130,185,'clover',st/2,.98,true)}
+  else if(key==='paisleyWheel'){center(n,'flower');ring(n,43,82,'paisley',0,.86,true);ring(n,75,112,'leaf',st/2,.80,true);beads(n*2,118,3,st/4);ring(n,124,160,'paisley',0,.86,true);ring(n,153,187,'scallop',st/2,.92,false)}
+  else if(key==='scallopedGarden'){center(n,'sun');ring(n,43,78,'scallop',0,.98,true);ring(n,72,108,'fan',st/2,.94,true);ring(n,101,137,'round',0,.96,true);ring(n,130,160,'scallop',st/2,.98,true);ring(n,153,187,'fan',0,.94,false)}
+  else if(key==='diamondLace'){center(n,'star');ring(n,43,76,'diamond',0,.72,true);ring(n,70,105,'loop',st/2,.86,true);ring(n*2,100,126,'kite',st/4,.62,true);ring(n,122,158,'loop',0,.86,true);ring(n,151,187,'diamond',st/2,.72,true)}
+  else if(key==='roundedBloom'){center(n,'clover');ring(n,42,80,'round',0,.98,true);ring(Math.max(6,n/2),74,116,'clover',st/2,.98,true);beads(n*2,121,3,st/4);ring(n,128,160,'round',0,.98,true);ring(Math.max(6,n/2),151,187,'clover',st/2,.98,false)}
+  else if(key==='leafCrown'){center(n,'flower');ring(n,43,79,'leaf',0,.82,true);ring(n,73,108,'teardrop',st/2,.76,true);ring(n,102,137,'leaf',0,.82,true);beads(n*2,143,3,st/4);ring(n,149,188,'leaf',st/2,.86,true)}
+  else if(key==='pinwheelFloral'){center(n,'flower');ring(n,42,79,'swoop',0,.88,true);ring(n,72,110,'leaf',st/2,.78,true);ring(n,103,139,'swoop',0,.88,true);ring(n,132,161,'teardrop',st/2,.74,true);ring(n,153,188,'swoop',0,.90,true)}
+  else if(key==='oceanShell'){center(n,'clover');ring(n,43,80,'fan',0,.94,true);ring(n,73,109,'scallop',st/2,.98,true);ring(n,102,137,'shell',0,.96,true);beads(n,143,4,st/2);ring(n,149,188,'fan',st/2,.94,true)}
+  else {center(n,'star');ring(n,42,82,'kite',0,.72,true);ring(n,73,111,'lotus',st/2,.74,false);ring(n,101,140,'kite',0,.72,true);ring(n,131,164,'scallop',st/2,.92,false);ring(n,156,188,'lotus',0,.78,false)}
+  // v19.2 Hard detail is recipe-specific. Density stays high without making every design look alike.
+  if(detailLevel===2){const hn=Math.max(12,n),hs=TAU/hn;
+    if(['royalLotus','sunflowerCrown','leafCrown'].includes(key)){ring(hn*2,51,68,'lotus',hs/4,.58,true);beads(hn*2,92,2.7,hs/4);ring(hn*2,98,116,'leaf',0,.54,true);ring(hn,164,181,'lotus',0,.52,true)}
+    else if(['layeredDahlia','roundedBloom','cloverMedallion'].includes(key)){ring(hn*2,50,68,'round',hs/4,.68,true);ring(hn,91,113,'clover',0,.78,true);beads(hn*2,139,2.6,hs/4);ring(hn,163,181,'round',hs/2,.72,true)}
+    else if(['floralLace','roseWindow','diamondLace'].includes(key)){beads(hn*2,58,2.6,hs/4);ring(hn,76,99,'loop',0,.78,true);ring(hn*2,112,130,'diamond',hs/4,.52,true);beads(hn*2,144,2.5,0);ring(hn,163,181,'loop',hs/2,.72,true)}
+    else if(['hennaLotus','paisleyWheel','pinwheelFloral'].includes(key)){ring(hn,52,72,'paisley',0,.72,true);beads(hn*2,91,2.5,hs/4);ring(hn,101,123,'swoop',hs/2,.76,true);ring(hn,140,160,'teardrop',0,.68,true);ring(hn,164,182,'paisley',hs/2,.66,true)}
+    else {ring(hn*2,51,68,'fan',hs/4,.60,true);beads(hn*2,92,2.6,hs/4);ring(hn,100,122,'scallop',0,.84,true);ring(hn*2,142,160,'fan',hs/4,.58,true);ring(hn,164,182,'shell',0,.72,true)}
+  } else if(detailLevel===1){const mn=Math.max(10,n),ms=TAU/mn;beads(mn,92,3.2,ms/2);ring(mn,132,151,['paisleyWheel','pinwheelFloral'].includes(key)?'paisley':'petal',ms/2,.60,true)}
   const wrap=document.createElement('div');wrap.className='mandala-wrap';wrap.appendChild(svg);return wrap;
 }
-
 
 function genericTable(grid,opts={}){
  let t=document.createElement('table');t.className='generic-grid '+(opts.small?'small ':'')+(opts.cls||'');
