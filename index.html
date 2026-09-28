@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v17.1 — Rebuilt Floral Mandalas</title>
+<title>Offline Puzzle Studio v19.0 — Ornamental Mandala Rebuild</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -480,8 +480,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v18.0</span></h1><div class="build-version">Exact build: v18.0 • Precision Mandalas • Clean Closed Geometry + Guaranteed Safe Fit</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v17.1</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v19.0</span></h1><div class="build-version">Exact build: v19.0 • Ornamental Rebuild • Distinct Floral Recipes + Safe Fit</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v19.0</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -3037,77 +3037,45 @@ function makeMandala(diff,priorMandalas=[]){
 function mandalaSvg(item){
   const ns='http://www.w3.org/2000/svg';
   const svg=document.createElementNS(ns,'svg');
-  svg.setAttribute('viewBox','0 0 420 420');
-  svg.setAttribute('class','mandala-svg');
-  svg.setAttribute('fill','white');
-  svg.setAttribute('stroke','#111');
-  svg.setAttribute('stroke-linejoin','round');
-  svg.setAttribute('stroke-linecap','round');
+  svg.setAttribute('viewBox','0 0 420 420'); svg.setAttribute('class','mandala-svg');
+  svg.setAttribute('fill','white'); svg.setAttribute('stroke','#111');
+  svg.setAttribute('stroke-linejoin','round'); svg.setAttribute('stroke-linecap','round');
   svg.setAttribute('preserveAspectRatio','xMidYMid meet');
   const cx=210,cy=210,TAU=Math.PI*2;
   const pt=(r,a)=>[cx+Math.cos(a)*r,cy+Math.sin(a)*r];
   const f=p=>p[0].toFixed(2)+' '+p[1].toFixed(2);
-  const addPath=(d,w=.82,fill='white')=>{const e=document.createElementNS(ns,'path');e.setAttribute('d',d);e.setAttribute('fill',fill);e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e);return e};
-  const addCircle=(r,w=.72)=>{const e=document.createElementNS(ns,'circle');e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('r',r);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e);return e};
-  function petal(inner,outer,a,span,kind='petal'){
-    const l=pt(inner,a-span/2),r=pt(inner,a+span/2),tip=pt(outer,a);
-    let bulge=.60,side=.28,tipInset=.035;
-    if(kind==='round'||kind==='scallop'){bulge=.48;side=.36;tipInset=.12}
-    if(kind==='leaf'||kind==='feather'){bulge=.68;side=.22;tipInset=.018}
-    if(kind==='lotus'||kind==='crown'||kind==='point'){bulge=.72;side=.17;tipInset=.008}
-    if(kind==='teardrop'){bulge=.62;side=.24;tipInset=.018}
-    const c1=pt(inner+(outer-inner)*bulge,a-span*side), c2=pt(inner+(outer-inner)*bulge,a+span*side);
-    const t1=pt(outer-(outer-inner)*tipInset,a-span*.025), t2=pt(outer-(outer-inner)*tipInset,a+span*.025);
-    const base=pt(inner+Math.min(3,(outer-inner)*.12),a);
-    return `M ${f(l)} C ${f(c1)} ${f(t1)} ${f(tip)} C ${f(t2)} ${f(c2)} ${f(r)} Q ${f(base)} ${f(l)} Z`;
+  const path=(d,w=.82,fill='white')=>{const e=document.createElementNS(ns,'path');e.setAttribute('d',d);e.setAttribute('fill',fill);e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e);return e};
+  const circle=(r,w=.72)=>{const e=document.createElementNS(ns,'circle');e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('r',r);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e);return e};
+  const petal=(ri,ro,a,span,round=.42)=>{const L=pt(ri,a-span/2),R=pt(ri,a+span/2),T=pt(ro,a),c1=pt(ri+(ro-ri)*.58,a-span*round),c2=pt(ri+(ro-ri)*.58,a+span*round),b=pt(ri+1.5,a);return `M ${f(L)} C ${f(c1)} ${f(pt(ro-(ro-ri)*.05,a-span*.07))} ${f(T)} C ${f(pt(ro-(ro-ri)*.05,a+span*.07))} ${f(c2)} ${f(R)} Q ${f(b)} ${f(L)} Z`};
+  const roundPetal=(ri,ro,a,span)=>{const L=pt(ri,a-span/2),R=pt(ri,a+span/2),A=pt(ro,a-span*.18),B=pt(ro,a+span*.18),b=pt(ri+1,a);return `M ${f(L)} C ${f(pt((ri+ro)*.62,a-span*.5))} ${f(A)} ${f(pt(ro,a))} C ${f(B)} ${f(pt((ri+ro)*.62,a+span*.5))} ${f(R)} Q ${f(b)} ${f(L)} Z`};
+  const leaf=(ri,ro,a,span,lean=0)=>{const L=pt(ri,a-span*.42),R=pt(ri,a+span*.42),T=pt(ro,a+lean*span),m=(ri+ro)*.56;return `M ${f(L)} C ${f(pt(m,a-span*.48))} ${f(pt(ro*.93,a-span*.16+lean*span))} ${f(T)} C ${f(pt(ro*.93,a+span*.16+lean*span))} ${f(pt(m,a+span*.48))} ${f(R)} Q ${f(pt(ri+1,a))} ${f(L)} Z`};
+  const kite=(ri,ro,a,span)=>`M ${f(pt(ri,a))} L ${f(pt((ri+ro)*.53,a-span*.38))} L ${f(pt(ro,a))} L ${f(pt((ri+ro)*.53,a+span*.38))} Z`;
+  const scallop=(ri,ro,a,span)=>{const L=pt(ri,a-span*.5),R=pt(ri,a+span*.5),T=pt(ro,a);return `M ${f(L)} Q ${f(pt(ro*.98,a-span*.30))} ${f(T)} Q ${f(pt(ro*.98,a+span*.30))} ${f(R)} Q ${f(pt(ri+1,a))} ${f(L)} Z`};
+  function ring(n,ri,ro,kind='petal',rot=0,width=.86,nested=false){
+    const step=TAU/n, span=step*width;
+    for(let i=0;i<n;i++){const a=rot+i*step;let d=kind==='round'?roundPetal(ri,ro,a,span):kind==='leaf'?leaf(ri,ro,a,span,(i%2?.10:-.10)):kind==='kite'?kite(ri,ro,a,span):kind==='scallop'?scallop(ri,ro,a,span):petal(ri,ro,a,span,kind==='lotus'?.28:.42);path(d,ro>165?.98:.78);if(nested&&ro-ri>18){const ii=ri+(ro-ri)*.30,oo=ro-(ro-ri)*.18;path(kind==='leaf'?leaf(ii,oo,a,span*.55,0):petal(ii,oo,a,span*.55,.32),.48,'none')}}
   }
-  function diamond(inner,outer,a,span){
-    const l=pt((inner+outer)*.5,a-span*.46),t=pt(outer,a),r=pt((inner+outer)*.5,a+span*.46),b=pt(inner,a);
-    return `M ${f(b)} L ${f(l)} L ${f(t)} L ${f(r)} Z`;
+  function beads(n,r,size=5,rot=0){for(let i=0;i<n;i++){const a=rot+i*TAU/n,p=pt(r,a),e=document.createElementNS(ns,'circle');e.setAttribute('cx',p[0]);e.setAttribute('cy',p[1]);e.setAttribute('r',size);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width','.7');e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e)}}
+  function center(n=10,style='flower'){circle(6,.9);const step=TAU/n;if(style==='sun'){ring(n,7,29,'round',0,.86,false);ring(n,25,45,'petal',step/2,.72,false)}else if(style==='star'){ring(n,7,34,'lotus',0,.68,false);ring(n,25,48,'kite',step/2,.70,false)}else{ring(n,7,32,'round',0,.86,false);ring(n,24,48,'lotus',step/2,.72,false)}}
+  const key=item.recipeKey||'royalLotus', n=Math.max(8,Math.min(16,item.symmetry||10)), st=TAU/n;
+  // v19 deliberately uses different composition recipes instead of one shared band skeleton.
+  if(key==='royalLotus'){
+    center(n,'flower'); ring(n,43,76,'lotus',0,.78,true); ring(n,70,108,'round',st/2,.92,false); ring(n,102,143,'lotus',0,.80,true); ring(n,136,184,'lotus',st/2,.88,false);
+  }else if(key==='layeredDahlia'){
+    center(n,'sun'); ring(n*2,39,67,'round',st/4,.92,false); ring(n,61,100,'round',0,.96,true); ring(n*2,94,126,'round',st/4,.92,false); ring(n,119,158,'round',0,.98,true); ring(n,151,186,'scallop',st/2,.94,false);
+  }else if(key==='botanicalRosette'){
+    center(n,'flower'); ring(n,43,82,'leaf',st/2,.80,true); ring(n,75,111,'round',0,.88,false); beads(n*2,116,4,st/4); ring(n,121,159,'leaf',0,.84,true); ring(n,151,187,'leaf',st/2,.88,false);
+  }else if(key==='floralLace'){
+    center(n,'flower'); beads(n,48,4,st/2); ring(n,52,83,'scallop',0,.96,false); ring(n,77,111,'lotus',st/2,.78,true); beads(n*2,119,4,st/4); ring(n,126,157,'scallop',0,.98,false); ring(n,150,186,'round',st/2,.94,true);
+  }else if(key==='hennaLotus'){
+    center(n,'star'); ring(n,43,77,'lotus',st/2,.74,true); ring(n,70,105,'leaf',0,.76,false); ring(n,98,132,'kite',st/2,.72,true); ring(n,124,158,'leaf',0,.80,true); ring(n,151,188,'lotus',st/2,.82,false);
+  }else if(key==='sunflowerCrown'){
+    center(Math.max(12,n),'sun'); beads(Math.max(16,n*2),52,4,0); ring(Math.max(12,n),58,91,'round',st/2,.94,false); ring(Math.max(12,n),84,122,'petal',0,.82,true); beads(Math.max(16,n*2),130,4,st/4); ring(Math.max(12,n),137,187,'lotus',st/2,.86,false);
+  }else if(key==='roseWindow'){
+    center(n,'flower'); ring(n,40,78,'round',0,.98,true); ring(n,70,107,'scallop',st/2,.98,false); ring(n,99,137,'round',0,.98,true); ring(n,130,163,'scallop',st/2,.98,false); ring(n,156,187,'round',0,.98,false);
+  }else{
+    center(n,'star'); ring(n,42,82,'kite',0,.72,true); ring(n,73,111,'lotus',st/2,.74,false); ring(n,101,140,'kite',0,.72,true); ring(n,131,164,'scallop',st/2,.92,false); ring(n,156,188,'lotus',0,.78,false);
   }
-  function arch(inner,outer,a,span){
-    const l=pt(inner,a-span*.46),r=pt(inner,a+span*.46),tl=pt(outer*.96,a-span*.28),tr=pt(outer*.96,a+span*.28),tip=pt(outer,a);
-    return `M ${f(l)} Q ${f(tl)} ${f(tip)} Q ${f(tr)} ${f(r)} Q ${f(pt(inner+2,a))} ${f(l)} Z`;
-  }
-  function motifPath(inner,outer,a,span,kind){
-    if(['diamond','starcell','squarecell','hexcell','octcell'].includes(kind))return diamond(inner,outer,a,span);
-    if(['arch','bead'].includes(kind))return arch(inner,outer,a,span);
-    return petal(inner,outer,a,span,kind);
-  }
-  // Crisp central rosette: closed nested petals, no loose radial strokes.
-  addCircle(5,1.0); addCircle(9,.65);
-  const sym=Math.max(8,Math.min(16,item.symmetry||10));
-  for(let ring=0;ring<2;ring++){
-    const n=ring?sym:Math.max(8,Math.floor(sym/2)*2), step=TAU/n, inn=9+ring*10, out=24+ring*15;
-    for(let i=0;i<n;i++)addPath(petal(inn,out,i*step+(ring?step/2:0),step*.76,ring?'lotus':'round'),ring?.72:.78);
-  }
-  // Normalize all generated bands into non-overlapping radial zones. This is the key
-  // quality rule: neighboring ornaments may touch visually but can never cut through one another.
-  const src=(item.layers||[]).slice(0,8);
-  const bandCount=Math.max(4,src.length||6), startR=49, endR=172, gap=3.2;
-  const usable=endR-startR-gap*(bandCount-1), band=usable/bandCount;
-  for(let idx=0;idx<bandCount;idx++){
-    const L=src[idx]||{motif:['lotus','petal','leaf','scallop','diamond','arch'][idx%6],count:sym,rotation:0,widthFactor:.86,nested:0};
-    const inner=startR+idx*(band+gap), outer=inner+band;
-    const n=Math.max(6,Math.min(24,L.count||sym));
-    const step=TAU/n, span=step*Math.max(.64,Math.min(.86,L.widthFactor||.8));
-    const rot=(Number.isFinite(L.rotation)?L.rotation:0)+(idx%2?step/2:0);
-    for(let i=0;i<n;i++){
-      const a=rot+i*step, kind=L.motif||'petal';
-      addPath(motifPath(inner,outer,a,span,kind),idx===bandCount-1?1.0:.78);
-      // Nested ornament is itself a closed shape and stays fully inside its parent.
-      if(L.nested && band>14){
-        const ii=inner+band*.28, oo=outer-band*.22;
-        if(oo-ii>5)addPath(motifPath(ii,oo,a,span*.56,kind),.48,'none');
-      }
-    }
-  }
-  // A restrained closed outer crown finishes the silhouette without oversized rings.
-  const outerN=Math.max(8,Math.min(16,sym));
-  const os=TAU/outerN;
-  for(let i=0;i<outerN;i++)addPath(petal(174,188,i*os+(item.layers?.length%2?os/2:0),os*.72,'lotus'),.95);
-  // All geometry is constructed inside r=188; the 420 viewBox leaves a fixed 22-unit
-  // safety margin on every side before CSS adds the page margin.
   const wrap=document.createElement('div');wrap.className='mandala-wrap';wrap.appendChild(svg);return wrap;
 }
 
@@ -3910,7 +3878,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=18.0',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=19.0',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
