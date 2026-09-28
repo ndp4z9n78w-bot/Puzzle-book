@@ -1,4 +1,4 @@
-const CACHE='puzzle-studio-v12-7';
+const CACHE='puzzle-studio-v12-9';
 const ASSETS=['./','./index.html','./sw.js'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));
