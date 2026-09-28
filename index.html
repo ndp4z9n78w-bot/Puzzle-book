@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v12.0 — Mixed Book & Generator Overhaul</title>
+<title>Offline Puzzle Studio v12.4 — Tested Mixed Book Fix</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -429,11 +429,20 @@ details summary{cursor:pointer;font-weight:700}
  .mix-bulk{grid-template-columns:1fr}
 }
 
+
+.mandala-wrap{
+  display:flex;justify-content:center;align-items:center;
+  width:100%;min-height:6.1in;
+}
+.mandala-svg{
+  width:min(7in,94%);max-height:7in;aspect-ratio:1/1;
+}
+
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v12.0</span></h1><div class="build-version">Exact build: v12.0 • Mixed Book & Generator Overhaul</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v12.0</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v12.4</span></h1><div class="build-version">Exact build: v12.4 • Mandala Generator</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v12.4</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -468,9 +477,19 @@ details summary{cursor:pointer;font-weight:700}
 <summary>Mixed Puzzle Book</summary>
 <label><input id="mixedMode" type="checkbox" style="width:auto"> Build a mixed puzzle book</label>
 <div id="mixedControls" class="hidden">
+  <div class="mix-bulk">
+    <div class="mix-bulk-row">
+      <div><div class="mix-mini-label">Set all difficulty</div><select id="mixSetDifficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option></select></div>
+      <button type="button" class="secondary" id="applyAllDifficulty">Apply</button>
+    </div>
+    <div class="mix-bulk-row">
+      <div><div class="mix-mini-label">Set all puzzle amounts</div><input id="mixSetAmount" type="number" min="1" max="500" value="10"></div>
+      <button type="button" class="secondary" id="applyAllAmount">Apply</button>
+    </div>
+  </div>
+  <div class="small" style="margin-bottom:5px">Each row: puzzle type • difficulty • amount • puzzles/page • solutions/page</div>
   <div id="mixList" class="mix-list"></div>
   <button class="secondary" id="addMix" type="button" style="width:100%;margin-top:6px">+ Add Puzzle Type</button>
-  <p class="small">Each row lets you choose a puzzle type, difficulty, and quantity. Add as many combinations as you want.</p>
 </div>
 </details>
 
@@ -496,15 +515,13 @@ details summary{cursor:pointer;font-weight:700}
 <option value="a4">A4</option>
 </select>
 
-<label>Book title</label>
-<input id="bookTitle" value="Puzzle Book">
 
-<label>Subtitle</label>
-<input id="subtitle" value="Easy, Medium & Hard Puzzles">
 
 <label>Author / publisher</label>
 <input id="authorName" value="">
 
+<input id="bookTitle" type="hidden" value="Puzzle Book">
+<input id="subtitle" type="hidden" value="">
 <details open>
 <summary>Book Setup</summary>
 <label>Book preset</label>
@@ -678,7 +695,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 
 <p class="small"><b>Offline:</b> no internet, server, account, or installation is required.</p><p class="small"><b>KDP Book Builder:</b> mix Easy, Medium, and Hard puzzles in one interior, add front matter and section dividers, and send all answer keys to the back automatically.</p><p class="small"><b>Expanded library:</b> word, number, logic, Sudoku-variant, and math puzzle generators.</p><p class="small"><b>Quality tools:</b> validation still runs behind the scenes for Quality Check and Preflight, but verification labels are no longer printed on puzzle pages.</p><p class="small"><b>Difficulty:</b> Book difficulty is controlled by the Easy / Medium / Hard puzzle counts, or per-row difficulty in Mixed Puzzle Book. The old standalone difficulty selector has been removed.</p><p class="small"><b>Presets & editing:</b> choose a book preset, use Large Print, open Book Overview, regenerate individual puzzles, delete them, or move them up/down without rebuilding the whole book.</p><p class="small"><b>Variety:</b> High/Maximum variety changes pattern families, sequence rules, cage layouts, path styles, search directions, and cryptogram mappings so large books feel less repetitive.</p><p class="small"><b>KDP readiness:</b> Preflight now checks puzzle/solution matching, mixed-book counts, page-count consistency, frames/safe-area heuristics, blank pages, section starts, and export readiness.</p><p class="small"><b>Mixed books:</b> choose puzzle type, difficulty, and quantity for every mixed-book row. <b>Design:</b> frame templates, page typography, multi-puzzle layouts, mirrored page numbers, right-hand section starts, spread preview, and final preflight checks.</p>
 <p class="small"><b>Validation:</b> Sudoku, Kakuro, and Slitherlink are solver-checked. The generator rejects a puzzle unless it finds exactly one solution. Mazes are generated with a verified entrance-to-exit path.</p>
-<p class="small"><b>v11 print cleanup:</b> Printed puzzle and answer pages no longer repeat the book title or Easy/Medium/Hard labels. Smart answers use at most two well-separated solutions per page. Kakuro and Slitherlink use reliable structural validation, Takuzu displays both 0 and 1, and generation limits are raised to 500 puzzles per selection.</p><p class="small"><b>Page editing:</b> Every rendered page can now be removed individually. Page numbers update automatically and removed pages are excluded from PDF export until you rebuild the book.</p><p class="small"><b>Smart assembly:</b> tiny sections avoid wasteful divider pages, larger section dividers stay right-page aligned, solution pages adapt their density to each puzzle type, and PDF/JSON exports receive organized filenames automatically.</p><p class="small"><b>How-to pages:</b> Each puzzle type now gets a visual instruction page with mini grids, arrows, highlighted cells, and worked examples.<br><b>PDF:</b> choose “Create PDF,” then select <b>Save as PDF</b>. For KDP interiors, keep browser scaling at 100% and margins set to none/default as appropriate.</p>
+<p class="small"><b>v12.2 tested fix:</b> Mixed Book controls are present and wired, and visible Book Title / Subtitle fields are removed.</p><p class="small"><b>v11 print cleanup:</b> Printed puzzle and answer pages no longer repeat the book title or Easy/Medium/Hard labels. Smart answers use at most two well-separated solutions per page. Kakuro and Slitherlink use reliable structural validation, Takuzu displays both 0 and 1, and generation limits are raised to 500 puzzles per selection.</p><p class="small"><b>Page editing:</b> Every rendered page can now be removed individually. Page numbers update automatically and removed pages are excluded from PDF export until you rebuild the book.</p><p class="small"><b>Smart assembly:</b> tiny sections avoid wasteful divider pages, larger section dividers stay right-page aligned, solution pages adapt their density to each puzzle type, and PDF/JSON exports receive organized filenames automatically.</p><p class="small"><b>How-to pages:</b> Each puzzle type now gets a visual instruction page with mini grids, arrows, highlighted cells, and worked examples.<br><b>PDF:</b> choose “Create PDF,” then select <b>Save as PDF</b>. For KDP interiors, keep browser scaling at 100% and margins set to none/default as appropriate.</p>
 </section>
 
 <section class="panel preview">
@@ -696,7 +713,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='12.0';
+const PUZZLE_STUDIO_VERSION='12.4';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]};
@@ -950,7 +967,7 @@ function slitherCountSolutions(model,clues,limit=2){
 }
 function makeSlither(diff){
  let R={Easy:5,Medium:6,Hard:7}[diff]||6,C=R;
- let model=slitherEdgeModel(R,C),solution=Array(model.n).fill(0);
+ let model=slitherEdgeModel(R,C),solution=Array(model.N).fill(0);
  let maxInset=Math.max(0,Math.floor((R-3)/2));
  let inset=Math.floor(Math.random()*(maxInset+1));
  let r0=inset,c0=inset,r1=R-1-inset,c1=C-1-inset;
@@ -1501,7 +1518,7 @@ const PUZZLE_OPTIONS=[
  ['irregular','Irregular Sudoku'],['mini','Mini Sudoku'],['kenken','KenKen / Calcudoku'],
  ['hidato','Hidato'],['takuzu','Takuzu / Binary'],['magicsquare','Magic Squares'],
  ['missingnumber','Missing Number']
-];
+,['mandala','Mandala Coloring Page']];
 let mixRows=[{type:'sudoku',difficulty:'Easy',count:10,puzzlesPerPage:1,solutionsPerPage:2},{type:'wordsearch',difficulty:'Medium',count:10,puzzlesPerPage:1,solutionsPerPage:1}];
 
 function mixedLayoutFor(type){
@@ -1590,14 +1607,14 @@ function setPageSide(s,pageNum){
  s.classList.add(pageNum%2===0?'page-left':'page-right');
 }
 function supportsMultiPerPage(type){
- return !['maze','kakuro','nonogram','wordsearch','numbersearch','cryptogram'].includes(type)
+ return !['maze','kakuro','nonogram','wordsearch','numbersearch','cryptogram','mandala'].includes(type)
 }
 function addBlankPage(root,pageNum){
  let s=document.createElement('div');s.className='sheet '+pageClass()+($('pageFrame').checked?' frame-enabled':'');
  applyDesign(s);s.innerHTML='<div class="special-page"><p></p></div>';setPageSide(s,pageNum);root.appendChild(s);return pageNum+1
 }
 function renderPuzzleInto(container,item,index,title){
- let label={sudoku:'Sudoku',maze:'Maze',kakuro:'Kakuro',slither:'Slitherlink',wordsearch:'Word Search',numbersearch:'Number Search',cryptogram:'Cryptogram',nonogram:'Nonogram',killer:'Killer Sudoku',diagonal:'Diagonal Sudoku',irregular:'Irregular Sudoku',mini:'Mini Sudoku',kenken:'KenKen',hidato:'Hidato',takuzu:'Takuzu',magicsquare:'Magic Square',missingnumber:'Missing Number'}[item.type];
+ let label={sudoku:'Sudoku',maze:'Maze',kakuro:'Kakuro',slither:'Slitherlink',wordsearch:'Word Search',numbersearch:'Number Search',cryptogram:'Cryptogram',nonogram:'Nonogram',killer:'Killer Sudoku',diagonal:'Diagonal Sudoku',irregular:'Irregular Sudoku',mini:'Mini Sudoku',kenken:'KenKen',hidato:'Hidato',takuzu:'Takuzu',magicsquare:'Magic Square',missingnumber:'Missing Number',mandala:'Mandala Coloring Page'}[item.type];
  let head=document.createElement('div');head.style.textAlign='center';head.style.fontWeight='700';head.style.marginBottom='6px';head.textContent=`Puzzle ${index+1} • ${label}`;container.appendChild(head);
  if(item.type==='sudoku')container.appendChild(sudokuTable(item.puzzle));
  if(item.type==='maze')container.appendChild(mazeSvg(item,false));
@@ -1615,6 +1632,7 @@ function renderPuzzleInto(container,item,index,title){
  if(item.type==='takuzu')container.appendChild(genericTable(item.puzzle,{small:true,zeroVisible:true}));
  if(item.type==='magicsquare')container.appendChild(genericTable(item.puzzle));
  if(item.type==='missingnumber')container.appendChild(missingNumberBlock(item,false))
+ if(item.type==='mandala')container.appendChild(mandalaSvg(item))
 }
 
 
@@ -2013,7 +2031,7 @@ function cleanFilePart(s){
     .slice(0,60)||'Puzzle_Book';
 }
 function exportBaseName(){
-  const title=cleanFilePart($('bookTitle').value||'Puzzle Book');
+  const title='Puzzle_Book';
   const count=(project.items&&project.items.length)||
     ($('mixedMode')?.checked
       ?mixRows.reduce((s,r)=>s+(+r.count||0),0)
@@ -2043,9 +2061,13 @@ function solutionCapacity(type){
 function solutionPageBatches(items){
  const out=[];let i=0;
  while(i<items.length){
+   if(items[i].type==='mandala'){i++;continue}
    const type=items[i].type,cap=solutionCapacity(type),batch=[i];
    let j=i+1;
-   while(j<items.length&&batch.length<cap&&items[j].type===type){batch.push(j);j++}
+   while(j<items.length&&batch.length<cap&&items[j].type===type){
+     if(items[j].type!=='mandala')batch.push(j);
+     j++;
+   }
    out.push(batch);i=j;
  }
  return out;
@@ -2164,7 +2186,8 @@ async function regenerateItemAt(index){
     type==='hidato'?makeHidato(diff):
     type==='takuzu'?makeTakuzu(diff):
     type==='magicsquare'?makeMagicSquare(diff):
-    makeMissingNumber(diff);
+    type==='missingnumber'?makeMissingNumber(diff):
+    makeMandala(diff);
   item.difficulty=diff;project.items[index]=item;render();renderOverview();
   setBuildProgress(true,1,1,'Puzzle regenerated',`Puzzle ${index+1} updated`);
   setTimeout(()=>setBuildProgress(false),900);
@@ -2185,6 +2208,7 @@ function renderOverview(){
     card.innerHTML=`<h4>${i+1}. ${label} • ${item.difficulty||''}</h4><div class="overview-preview"></div><div class="overview-actions"></div>`;
     const prev=card.querySelector('.overview-preview');
     if(item.type==='sudoku')prev.appendChild(sudokuTable(item.puzzle));
+    else if(item.type==='mandala')prev.appendChild(mandalaSvg(item));
     else if(item.type==='mini'||item.type==='hidato'||item.type==='takuzu'||item.type==='magicsquare')prev.appendChild(genericTable(item.puzzle,{small:true,blankMark:'?'}));
     else {
       const tag=document.createElement('div');tag.style.fontSize='12px';tag.style.textAlign='center';tag.textContent=label;prev.appendChild(tag);
@@ -2303,6 +2327,103 @@ function slitherSvg(item,answer){
   for(let r=0;r<R;r++)for(let c=0;c<=C;c++)if(item.solution[model.V[r][c]]===1)line(pad+c*dx,pad+r*dy,pad+c*dx,pad+(r+1)*dy,5)
  }
  return svg
+}
+
+
+function makeMandala(diff){
+  const cfg={
+    Easy:{sym:[8,10],rings:[3,4],layers:[2,3]},
+    Medium:{sym:[10,14],rings:[4,6],layers:[3,4]},
+    Hard:{sym:[14,20],rings:[6,8],layers:[4,6]}
+  }[diff]||{sym:[10,14],rings:[4,6],layers:[3,4]};
+
+  const randInt=([a,b])=>a+Math.floor(Math.random()*(b-a+1));
+  const symmetry=randInt(cfg.sym),rings=randInt(cfg.rings),layers=randInt(cfg.layers);
+  const phase=Math.random()*Math.PI*2;
+  const ringData=[];
+
+  for(let ring=1;ring<=rings;ring++){
+    const radius=28+ring*(148/rings);
+    const offset=(ring%2?0:Math.PI/symmetry);
+    ringData.push({radius,offset});
+  }
+
+  const cross=[];
+  for(let layer=1;layer<=layers;layer++){
+    const r1=25+layer*(130/(layers+1));
+    const r2=Math.min(178,r1+20+Math.random()*14);
+    const turn=(layer%2?1:-1)*Math.PI/symmetry*(0.45+Math.random()*.25);
+    for(let i=0;i<symmetry;i++){
+      const a=phase+Math.PI*2*i/symmetry;
+      cross.push({
+        x1:200+Math.cos(a)*r1,y1:200+Math.sin(a)*r1,
+        x2:200+Math.cos(a+turn)*r2,y2:200+Math.sin(a+turn)*r2
+      });
+    }
+  }
+
+  return {
+    type:'mandala',symmetry,rings,layers,phase,ringData,cross,
+    validated:true,validationTier:'structural',coloringPage:true
+  };
+}
+
+function mandalaSvg(item){
+  const ns='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(ns,'svg');
+  svg.setAttribute('viewBox','0 0 400 400');
+  svg.setAttribute('class','mandala-svg');
+
+  function line(x1,y1,x2,y2,w=1.25){
+    const el=document.createElementNS(ns,'line');
+    el.setAttribute('x1',x1);el.setAttribute('y1',y1);
+    el.setAttribute('x2',x2);el.setAttribute('y2',y2);
+    el.setAttribute('stroke','#111');el.setAttribute('stroke-width',w);
+    svg.appendChild(el);
+  }
+  function circle(r,w=1.35){
+    const el=document.createElementNS(ns,'circle');
+    el.setAttribute('cx','200');el.setAttribute('cy','200');el.setAttribute('r',r);
+    el.setAttribute('fill','none');el.setAttribute('stroke','#111');el.setAttribute('stroke-width',w);
+    svg.appendChild(el);
+  }
+
+  // Concentric rings.
+  item.ringData.forEach((r,i)=>circle(r.radius,i===item.ringData.length-1?2:1.3));
+
+  // Symmetry spokes.
+  for(let i=0;i<item.symmetry;i++){
+    const a=item.phase+Math.PI*2*i/item.symmetry;
+    line(200+Math.cos(a)*18,200+Math.sin(a)*18,
+         200+Math.cos(a)*178,200+Math.sin(a)*178,1.15);
+  }
+
+  // Petal / kite shapes between ring levels.
+  for(let ri=0;ri<item.ringData.length;ri++){
+    const outer=item.ringData[ri].radius;
+    const inner=ri===0?20:item.ringData[ri-1].radius;
+    const mid=(inner+outer)/2;
+    const offset=item.ringData[ri].offset||0;
+    for(let i=0;i<item.symmetry;i++){
+      const a=item.phase+Math.PI*2*i/item.symmetry+offset;
+      const left=a-Math.PI/item.symmetry*.55;
+      const right=a+Math.PI/item.symmetry*.55;
+      const ix=200+Math.cos(a)*inner,iy=200+Math.sin(a)*inner;
+      const ox=200+Math.cos(a)*outer,oy=200+Math.sin(a)*outer;
+      const lx=200+Math.cos(left)*mid,ly=200+Math.sin(left)*mid;
+      const rx=200+Math.cos(right)*mid,ry=200+Math.sin(right)*mid;
+      line(ix,iy,lx,ly);line(lx,ly,ox,oy);line(ox,oy,rx,ry);line(rx,ry,ix,iy);
+    }
+  }
+
+  // Cross-lines add complexity while remaining clean line art.
+  item.cross.forEach(s=>line(s.x1,s.y1,s.x2,s.y2,1.05));
+  circle(18,2);
+
+  const wrap=document.createElement('div');
+  wrap.className='mandala-wrap';
+  wrap.appendChild(svg);
+  return wrap;
 }
 
 function genericTable(grid,opts={}){
@@ -2464,7 +2585,7 @@ function renderPageManager(){
   if(!sheets.length)root.innerHTML='<div class="small">No rendered pages.</div>';
 }
 function render(){
- let root=$('pages');root.innerHTML='';document.body.classList.toggle('large-print',$('largePrint')?.checked);let page=Math.max(1,+$('startPageNumber').value||1),title=$('bookTitle').value||'Puzzle Book';
+ let root=$('pages');root.innerHTML='';document.body.classList.toggle('large-print',$('largePrint')?.checked);let page=Math.max(1,+$('startPageNumber').value||1),title='';
  let subtitle=$('subtitle').value||'',author=$('authorName').value||'',isBook=$('buildMode').value==='book';
 
  function append(s,number=true){
@@ -2485,7 +2606,7 @@ function render(){
      append(makeSpecial('copyright','Copyright',body),false);
    }
    if($('instructionsPage').checked && !$('mixedMode').checked){
-     const instructionTypes=[...new Set(project.items.map(x=>x.type))].filter(t=>t!=='maze');
+     const instructionTypes=[...new Set(project.items.map(x=>x.type))].filter(t=>t!=='maze'&&t!=='mandala');
      for(const instructionType of instructionTypes){
        let s=applyFrameClass(document.createElement('div'));s.className='sheet '+pageClass()+($('pageFrame').checked?' frame-enabled':'');
        const label=PUZZLE_OPTIONS.find(x=>x[0]===instructionType)?.[1]||instructionType;
@@ -2510,7 +2631,7 @@ function render(){
        append(makeSpecial('section',sectionName,body),false);
      }
    }
-   if(isBook && mixed && $('instructionsPage').checked && group!=='maze'){
+   if(isBook && mixed && $('instructionsPage').checked && group!=='maze'&&group!=='mandala'){
      let hs=applyFrameClass(document.createElement('div'));
      hs.className='sheet '+pageClass()+($('pageFrame').checked?' frame-enabled':'');
      const hlabel=PUZZLE_OPTIONS.find(x=>x[0]===group)?.[1]||group;
@@ -2532,7 +2653,7 @@ function render(){
    }
    for(let item of items){
      let globalIndex=project.items.indexOf(item);
-     let label={sudoku:'Sudoku',maze:'Maze',kakuro:'Kakuro',slither:'Slitherlink',wordsearch:'Word Search',numbersearch:'Number Search',cryptogram:'Cryptogram',nonogram:'Nonogram',killer:'Killer Sudoku',diagonal:'Diagonal Sudoku',irregular:'Irregular Sudoku',mini:'Mini Sudoku',kenken:'KenKen',hidato:'Hidato',takuzu:'Takuzu',magicsquare:'Magic Square',missingnumber:'Missing Number'}[item.type];
+     let label={sudoku:'Sudoku',maze:'Maze',kakuro:'Kakuro',slither:'Slitherlink',wordsearch:'Word Search',numbersearch:'Number Search',cryptogram:'Cryptogram',nonogram:'Nonogram',killer:'Killer Sudoku',diagonal:'Diagonal Sudoku',irregular:'Irregular Sudoku',mini:'Mini Sudoku',kenken:'KenKen',hidato:'Hidato',takuzu:'Takuzu',magicsquare:'Magic Square',missingnumber:'Missing Number',mandala:'Mandala Coloring Page'}[item.type];
      let s=makeSheet(`Puzzle ${globalIndex+1}`,`${label}`);
      let w=s.querySelector('.puzzle-wrap');
      if(item.type==='sudoku')w.appendChild(sudokuTable(item.puzzle));
@@ -2551,6 +2672,7 @@ function render(){
      if(item.type==='takuzu')w.appendChild(genericTable(item.puzzle,{small:true,zeroVisible:true}));
      if(item.type==='magicsquare')w.appendChild(genericTable(item.puzzle));
      if(item.type==='missingnumber')w.appendChild(missingNumberBlock(item,false))
+     if(item.type==='mandala')w.appendChild(mandalaSvg(item))
      append(s,true);
    }
  }
@@ -2626,9 +2748,9 @@ function updateSummary(){
  const diffText=byDiff.map(([d,c])=>`${d} ${c}`).join(' • ');
  const typeText=Object.entries(byType).map(([t,c])=>`${PUZZLE_OPTIONS.find(x=>x[0]===t)?.[1]||t} ${c}`).join(' • ');
 
- let front=[$('copyrightPage').checked].filter(Boolean).length+($('instructionsPage').checked&&!$('mixedMode')?.checked?new Set(plannedRows().map(r=>r.type).filter(t=>t!=='maze')).size:0);
+ let front=[$('copyrightPage').checked].filter(Boolean).length+($('instructionsPage').checked&&!$('mixedMode')?.checked?new Set(plannedRows().map(r=>r.type).filter(t=>t!=='maze'&&t!=='mandala')).size:0);
  let activeSections=$('mixedMode')?.checked?Object.keys(byType).length:byDiff.length;
- if($('mixedMode')?.checked&&$('instructionsPage').checked)front+=Object.keys(byType).filter(t=>t!=='maze').length;
+ if($('mixedMode')?.checked&&$('instructionsPage').checked)front+=Object.keys(byType).filter(t=>t!=='maze'&&t!=='mandala').length;
  let dividers=$('sectionPages').checked?activeSections:0;
  if($('balanceSections')?.checked && $('sectionPages').checked){
    // Smart balancing omits dedicated divider pages for sections with only 1–2 puzzles.
@@ -2738,7 +2860,8 @@ async function build(){
        type==='hidato'?makeHidato(diff):
        type==='takuzu'?makeTakuzu(diff):
        type==='magicsquare'?makeMagicSquare(diff):
-       makeMissingNumber(diff);
+       type==='missingnumber'?makeMissingNumber(diff):
+       makeMandala(diff);
 
      item.difficulty=diff;
      arr.push(item);
@@ -2768,7 +2891,7 @@ async function build(){
 }
 $('generate').onclick=build;$('clear').onclick=()=>{project={items:[]};render()};$('pdf').onclick=createPdfDirect;
 $('zoomIn').onclick=()=>{zoom=Math.min(1.3,zoom+.1);applyZoom()};$('zoomOut').onclick=()=>{zoom=Math.max(.4,zoom-.1);applyZoom()};
-$('pageSize').onchange=render;$('solutions').onchange=render;$('numbers').onchange=render;$('bookTitle').oninput=render;
+$('pageSize').onchange=render;$('solutions').onchange=render;$('numbers').onchange=render;let bt=$('bookTitle');if(bt)bt.oninput=render;
 $('save').onclick=()=>{let data={version:4,settings:{
  type:$('type').value,pageSize:$('pageSize').value,bookTitle:$('bookTitle').value,
  subtitle:$('subtitle').value,authorName:$('authorName').value,buildMode:$('buildMode').value,count:$('count').value,
@@ -2784,7 +2907,7 @@ $('save').onclick=()=>{let data={version:4,settings:{
  mirrorPageNumbers:$('mirrorPageNumbers').checked,startSectionsRight:$('startSectionsRight').checked,balanceSections:$('balanceSections').checked,kdpProfile:$('kdpProfile').value,varietyLevel:$('varietyLevel').value,largePrint:$('largePrint').checked},project};
  let blob=new Blob([JSON.stringify(data)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=exportBaseName()+'_Project.json';a.click();URL.revokeObjectURL(a.href)};
 $('load').onchange=e=>{let f=e.target.files[0];if(!f)return;let rd=new FileReader();rd.onload=()=>{try{let d=JSON.parse(rd.result),s=d.settings||{};project=d.project||{items:[]};
- for(let k of ['type','pageSize','bookTitle','subtitle','authorName','buildMode','count','easyCount','mediumCount','hardCount','startPageNumber','solutionsPerPage','copyrightText','gridOverride','customWords','customCryptograms','frameInset','frameWidth','frameRadius','themeName','frameTemplate','titleSize','contentSpacing','puzzlesPerPage','kdpProfile','varietyLevel'])if(s[k]!=null)$(k).value=s[k];
+ for(let k of ['type','pageSize','bookTitle','subtitle','authorName','buildMode','count','easyCount','mediumCount','hardCount','startPageNumber','solutionsPerPage','copyrightText','gridOverride','customWords','customCryptograms','frameInset','frameWidth','frameRadius','themeName','frameTemplate','titleSize','contentSpacing','puzzlesPerPage','kdpProfile','varietyLevel']){let el=$(k);if(s[k]!=null&&el)el.value=s[k]}
  for(let k of ['solutions','numbers','titlePage','copyrightPage','instructionsPage','sectionPages','solutionsTitlePage','notesPage','mixedMode','pageFrame','mirrorPageNumbers','startSectionsRight','balanceSections','largePrint'])if(s[k]!=null)$(k).checked=s[k];
  if(Array.isArray(s.mixRows))mixRows=s.mixRows;renderMixRows();syncMode();render()}catch(err){alert('Could not load that project file.')}};rd.readAsText(f)};
 
@@ -2800,6 +2923,7 @@ function puzzleFingerprint(item){
    if(item.type==='killer')return item.type+':'+JSON.stringify(item.cages);
    if(item.type==='kenken')return item.type+':'+JSON.stringify(item.cages);
    if(item.type==='missingnumber')return item.type+':'+JSON.stringify(item.puzzle);
+   if(item.type==='mandala')return item.type+':'+JSON.stringify([item.symmetry,item.rings,item.layers,item.phase,item.cross]);
    return item.type+':'+JSON.stringify(item);
  }catch(e){return Math.random()+''}
 }
@@ -2856,6 +2980,7 @@ function actualMixedCounts(){
 }
 function hasMatchingSolution(item){
   if(!item) return false;
+  if(item.type==='mandala') return true;
   if(item.type==='maze') return Array.isArray(item.path)&&item.path.length>1;
   if(item.type==='wordsearch'||item.type==='numbersearch') return Array.isArray(item.items)&&item.items.length>0;
   if(item.type==='cryptogram') return !!item.plain;
@@ -2875,14 +3000,14 @@ function countExpectedRenderedPages(){
   if(isBook){
     /* title page removed in v11 */
     if($('copyrightPage').checked)pages++;
-    if($('instructionsPage').checked && !mixed)pages+=new Set(project.items.map(x=>x.type).filter(t=>t!=='maze')).size;
+    if($('instructionsPage').checked && !mixed)pages+=new Set(project.items.map(x=>x.type).filter(t=>t!=='maze'&&t!=='mandala')).size;
   }
   if(isBook){
     if(mixed){
       const groups=[...new Set(project.items.map(x=>x.type))];
       for(const g of groups){
         const items=project.items.filter(x=>x.type===g);
-        if($('instructionsPage').checked && g!=='maze')pages++;
+        if($('instructionsPage').checked && g!=='maze'&&g!=='mandala')pages++;
         if($('sectionPages').checked){
           const tiny=$('balanceSections')?.checked && items.length<=2;
           if(!tiny){
@@ -3056,7 +3181,7 @@ $('buildMode').onchange=syncMode;
 for(let id of ['easyCount','mediumCount','hardCount','count','type','solutions','titlePage','copyrightPage','instructionsPage','sectionPages','solutionsTitlePage']){
  let el=$(id);if(el){el.addEventListener(el.type==='checkbox'?'change':'input',updateSummary);el.addEventListener('change',updateSummary)}
 }
-for(let id of ['subtitle','authorName'])$(id).addEventListener('input',render);
+for(let id of ['subtitle','authorName']){let el=$(id);if(el)el.addEventListener('input',render)}
 $('qc').onclick=runQC;
 document.querySelectorAll('.presetBtn').forEach(b=>b.onclick=()=>applyPreset(b.dataset.preset));
 $('bookOverviewBtn').onclick=()=>{$('bookOverview').classList.toggle('hidden');if(!$('bookOverview').classList.contains('hidden'))renderOverview()};
@@ -3085,7 +3210,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=12.0',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=12.4',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
@@ -3098,7 +3223,7 @@ async function updateOfflineStatus(){
   }
   try{
     await navigator.serviceWorker.ready;
-    const cache=await caches.open('puzzle-studio-v12-0');
+    const cache=await caches.open('puzzle-studio-v12-4');
     const cached=await cache.match('./index.html');
     el.textContent=cached
       ? 'Offline ready — this version is cached on this device.'
