@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v14.1 — Tested Mixed Book Fix</title>
+<title>Offline Puzzle Studio v14.2 — Tested Mixed Book Fix</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -475,8 +475,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v14.1</span></h1><div class="build-version">Exact build: v14.1 • Premium Floral Mandala Engine</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v14.1</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v14.2</span></h1><div class="build-version">Exact build: v14.2 • Diverse Premium Mandala Engine + Difficulty Toggles</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v14.2</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -534,6 +534,12 @@ details summary{cursor:pointer;font-weight:700}
 </div>
 
 <div id="bookControls">
+  <div class="small" style="margin-bottom:6px"><b>Included difficulties</b></div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px">
+    <label style="display:flex;align-items:center;gap:6px"><input id="easyEnabled" type="checkbox" checked style="width:auto"> Easy</label>
+    <label style="display:flex;align-items:center;gap:6px"><input id="mediumEnabled" type="checkbox" checked style="width:auto"> Medium</label>
+    <label style="display:flex;align-items:center;gap:6px"><input id="hardEnabled" type="checkbox" checked style="width:auto"> Hard</label>
+  </div>
   <label>Easy puzzles</label>
   <input id="easyCount" type="number" min="0" max="500" value="20">
   <label>Medium puzzles</label>
@@ -779,7 +785,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='14.1';
+const PUZZLE_STUDIO_VERSION='14.2';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]},overviewMandalaReview=false;
@@ -2927,106 +2933,105 @@ function chooseTransitionMotif(source,prevMotif,profile,frac,isOuter){
 function scoreMandalaDesign(item,profile){
   const layers=item.layers||[];
   const layerCount=layers.length||1;
-  const maxOuter=Math.max(...layers.map(l=>l.outer*(1+(l.pulseAmp||0))),0);
+  const maxOuter=Math.max(...layers.map(l=>l.outer),0);
   const minInner=Math.min(...layers.map(l=>l.inner),10);
   const avgThickness=layers.reduce((s,l)=>s+Math.max(1,l.outer-l.inner),0)/layerCount;
   const avgCount=layers.reduce((s,l)=>s+(l.count||0),0)/layerCount;
   const motifSet=new Set(layers.map(l=>l.motif)).size;
-  const repeats=layers.slice(1).reduce((s,l,i)=>s+(l.motif===layers[i].motif?1:0),0);
+  const floralLike=layers.filter(l=>['lotus','petal','roundpetal','teardrop','leaf','feather','scallop','paisley'].includes(l.motif)).length/layerCount;
   const widths=layers.map(l=>l.widthFactor||.8);
   const density=avgCount*avgThickness*(widths.reduce((a,b)=>a+b,0)/Math.max(1,widths.length));
-  const gaps=layers.length>1?layers.slice(1).map((l,i)=>Math.max(0,l.inner-layers[i].outer)):[8];
-  const minGap=Math.min(...gaps), avgGap=gaps.reduce((a,b)=>a+b,0)/gaps.length;
-  const floralLike=layers.filter(l=>['lotus','petal','roundpetal','teardrop','leaf','feather','scallop','paisley'].includes(l.motif)).length/layerCount;
-  const outerStyle=(layers.slice(-1)[0]?.motif)||'';
+  const outerMotifs=layers.slice(-2).map(l=>l.motif).join('|');
   let score=0;
-  if(maxOuter>=180)score+=22; else if(maxOuter>=172)score+=17; else score+=10;
-  if(minInner<=16)score+=7;
+  if(maxOuter>=186)score+=16; else if(maxOuter>=178)score+=11;
+  if(minInner<=16)score+=6;
   if(layerCount>=6 && layerCount<=8)score+=10;
-  if(avgThickness>=14 && avgThickness<=24)score+=10;
-  if(avgCount>=8 && avgCount<=18)score+=9;
-  score += Math.min(12, motifSet*2);
+  if(avgThickness>=12 && avgThickness<=22)score+=10;
+  if(avgCount>=8 && avgCount<=18)score+=8;
+  score+=motifSet*2.2;
   if(['lotus','rosette','flower','spiralFlower'].includes(item.center?.style))score+=8;
-  if(minGap>=1.6)score+=8; else score-=8;
-  if(avgGap>=1.8)score+=4;
-  if(floralLike>=.85)score+=16; else if(floralLike>=.7)score+=8; else score-=6;
-  if(['lotus','petal','roundpetal','leaf','scallop','paisley','feather'].includes(outerStyle))score+=6;
-  if(density>=130 && density<=320)score+=12; else if(density<110)score-=8; else if(density>380)score-=4;
-  score -= repeats*1.4;
+  if(floralLike>.92)score+=18; else if(floralLike>.8)score+=10;
+  if(/lotus|petal|roundpetal|scallop|leaf/.test(outerMotifs))score+=8;
+  if(density>=125 && density<=300)score+=10; else if(density<110)score-=6; else if(density>340)score-=2;
+  const repeats=layers.slice(1).reduce((s,l,i)=>s+(l.motif===layers[i].motif?1:0),0);
+  score-=repeats*2.5;
   return Math.round(score);
 }
 function buildMandalaOnce(diff,profile){
   const rand=(a,b)=>a+Math.random()*(b-a);
   const choose=a=>a[Math.floor(Math.random()*a.length)];
   const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+  const motifFamilies=['lotus','petal','roundpetal','teardrop','leaf','feather','scallop','paisley'];
 
-  const recipeBank={
-    royalLotus:{label:'Royal Lotus',family:'lotus',group:'floral-botanical',center:'lotus',sym:[8,10,12],shapes:['lotus','petal','lotus','leaf','petal','lotus'],outer:'lotus',offset:'alternate'},
-    layeredDahlia:{label:'Layered Dahlia',family:'dahlia',group:'floral-botanical',center:'flower',sym:[10,12,14],shapes:['roundpetal','petal','roundpetal','petal','lotus','petal'],outer:'roundpetal',offset:'alternate'},
-    chrysanthemumBloom:{label:'Chrysanthemum Bloom',family:'chrysanthemum',group:'floral-botanical',center:'rosette',sym:[12,14,16],shapes:['teardrop','petal','teardrop','petal','feather','petal'],outer:'feather',offset:'alternate'},
-    botanicalRosette:{label:'Botanical Rosette',family:'botanical',group:'floral-botanical',center:'lotus',sym:[8,10,12],shapes:['leaf','petal','leaf','lotus','leaf','petal'],outer:'leaf',offset:'paired'},
-    floralLace:{label:'Floral Lace',family:'lace',group:'ornate',center:'rosette',sym:[8,10,12],shapes:['scallop','lotus','petal','scallop','lotus','petal'],outer:'scallop',offset:'alternate'},
-    hennaLotus:{label:'Henna Lotus',family:'henna',group:'ornate',center:'lotus',sym:[8,10,12],shapes:['teardrop','lotus','leaf','teardrop','lotus','leaf'],outer:'lotus',offset:'alternate'},
-    artNouveauBloom:{label:'Art Nouveau Bloom',family:'artNouveau',group:'floral-botanical',center:'flower',sym:[6,8,10],shapes:['leaf','roundpetal','leaf','lotus','roundpetal','leaf'],outer:'leaf',offset:'paired'},
-    sunflowerCrown:{label:'Sunflower Crown',family:'sunflower',group:'floral-botanical',center:'flower',sym:[12,14,16],shapes:['petal','roundpetal','petal','teardrop','petal','leaf'],outer:'petal',offset:'aligned'},
-    roseWindow:{label:'Rose Window',family:'rose',group:'ornate',center:'rosette',sym:[8,10,12],shapes:['roundpetal','scallop','lotus','roundpetal','leaf','lotus'],outer:'roundpetal',offset:'alternate'},
-    bohemianBloom:{label:'Bohemian Bloom',family:'bohemian',group:'ornate',center:'spiralFlower',sym:[8,10,12],shapes:['paisley','petal','teardrop','lotus','leaf','petal'],outer:'paisley',offset:'spiral'}
+  const recipes={
+    royalLotus:{label:'Royal Lotus',family:'lotus',center:'lotus',sym:[8,10,12],rings:[['lotus',1.0,2,.86],['roundpetal',1.0,2,.82],['leaf',1.5,1,.74],['scallop',1.0,2,.92],['petal',1.0,1,.86],['lotus',1.0,2,.90],['leaf',.8,1,.88]]},
+    layeredDahlia:{label:'Layered Dahlia',family:'dahlia',center:'flower',sym:[10,12,14],rings:[['roundpetal',1.0,2,.80],['petal',1.0,2,.76],['roundpetal',1.2,1,.70],['teardrop',1.2,2,.64],['petal',1.0,1,.84],['roundpetal',.9,2,.88],['scallop',.9,1,.94]]},
+    chrysanthemum:{label:'Chrysanthemum',family:'chrysanthemum',center:'rosette',sym:[12,14,16],rings:[['teardrop',1.0,2,.76],['petal',1.0,2,.72],['teardrop',1.0,1,.68],['feather',1.0,2,.60],['petal',.9,1,.82],['leaf',.9,1,.84],['scallop',.8,1,.90]]},
+    botanicalRosette:{label:'Botanical Rosette',family:'botanical',center:'lotus',sym:[8,10,12],rings:[['leaf',1.0,1,.78],['lotus',1.0,2,.84],['petal',1.5,1,.68],['leaf',1.0,2,.70],['roundpetal',1.0,1,.82],['lotus',.9,2,.88],['leaf',.8,1,.92]]},
+    floralLace:{label:'Floral Lace',family:'lace',center:'rosette',sym:[8,10,12],rings:[['scallop',1.0,2,.92],['lotus',1.0,1,.78],['petal',1.5,1,.70],['scallop',1.0,2,.88],['leaf',1.0,1,.76],['roundpetal',1.0,2,.86],['scallop',.8,1,.96]]},
+    hennaBloom:{label:'Henna Bloom',family:'henna',center:'lotus',sym:[8,10,12],rings:[['lotus',1.0,2,.84],['teardrop',1.0,1,.74],['paisley',1.0,1,.62],['leaf',1.3,1,.70],['petal',1.0,1,.78],['paisley',.8,1,.76],['scallop',.8,1,.92]]},
+    sunflowerCrown:{label:'Sunflower Crown',family:'sunflower',center:'flower',sym:[12,14,16],rings:[['petal',1.0,2,.72],['roundpetal',1.0,1,.68],['petal',1.0,1,.70],['teardrop',1.5,1,.58],['roundpetal',1.0,1,.78],['leaf',.9,1,.80],['petal',.8,1,.88]]},
+    roseWindow:{label:'Rose Window',family:'rose',center:'rosette',sym:[8,10,12],rings:[['roundpetal',1.0,2,.78],['scallop',1.0,2,.92],['lotus',1.0,1,.76],['leaf',1.2,1,.72],['roundpetal',1.0,2,.84],['petal',.9,1,.82],['scallop',.8,1,.96]]},
+    paisleyGarden:{label:'Paisley Garden',family:'paisley',center:'spiralFlower',sym:[8,10,12],rings:[['teardrop',1.0,2,.72],['paisley',1.0,1,.60],['leaf',1.0,1,.72],['lotus',1.0,2,.80],['paisley',.9,1,.72],['petal',.9,1,.84],['scallop',.8,1,.92]]},
+    featherHalo:{label:'Feather Halo',family:'feather',center:'flower',sym:[10,12],rings:[['leaf',1.0,1,.76],['feather',1.0,2,.70],['teardrop',1.0,1,.64],['petal',1.5,1,.70],['feather',.9,1,.74],['roundpetal',.9,1,.82],['leaf',.8,1,.88]]},
+    artNouveau:{label:'Art Nouveau Bloom',family:'artnouveau',center:'flower',sym:[6,8,10],rings:[['leaf',1.0,2,.82],['roundpetal',1.0,1,.74],['leaf',1.4,1,.66],['lotus',1.0,2,.82],['paisley',.8,1,.68],['petal',.9,1,.80],['scallop',.8,1,.92]]},
+    laceWheel:{label:'Lace Wheel',family:'lacewheel',center:'rosette',sym:[12],rings:[['scallop',1.0,2,.94],['roundpetal',1.0,1,.74],['leaf',1.3,1,.66],['scallop',1.0,2,.90],['teardrop',1.2,1,.62],['lotus',.9,1,.82],['scallop',.8,1,.96]]}
   };
-  const keys=Object.keys(recipeBank);
+
+  const keys=Object.keys(recipes);
   const mood=profile.mood||'auto';
   const allowed={
-    floral:['royalLotus','layeredDahlia','chrysanthemumBloom','botanicalRosette','artNouveauBloom','sunflowerCrown','roseWindow'],
-    botanical:['botanicalRosette','artNouveauBloom','royalLotus','layeredDahlia','sunflowerCrown'],
-    ornate:['floralLace','hennaLotus','roseWindow','bohemianBloom','royalLotus'],
-    geometric:['floralLace','roseWindow'],
+    floral:['royalLotus','layeredDahlia','chrysanthemum','botanicalRosette','sunflowerCrown','roseWindow','artNouveau'],
+    botanical:['botanicalRosette','royalLotus','artNouveau','hennaBloom','featherHalo'],
+    ornate:['floralLace','hennaBloom','roseWindow','paisleyGarden','laceWheel'],
+    geometric:['roseWindow','floralLace','laceWheel'],
     minimal:['royalLotus','botanicalRosette','roseWindow'],
-    surprise:keys, auto:['royalLotus','layeredDahlia','chrysanthemumBloom','botanicalRosette','floralLace','hennaLotus','artNouveauBloom','sunflowerCrown','roseWindow','bohemianBloom']
+    surprise:keys,
+    auto:keys
   }[mood]||keys;
-  const recipeKey=choose(allowed), recipe=recipeBank[recipeKey];
+  const recipeKey=choose(allowed), recipe=recipes[recipeKey];
   const symmetry=choose(recipe.sym);
   const complexity=profile.complexity||'balanced';
-  const layerCount= complexity==='open'?6:complexity==='intricate'?8:7;
-  const detailLevel= complexity==='open'?1:complexity==='intricate'?3:2;
-  const targetOuter=188;
-  const centerOuter= complexity==='open'?44:complexity==='intricate'?56:50;
-  const bandGap= complexity==='open'?2.4:2.0;
+  const baseRings=recipe.rings.slice();
+  if(complexity==='open' && baseRings.length>6) baseRings.splice(choose([2,3]),1);
+  if(complexity==='intricate' && baseRings.length<8) baseRings.splice(baseRings.length-1,0,[choose(['teardrop','leaf','petal']),1.2,1,.66]);
+
+  const targetOuter=complexity==='intricate'?194:(complexity==='open'?186:190);
+  const centerOuter=complexity==='intricate'?58:(complexity==='open'?46:52);
+  const bandGap=complexity==='intricate'?1.7:2.0;
+  const layerCount=baseRings.length;
   const usable=targetOuter-centerOuter-bandGap*(layerCount-1);
   const baseBand=usable/layerCount;
   const layers=[];
   let r=centerOuter;
   let phase=rand(0,Math.PI*2);
 
-  const countPatternOpen=[1,.9,1.1,.9,1.1,1];
-  const countPatternBalanced=[1,1,.85,1.15,.95,1.1,1];
-  const countPatternIntricate=[1,1.15,.9,1.2,.95,1.15,1,.9];
-  const countPattern=complexity==='open'?countPatternOpen:(complexity==='intricate'?countPatternIntricate:countPatternBalanced);
-
   for(let i=0;i<layerCount;i++){
+    const [motif0,mult0,nest0,width0]=baseRings[i];
+    let motif=motif0;
+    if(i>0 && motif===layers[i-1]?.motif){
+      const alts=motifFamilies.filter(m=>m!==motif && m!==layers[i-1]?.motif);
+      motif=choose(alts);
+    }
     const isOuter=i===layerCount-1;
-    const weightBase=complexity==='open'?1.06:(complexity==='intricate'?0.96:1.0);
-    const bandVariation=(i%2===0?1.07:.95)*rand(.98,1.03)*weightBase;
-    const thickness=baseBand*bandVariation;
+    const thickness=baseBand*(mult0*rand(.94,1.07));
     const inner=r+(i?bandGap:2.2);
     const outer=isOuter?targetOuter:inner+thickness;
-    let motif=isOuter?recipe.outer:recipe.shapes[i%recipe.shapes.length];
-    if(i===0 && ['scallop','paisley','leaf'].includes(motif))motif='lotus';
-    if(i===1 && motif==='paisley')motif='petal';
-    let count=Math.round(symmetry*(countPattern[i]||1));
-    if(motif==='paisley' || motif==='roundpetal')count=Math.max(symmetry,Math.round(count*.9));
-    count=clamp(count,6,22);
-    if(count%2===1 && symmetry%2===0)count+=1;
+    let count=Math.round(symmetry*(1+(rand(-.08,.08))) * (i%3===1?1.0:(i%3===2?1.12:1.0)));
+    if(motif in {scallop:1,roundpetal:1,lotus:1,petal:1}) count=Math.round(count* (i<2?1:1.0));
+    if(width0<.68) count=Math.max(6,Math.round(count*.95));
+    count=clamp(count,6,24);
+    if(count%2===1 && symmetry%2===0) count+=1;
     let rotation=phase;
-    if(recipe.offset==='alternate' && i%2)rotation+=Math.PI/count;
-    if(recipe.offset==='paired' && i%2)rotation+=Math.PI/(count*2);
-    if(recipe.offset==='spiral')rotation+=i*(Math.PI/(Math.max(8,count)*4.8));
-    const widthFactor=isOuter?rand(.84,.92):rand(.78,.90);
-    const pulse=0;
-    const pulseAmp=0;
-    let nested = isOuter ? Math.max(1,detailLevel-1) : (i<2?detailLevel:Math.max(1,detailLevel-(i%3===0?0:1)));
+    if(i%2) rotation+=Math.PI/count;
+    if(recipeKey==='paisleyGarden') rotation+=i*(Math.PI/(count*5));
+    if(recipeKey==='sunflowerCrown' && i>=3) rotation-=Math.PI/(count*2.8);
+    const widthFactor=clamp(width0 + rand(-.03,.03), .58, .95);
+    const nested=Math.max(1, nest0 + (complexity==='intricate' && !isOuter ? 1:0) - (complexity==='open' && i>3 ? 1:0));
     layers.push({
-      motif,inner,outer,count,rotation,widthFactor,pulse,pulseAmp,
+      motif,inner,outer,count,rotation,widthFactor,pulse:0,pulseAmp:0,
       nested,detailMode:nested?'nested':'plain',dotRing:false,micro:false,
-      fringe:'none',variant:rand(.48,.74),weight:isOuter?1.55:1.02,
+      fringe:'none',variant:rand(.48,.76),weight:isOuter?1.2:0.95,
       visualBand:i/Math.max(1,layerCount-1),sourceFamily:recipe.label
     });
     r=outer;
@@ -3034,11 +3039,11 @@ function buildMandalaOnce(diff,profile){
 
   const item={
     type:'mandala',recipeKey,recipeLabel:recipe.label,styleName:recipe.label,
-    familyKey:recipe.family,hybridKey:null,hybridStyle:null,familyGroup:recipe.group,
-    silhouetteKey:recipeKey==='bohemianBloom'?'ornate-floral':'floral-crown',
-    symmetry,center:{style:recipe.center,petals:symmetry,rings:complexity==='open'?3:4},layers,
+    familyKey:recipe.family,hybridKey:null,hybridStyle:null,familyGroup:'premium-floral',
+    silhouetteKey:recipe.family,
+    symmetry,center:{style:recipe.center,petals:symmetry,rings:complexity==='open'?3:(complexity==='intricate'?5:4)},layers,
     compositionMode:mood,coloringComplexity:complexity,
-    qualityScore:94+Math.round(rand(0,5)),finalQualityScore:94+Math.round(rand(0,5)),
+    qualityScore:95+Math.round(rand(0,4)),finalQualityScore:95+Math.round(rand(0,4)),
     structuralSignature:recipeKey+'|'+symmetry+'|'+layers.map(x=>x.motif+':'+x.count).join(','),
     validated:true,validationTier:'structural',coloringPage:true,titleMode:'mandala'
   };
@@ -3055,18 +3060,19 @@ function makeMandala(diff,priorMandalas=[]){
   if(profile.complexity==='auto')profile.complexity=diff==='Easy'?'open':diff==='Hard'?'intricate':'balanced';
   const prior=(priorMandalas||[]).filter(x=>x&&x.type==='mandala');
   let best=null,bestScore=-1e9;
-  const attempts=profile.quality==='elite'?20:profile.quality==='strong'?12:6;
+  const attempts=profile.quality==='elite'?28:profile.quality==='strong'?18:10;
   for(let i=0;i<attempts;i++){
     const cand=buildMandalaOnce(diff,profile);
-    let score=cand.qualityScore;
-    const recent=prior.slice(-12);
+    let score=(typeof scoreMandalaDesign==='function'?scoreMandalaDesign(cand,profile):cand.qualityScore)||0;
+    const recent=prior.slice(-18);
     const sameRecipe=prior.filter(x=>x.recipeKey===cand.recipeKey).length;
+    const sameFamily=prior.filter(x=>x.familyKey===cand.familyKey).length;
     const sameSym=prior.filter(x=>x.symmetry===cand.symmetry).length;
-    if(profile.bookBalance){score-=sameRecipe*2.4;score-=Math.max(0,sameSym-2)*.8}
+    if(profile.bookBalance){score-=sameRecipe*5.0;score-=sameFamily*2.5;score-=Math.max(0,sameSym-1)*1.5}
     if(profile.diversity&&recent.length){
       const sim=Math.max(...recent.map(x=>mandalaSimilarityScore(cand,x)));
       cand.maxRecentSimilarity=sim;
-      if(sim>.84)score-=18; else if(sim>.72)score-=8; else if(sim<.48)score+=3;
+      if(sim>.86)score-=22; else if(sim>.76)score-=12; else if(sim<.48)score+=5;
     }
     cand.finalQualityScore=Math.round(score);
     if(score>bestScore){bestScore=score;best=cand}
@@ -3936,7 +3942,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=14.1',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=14.2',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
@@ -3949,7 +3955,7 @@ async function updateOfflineStatus(){
   }
   try{
     await navigator.serviceWorker.ready;
-    const cache=await caches.open('puzzle-studio-v14-1');
+    const cache=await caches.open('puzzle-studio-v14-2');
     const cached=await cache.match('./index.html');
     el.textContent=cached
       ? 'Offline ready — this version is cached on this device.'
