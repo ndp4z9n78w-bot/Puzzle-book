@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v10.4 — Clean Pages + Page Numbers</title>
+<title>Offline Puzzle Studio v10.5 — Offline Reliability</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -285,8 +285,9 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v10.4</span></h1><div class="build-version">Exact build: v10.4 • Clean Pages + Page Numbers</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v10.4</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v10.5</span></h1><div class="build-version">Exact build: v10.5 • Offline Reliability</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v10.5</div>
+<div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
 <label>Puzzle type</label>
@@ -547,7 +548,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='10.4';
+const PUZZLE_STUDIO_VERSION='10.5';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]};
@@ -2792,9 +2793,33 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=10.4',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=10.5',{updateViaCache:'none'}).catch(()=>{});
   });
 }
+
+async function updateOfflineStatus(){
+  const el=document.getElementById('offlineStatus');
+  if(!el)return;
+  if(!('serviceWorker' in navigator)){
+    el.textContent='Offline cache status: service workers not supported in this browser.';
+    return;
+  }
+  try{
+    await navigator.serviceWorker.ready;
+    const cache=await caches.open('puzzle-studio-v10-5');
+    const cached=await cache.match('./index.html');
+    el.textContent=cached
+      ? 'Offline ready — this version is cached on this device.'
+      : 'Offline cache status: preparing… keep this page open while online.';
+  }catch(e){
+    el.textContent='Offline cache status: unavailable.';
+  }
+}
+window.addEventListener('load',()=>{
+  setTimeout(updateOfflineStatus,800);
+  setTimeout(updateOfflineStatus,2500);
+});
+window.addEventListener('online',()=>setTimeout(updateOfflineStatus,500));
 </script>
 </body>
 </html>
