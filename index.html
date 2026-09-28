@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v16.0 — Tested Mixed Book Fix</title>
+<title>Offline Puzzle Studio v16.1 — Tested Mixed Book Fix</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -452,10 +452,10 @@ details summary{cursor:pointer;font-weight:700}
 
 .mandala-wrap{
   display:flex;justify-content:center;align-items:center;
-  width:100%;min-height:7.35in;padding:.04in 0;
+  width:100%;min-height:6.95in;padding:.04in 0;
 }
 .mandala-svg{
-  width:min(7.45in,99%);max-height:7.45in;aspect-ratio:1/1;display:block;
+  width:min(6.95in,96%);max-height:6.95in;aspect-ratio:1/1;display:block;
 }
 
 
@@ -475,8 +475,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v16.0</span></h1><div class="build-version">Exact build: v16.0 • Traced Premium Mandala Engine + Real Difficulty Toggles</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v16.0</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v16.1</span></h1><div class="build-version">Exact build: v16.1 • Smooth Lines + Shape Diversity + Safe Fit</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v16.1</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -785,7 +785,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='16.0';
+const PUZZLE_STUDIO_VERSION='16.1';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]},overviewMandalaReview=false;
@@ -2961,26 +2961,25 @@ function buildMandalaOnce(diff,profile){
     Hard:{inner:['lotusA','lotusB','geoC'],mid:['lotusA','lotusB','geoC'],outer:['lotusA','lotusB','geoC']}
   }[diff]||{inner:['lotusA','lotusB','geoC'],mid:['lotusA','lotusB','geoC'],outer:['lotusA','lotusB','geoC']};
   const moodPool={
-    floral:['lotusA','lotusB','geoC'],
-    botanical:['lotusA','lotusB'],
-    ornate:['lotusA','lotusB','geoC'],
-    geometric:['geoA','geoB','geoC'],
-    minimal:['geoA','geoB'],
-    surprise:['lotusA','lotusB','geoA','geoB','geoC'],
-    auto:null
+    floral:['lotusA','lotusB','geoC'], botanical:['lotusA','lotusB'], ornate:['lotusA','lotusB','geoC'],
+    geometric:['geoA','geoB','geoC'], minimal:['geoA','geoB'], surprise:['lotusA','lotusB','geoA','geoB','geoC'], auto:null
   }[mood];
-  const pickFrom=(base)=>choose(moodPool ? base.filter(x=>moodPool.includes(x)).concat(moodPool.filter(x=>!base.includes(x))) : base);
-  let inner=pickFrom(pools.inner),mid=pickFrom(pools.mid),outer=pickFrom(pools.outer);
-  // Whole-template designs remain in the mix, but most generations hybridize bands for variety.
-  if(Math.random()<.28){mid=inner;outer=inner}
-  else if(Math.random()<.35){outer=mid}
-  const all=[inner,mid,outer];
-  const lotusCount=all.filter(x=>x.startsWith('lotus')).length;
+  const pickFrom=base=>choose(moodPool ? base.filter(x=>moodPool.includes(x)).concat(moodPool.filter(x=>!base.includes(x))) : base);
+  let inner=pickFrom(pools.inner), mid=pickFrom(pools.mid), outer=pickFrom(pools.outer);
+  if(Math.random()<.18){mid=inner;outer=inner}
+  else if(Math.random()<.22){outer=mid}
+  const silhouettes=['round','ovalTall','ovalWide','lotus6','star8','diamond4','cushion4'];
+  let silhouette=choose(silhouettes);
+  if(mood==='geometric')silhouette=choose(['round','star8','diamond4','cushion4','ovalWide']);
+  if(mood==='floral'||mood==='botanical')silhouette=choose(['round','ovalTall','lotus6','cushion4']);
+  if(mood==='minimal')silhouette=choose(['round','ovalTall','ovalWide']);
+  const rotations={round:0,ovalTall:0,ovalWide:0,lotus6:Math.random()*Math.PI/6,star8:Math.random()*Math.PI/8,diamond4:Math.PI/4,cushion4:0};
+  const all=[inner,mid,outer],lotusCount=all.filter(x=>x.startsWith('lotus')).length;
   const family=lotusCount>=2?'lotus':(all.every(x=>x.startsWith('geo'))?'geometric':'hybrid');
   return {
-    type:'mandala',blueprintKey:all.join('-'),blueprintLabel:'Premium Hybrid Mandala',recipeKey:all.join('-'),recipeLabel:'Premium Hybrid Mandala',styleName:'Premium Hybrid Mandala',
-    familyKey:family,hybridKey:all.join('|'),hybridStyle:'Premium traced hybrid',familyGroup:family,silhouetteKey:outer,
-    symmetry:0,center:{style:'traced',petals:0,rings:0},components:[],layers:[],bandTemplates:{inner,mid,outer},
+    type:'mandala',blueprintKey:all.join('-')+'-'+silhouette,blueprintLabel:'Premium Smooth Mandala',recipeKey:all.join('-')+'-'+silhouette,recipeLabel:'Premium Smooth Mandala',styleName:'Premium Smooth Mandala',
+    familyKey:family,hybridKey:all.join('|'),hybridStyle:'Premium smooth hybrid',familyGroup:family,silhouetteKey:silhouette,
+    symmetry:0,center:{style:'traced',petals:0,rings:0},components:[],layers:[],bandTemplates:{inner,mid,outer},silhouette,shapeRotation:rotations[silhouette]||0,
     compositionMode:mood,coloringComplexity:profile.complexity==='auto'?(diff==='Easy'?'open':diff==='Hard'?'intricate':'balanced'):profile.complexity,
     difficulty:diff,validated:true,validationTier:'structural',coloringPage:true,titleMode:'mandala'
   };
@@ -2988,23 +2987,23 @@ function buildMandalaOnce(diff,profile){
 function makeMandala(diff,priorMandalas=[]){
   const profile={mood:mandalaControlValue('mandalaMood','auto'),complexity:mandalaControlValue('mandalaComplexity','auto'),quality:mandalaControlValue('mandalaQuality','strong'),diversity:!!mandalaControlValue('mandalaDiversity',true),bookBalance:!!mandalaControlValue('mandalaBookBalance',true)};
   const prior=(priorMandalas||[]).filter(x=>x&&x.type==='mandala');
-  const attempts=profile.quality==='elite'?40:profile.quality==='strong'?28:16;
+  const attempts=profile.quality==='elite'?44:profile.quality==='strong'?32:18;
   let best=null,bestScore=-1e9;
   for(let i=0;i<attempts;i++){
     const cand=buildMandalaOnce(diff,profile);
     const sig=cand.blueprintKey;
     let score=scoreMandalaDesign(cand,profile);
     const same=prior.filter(x=>(x.blueprintKey||x.recipeKey)===sig).length;
+    const sameSil=prior.filter(x=>(x.silhouette||x.silhouetteKey)===cand.silhouette).length;
     const sameOuter=prior.filter(x=>x.bandTemplates?.outer===cand.bandTemplates.outer).length;
-    const sameMid=prior.filter(x=>x.bandTemplates?.mid===cand.bandTemplates.mid).length;
-    if(profile.bookBalance){score-=same*28;score-=sameOuter*2;score-=sameMid*1.5}
-    const recent=prior.slice(-8);
+    if(profile.bookBalance){score-=same*34;score-=sameSil*4.5;score-=sameOuter*1.5}
+    const recent=prior.slice(-10);
     if(profile.diversity){
-      if(recent.some(x=>(x.blueprintKey||x.recipeKey)===sig))score-=35;
-      if(recent.length>=2 && recent.slice(-2).every(x=>x.bandTemplates?.outer===cand.bandTemplates.outer))score-=6;
+      if(recent.some(x=>(x.blueprintKey||x.recipeKey)===sig))score-=40;
+      if(recent.length && (recent[recent.length-1].silhouette||recent[recent.length-1].silhouetteKey)===cand.silhouette)score-=18;
+      if(recent.length>=2 && recent.slice(-2).every(x=>x.bandTemplates?.outer===cand.bandTemplates.outer))score-=5;
     }
-    cand.qualityScore=score;cand.finalQualityScore=score;
-    cand.structuralSignature=sig+'|'+diff+'|'+cand.compositionMode;
+    cand.qualityScore=score;cand.finalQualityScore=score;cand.structuralSignature=sig+'|'+diff+'|'+cand.compositionMode;
     if(score>bestScore){bestScore=score;best=cand}
   }
   return best||buildMandalaOnce(diff,profile);
@@ -3024,15 +3023,46 @@ function mandalaSvg(item){
   svg.setAttribute('viewBox','0 0 420 420');svg.setAttribute('class','mandala-svg');svg.setAttribute('fill','none');svg.setAttribute('stroke','#111');svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');
   const bands=item.bandTemplates||{inner:'lotusA',mid:'lotusA',outer:'lotusA'};
   const bandMap=[['inner',0],['mid',1],['outer',2]];
-  const stroke=item.difficulty==='Easy'?.88:item.difficulty==='Hard'?.66:.76;
+  const stroke=item.difficulty==='Easy'?.82:item.difficulty==='Hard'?.60:.70;
+  const silhouette=item.silhouette||item.silhouetteKey||'round';
+  const rot=item.shapeRotation||0;
+  const cx=210,cy=210,baseScale=.86;
+
+  function warpPoint(x,y){
+    let dx=x-cx,dy=y-cy;
+    let a=Math.atan2(dy,dx)+rot,r=Math.hypot(dx,dy)*baseScale;
+    let sx=1,sy=1,m=1;
+    if(silhouette==='ovalTall'){sx=.82;sy=1.02}
+    else if(silhouette==='ovalWide'){sx=1.02;sy=.82}
+    else if(silhouette==='lotus6')m=.92+.08*Math.cos(6*a);
+    else if(silhouette==='star8')m=.91+.09*Math.cos(8*a);
+    else if(silhouette==='diamond4')m=.90+.10*Math.cos(4*a);
+    else if(silhouette==='cushion4')m=.95+.05*Math.cos(4*a);
+    dx=Math.cos(a)*r*m*sx;dy=Math.sin(a)*r*m*sy;
+    return [cx+dx,cy+dy];
+  }
+  function parsePoints(d){
+    const pts=[]; const re=/[ML]\s*(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)/g; let m;
+    while((m=re.exec(d)))pts.push(warpPoint(+m[1],+m[2]));
+    return pts;
+  }
+  function smoothD(d){
+    const pts=parsePoints(d); if(!pts.length)return '';
+    if(pts.length===1)return `M ${pts[0][0].toFixed(2)} ${pts[0][1].toFixed(2)}`;
+    if(pts.length===2)return `M ${pts[0][0].toFixed(2)} ${pts[0][1].toFixed(2)} L ${pts[1][0].toFixed(2)} ${pts[1][1].toFixed(2)}`;
+    let out=`M ${pts[0][0].toFixed(2)} ${pts[0][1].toFixed(2)}`;
+    for(let i=0;i<pts.length-1;i++){
+      const p0=i===0?pts[i]:pts[i-1],p1=pts[i],p2=pts[i+1],p3=i+2<pts.length?pts[i+2]:p2;
+      const c1=[p1[0]+(p2[0]-p0[0])/6,p1[1]+(p2[1]-p0[1])/6];
+      const c2=[p2[0]-(p3[0]-p1[0])/6,p2[1]-(p3[1]-p1[1])/6];
+      out+=` C ${c1[0].toFixed(2)} ${c1[1].toFixed(2)} ${c2[0].toFixed(2)} ${c2[1].toFixed(2)} ${p2[0].toFixed(2)} ${p2[1].toFixed(2)}`;
+    }
+    return out;
+  }
   for(const [key,band] of bandMap){
     const template=MANDALA_PREMIUM_TEMPLATES[bands[key]]||MANDALA_PREMIUM_TEMPLATES.lotusA;
-    const g=document.createElementNS(ns,'g');
-    g.setAttribute('fill','none');g.setAttribute('stroke','#111');g.setAttribute('stroke-width',stroke);g.setAttribute('stroke-linecap','round');g.setAttribute('stroke-linejoin','round');
-    template.forEach(entry=>{
-      if(entry[1]!==band)return;
-      const p=document.createElementNS(ns,'path');p.setAttribute('d',entry[0]);g.appendChild(p);
-    });
+    const g=document.createElementNS(ns,'g');g.setAttribute('fill','none');g.setAttribute('stroke','#111');g.setAttribute('stroke-width',stroke);g.setAttribute('stroke-linecap','round');g.setAttribute('stroke-linejoin','round');
+    template.forEach(entry=>{if(entry[1]!==band)return;const d=smoothD(entry[0]);if(!d)return;const p=document.createElementNS(ns,'path');p.setAttribute('d',d);g.appendChild(p);});
     svg.appendChild(g);
   }
   const wrap=document.createElement('div');wrap.className='mandala-wrap';wrap.appendChild(svg);return wrap;
@@ -3838,7 +3868,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=16.0',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=16.1',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
@@ -3851,7 +3881,7 @@ async function updateOfflineStatus(){
   }
   try{
     await navigator.serviceWorker.ready;
-    const cache=await caches.open('puzzle-studio-v16-0');
+    const cache=await caches.open('puzzle-studio-v16-1');
     const cached=await cache.match('./index.html');
     el.textContent=cached
       ? 'Offline ready — this version is cached on this device.'
