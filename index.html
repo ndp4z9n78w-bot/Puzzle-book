@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v10.6 — Visual How-To Pages</title>
+<title>Offline Puzzle Studio v10.7 — Removable Pages</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -329,11 +329,43 @@ details summary{cursor:pointer;font-weight:700}
 }
 .visual-note{font-size:12px;line-height:1.35}
 @media(max-width:700px){.visual-howto{grid-template-columns:1fr}}
+
+.sheet{position:relative}
+.page-edit-tools{
+  position:absolute;
+  top:8px;
+  right:8px;
+  z-index:50;
+  display:flex;
+  gap:6px;
+}
+.page-edit-tools button{
+  font-size:11px;
+  padding:5px 8px;
+  border:1px solid #999;
+  border-radius:6px;
+  background:#fff;
+  color:#111;
+}
+.page-edit-tools button:hover{background:#f2f2f2}
+@media print{.page-edit-tools{display:none!important}}
+.page-manager-list{display:grid;grid-template-columns:1fr;gap:6px;margin-top:8px}
+.page-manager-row{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:center;
+  padding:7px 9px;
+  border:1px solid #ddd;
+  border-radius:7px;
+  background:#fafafa;
+  font-size:12px;
+}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v10.6</span></h1><div class="build-version">Exact build: v10.6 • Visual How-To Pages</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v10.6</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v10.7</span></h1><div class="build-version">Exact build: v10.7 • Removable Pages</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v10.7</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -578,7 +610,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 
 <p class="small"><b>Offline:</b> no internet, server, account, or installation is required.</p><p class="small"><b>KDP Book Builder:</b> mix Easy, Medium, and Hard puzzles in one interior, add front matter and section dividers, and send all answer keys to the back automatically.</p><p class="small"><b>Expanded library:</b> word, number, logic, Sudoku-variant, and math puzzle generators.</p><p class="small"><b>Quality tools:</b> validation still runs behind the scenes for Quality Check and Preflight, but verification labels are no longer printed on puzzle pages.</p><p class="small"><b>Difficulty:</b> Book difficulty is controlled by the Easy / Medium / Hard puzzle counts, or per-row difficulty in Mixed Puzzle Book. The old standalone difficulty selector has been removed.</p><p class="small"><b>Presets & editing:</b> choose a book preset, use Large Print, open Book Overview, regenerate individual puzzles, delete them, or move them up/down without rebuilding the whole book.</p><p class="small"><b>Variety:</b> High/Maximum variety changes pattern families, sequence rules, cage layouts, path styles, search directions, and cryptogram mappings so large books feel less repetitive.</p><p class="small"><b>KDP readiness:</b> Preflight now checks puzzle/solution matching, mixed-book counts, page-count consistency, frames/safe-area heuristics, blank pages, section starts, and export readiness.</p><p class="small"><b>Mixed books:</b> choose puzzle type, difficulty, and quantity for every mixed-book row. <b>Design:</b> frame templates, page typography, multi-puzzle layouts, mirrored page numbers, right-hand section starts, spread preview, and final preflight checks.</p>
 <p class="small"><b>Validation:</b> Sudoku, Kakuro, and Slitherlink are solver-checked. The generator rejects a puzzle unless it finds exactly one solution. Mazes are generated with a verified entrance-to-exit path.</p>
-<p class="small"><b>Smart assembly:</b> tiny sections avoid wasteful divider pages, larger section dividers stay right-page aligned, solution pages adapt their density to each puzzle type, and PDF/JSON exports receive organized filenames automatically.</p><p class="small"><b>How-to pages:</b> Each puzzle type now gets a visual instruction page with mini grids, arrows, highlighted cells, and worked examples.<br><b>PDF:</b> choose “Create PDF,” then select <b>Save as PDF</b>. For KDP interiors, keep browser scaling at 100% and margins set to none/default as appropriate.</p>
+<p class="small"><b>Page editing:</b> Every rendered page can now be removed individually. Page numbers update automatically and removed pages are excluded from PDF export until you rebuild the book.</p><p class="small"><b>Smart assembly:</b> tiny sections avoid wasteful divider pages, larger section dividers stay right-page aligned, solution pages adapt their density to each puzzle type, and PDF/JSON exports receive organized filenames automatically.</p><p class="small"><b>How-to pages:</b> Each puzzle type now gets a visual instruction page with mini grids, arrows, highlighted cells, and worked examples.<br><b>PDF:</b> choose “Create PDF,” then select <b>Save as PDF</b>. For KDP interiors, keep browser scaling at 100% and margins set to none/default as appropriate.</p>
 </section>
 
 <section class="panel preview">
@@ -587,15 +619,16 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 <button class="secondary" id="singlePreview">Single Page</button>
 <button class="secondary" id="preflight">Run Preflight</button>
 <button class="secondary" id="bookOverviewBtn">Book Overview</button>
+<button class="secondary" id="pageManagerBtn">Page Manager</button>
 <button class="secondary" id="zoomOut">−</button><button class="secondary" id="zoomIn">+</button>
 <span class="small" id="status" style="align-self:center">Ready.</span>
 </div>
-<div id="kdpReadyBanner" class="kdp-ready-banner">KDP readiness has not been checked yet.</div><div id="preflightResults" class="qc-box">Preflight has not been run yet.</div><div id="bookOverview" class="hidden"><h3>Book Overview</h3><div class="overview-grid" id="overviewGrid"></div></div><div class="pages" id="pages"></div>
+<div id="kdpReadyBanner" class="kdp-ready-banner">KDP readiness has not been checked yet.</div><div id="preflightResults" class="qc-box">Preflight has not been run yet.</div><div id="bookOverview" class="hidden"><h3>Book Overview</h3><div class="overview-grid" id="overviewGrid"></div></div><div id="pageManager" class="hidden"><h3>Page Manager</h3><p class="small">Remove any rendered page from the current book. Removed pages are excluded from PDF export. Rebuilding the book restores all generated pages.</p><div id="pageManagerList" class="page-manager-list"></div></div><div class="pages" id="pages"></div>
 </section>
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='10.6';
+const PUZZLE_STUDIO_VERSION='10.7';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]};
@@ -1601,7 +1634,7 @@ function textPdfCommands(sheet,pw,ph){
     acceptNode(node){
       if(!node.nodeValue||!node.nodeValue.trim())return NodeFilter.FILTER_REJECT;
       const p=node.parentElement;
-      if(!p||p.closest('svg')||p.closest('.pagenum')||!isVisibleEl(p))return NodeFilter.FILTER_REJECT;
+      if(!p||p.closest('svg')||p.closest('.pagenum')||p.closest('.page-edit-tools')||!isVisibleEl(p))return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;
     }
   });
@@ -1630,7 +1663,7 @@ function textPdfCommands(sheet,pw,ph){
 }
 function borderPdfCommands(sheet,pw,ph){
   const sr=sheet.getBoundingClientRect();let out='';
-  const els=[...sheet.querySelectorAll('td,th,.howto-step,.howto-example,.crypto-box,.sequence,.puzzle-card')];
+  const els=[...sheet.querySelectorAll('td,th,.howto-step,.howto-example,.crypto-box,.sequence,.puzzle-card')].filter(el=>!el.closest('.page-edit-tools'));
   for(const el of els){
     if(!isVisibleEl(el))continue;
     const pr=relativePdfRect(el,sr,pw,ph),cs=getComputedStyle(el);
@@ -2271,6 +2304,75 @@ function kenkenTable(item,answer){
  let map={};item.cages.forEach(cg=>cg.cells.forEach(([r,c])=>map[`${r},${c}`]=cg));
  [...t.rows].forEach((tr,r)=>[...tr.cells].forEach((td,c)=>{let cg=map[`${r},${c}`];if(cg&&cg.cells[0][0]===r&&cg.cells[0][1]===c){let s=document.createElement('span');s.className='cage';s.textContent=`${cg.target}${cg.op}`;td.appendChild(s)}td.style.borderStyle='dotted'}));return t
 }
+
+function describeSheet(sheet,index){
+  const h=sheet.querySelector('h1,h2,h3');
+  let label=h?.textContent?.trim()||'Puzzle page';
+  label=label.replace(/\s+/g,' ');
+  return `Page ${index+1}: ${label}`;
+}
+function renumberRenderedSheets(){
+  const sheets=[...document.querySelectorAll('#pages .sheet')];
+  const start=Math.max(1,+$('startPageNumber').value||1);
+  sheets.forEach((sheet,i)=>{
+    const num=start+i;
+    let el=sheet.querySelector('.pagenum');
+    if($('numbers').checked){
+      if(!el){
+        el=document.createElement('div');
+        el.className='pagenum';
+        sheet.appendChild(el);
+      }
+      el.textContent=num;
+      sheet.classList.toggle('page-left',num%2===0);
+      sheet.classList.toggle('page-right',num%2===1);
+    }else if(el){
+      el.remove();
+    }
+  });
+}
+function removeRenderedPage(sheet){
+  if(!sheet||!sheet.parentNode)return;
+  sheet.remove();
+  renumberRenderedSheets();
+  refreshPageEditTools();
+  renderPageManager();
+  $('status').textContent=`Current edited book: ${document.querySelectorAll('#pages .sheet').length} pages`;
+}
+function refreshPageEditTools(){
+  const sheets=[...document.querySelectorAll('#pages .sheet')];
+  sheets.forEach((sheet,i)=>{
+    let tools=sheet.querySelector('.page-edit-tools');
+    if(!tools){
+      tools=document.createElement('div');
+      tools.className='page-edit-tools';
+      const b=document.createElement('button');
+      b.type='button';
+      b.textContent='Remove Page';
+      b.onclick=()=>removeRenderedPage(sheet);
+      tools.appendChild(b);
+      sheet.appendChild(tools);
+    }
+    const b=tools.querySelector('button');
+    if(b)b.title=`Remove ${describeSheet(sheet,i)}`;
+  });
+}
+function renderPageManager(){
+  const root=$('pageManagerList');if(!root)return;
+  root.innerHTML='';
+  const sheets=[...document.querySelectorAll('#pages .sheet')];
+  sheets.forEach((sheet,i)=>{
+    const row=document.createElement('div');
+    row.className='page-manager-row';
+    const label=document.createElement('span');
+    label.textContent=describeSheet(sheet,i);
+    const b=document.createElement('button');
+    b.type='button';b.className='secondary';b.textContent='Remove';
+    b.onclick=()=>removeRenderedPage(sheet);
+    row.appendChild(label);row.appendChild(b);root.appendChild(row);
+  });
+  if(!sheets.length)root.innerHTML='<div class="small">No rendered pages.</div>';
+}
 function render(){
  let root=$('pages');root.innerHTML='';document.body.classList.toggle('large-print',$('largePrint')?.checked);let page=Math.max(1,+$('startPageNumber').value||1),title=$('bookTitle').value||'Puzzle Book';
  let subtitle=$('subtitle').value||'',author=$('authorName').value||'',isBook=$('buildMode').value==='book';
@@ -2413,6 +2515,7 @@ function render(){
  applyZoom();
  let good=project.items.filter(x=>x.validated).length;
  if(!$('bookOverview').classList.contains('hidden'))renderOverview();
+ refreshPageEditTools();renumberRenderedSheets();renderPageManager();
  $('status').textContent=`${project.items.length} puzzles • ${page-1} total pages • ${good}/${project.items.length} validated`;
  updateSummary();
 }
@@ -2858,6 +2961,7 @@ for(let id of ['subtitle','authorName'])$(id).addEventListener('input',render);
 $('qc').onclick=runQC;
 document.querySelectorAll('.presetBtn').forEach(b=>b.onclick=()=>applyPreset(b.dataset.preset));
 $('bookOverviewBtn').onclick=()=>{$('bookOverview').classList.toggle('hidden');if(!$('bookOverview').classList.contains('hidden'))renderOverview()};
+$('pageManagerBtn').onclick=()=>{$('pageManager').classList.toggle('hidden');if(!$('pageManager').classList.contains('hidden'))renderPageManager()};
 $('preflight').onclick=runPreflight;
 $('spreadPreview').onclick=()=>setSpreadPreview(true);
 $('singlePreview').onclick=()=>setSpreadPreview(false);
@@ -2875,7 +2979,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=10.6',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=10.7',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 

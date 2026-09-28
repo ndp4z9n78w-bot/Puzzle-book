@@ -1,4 +1,4 @@
-const CACHE='puzzle-studio-v10-6';
+const CACHE='puzzle-studio-v10-7';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./404.html'];
 
 self.addEventListener('install',event=>{
