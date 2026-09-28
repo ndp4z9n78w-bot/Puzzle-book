@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v12.5 — Tested Mixed Book Fix</title>
+<title>Offline Puzzle Studio v12.7 — Tested Mixed Book Fix</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -441,8 +441,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v12.5</span></h1><div class="build-version">Exact build: v12.5 • Mandala UI + Author Removal</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v12.5</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v12.7</span></h1><div class="build-version">Exact build: v12.7 • Varied Mandala Silhouettes</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v12.7</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -713,7 +713,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='12.5';
+const PUZZLE_STUDIO_VERSION='12.7';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]};
@@ -2342,43 +2342,75 @@ function slitherSvg(item,answer){
 }
 
 
+
+
 function makeMandala(diff){
   const cfg={
-    Easy:{sym:[8,10],rings:[3,4],layers:[2,3]},
-    Medium:{sym:[10,14],rings:[4,6],layers:[3,4]},
-    Hard:{sym:[14,20],rings:[6,8],layers:[4,6]}
-  }[diff]||{sym:[10,14],rings:[4,6],layers:[3,4]};
+    Easy:{rings:[3,4],shapes:[14,22],size:[9,18]},
+    Medium:{rings:[4,6],shapes:[22,34],size:[11,22]},
+    Hard:{rings:[6,8],shapes:[34,52],size:[12,26]}
+  }[diff]||{rings:[4,6],shapes:[22,34],size:[11,22]};
 
-  const randInt=([a,b])=>a+Math.floor(Math.random()*(b-a+1));
-  const symmetry=randInt(cfg.sym),rings=randInt(cfg.rings),layers=randInt(cfg.layers);
-  const phase=Math.random()*Math.PI*2;
-  const ringData=[];
+  const rand=(a,b)=>a+Math.random()*(b-a);
+  const randInt=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+  const choose=(arr)=>arr[Math.floor(Math.random()*arr.length)];
 
-  for(let ring=1;ring<=rings;ring++){
-    const radius=28+ring*(148/rings);
-    const offset=(ring%2?0:Math.PI/symmetry);
-    ringData.push({radius,offset});
+  const families=['circle','square','diamond','star','lotus','hexagon','octagon','scallop','cross'];
+  const frameFamily=choose(families);
+  const ringCount=randInt(cfg.rings[0],cfg.rings[1]);
+  const rings=[];
+  for(let i=1;i<=ringCount;i++){
+    rings.push(18+i*(156/(ringCount+1))+rand(-4,4));
   }
 
-  const cross=[];
-  for(let layer=1;layer<=layers;layer++){
-    const r1=25+layer*(130/(layers+1));
-    const r2=Math.min(178,r1+20+Math.random()*14);
-    const turn=(layer%2?1:-1)*Math.PI/symmetry*(0.45+Math.random()*.25);
-    for(let i=0;i<symmetry;i++){
-      const a=phase+Math.PI*2*i/symmetry;
-      cross.push({
-        x1:200+Math.cos(a)*r1,y1:200+Math.sin(a)*r1,
-        x2:200+Math.cos(a+turn)*r2,y2:200+Math.sin(a+turn)*r2
+  const frameJitter=Array.from({length:6},()=>0.82+Math.random()*0.42);
+
+  const quarterShapes=[];
+  const shapeCount=randInt(cfg.shapes[0],cfg.shapes[1]);
+  const types=['line','circle','diamond','square','triangle','kite','petal','chevron'];
+  for(let i=0;i<shapeCount;i++){
+    const type=choose(types);
+    const x=rand(14,170),y=rand(14,170),s=rand(cfg.size[0],cfg.size[1]);
+    if(type==='line'){
+      quarterShapes.push({
+        t:'line',
+        x1:x,y1:y,
+        x2:Math.max(6,Math.min(182,x+rand(-s*1.5,s*1.5))),
+        y2:Math.max(6,Math.min(182,y+rand(-s*1.5,s*1.5))),
+        w:1.0+Math.random()*0.55
       });
+    }else if(type==='circle'){
+      quarterShapes.push({t:'circle',x,y,r:Math.max(4,s*.58),w:1.0+Math.random()*0.45});
+    }else if(type==='diamond'){
+      quarterShapes.push({t:'poly',kind:'diamond',x,y,s,w:1.0+Math.random()*0.45});
+    }else if(type==='square'){
+      quarterShapes.push({t:'poly',kind:'square',x,y,s,w:1.0+Math.random()*0.45});
+    }else if(type==='triangle'){
+      quarterShapes.push({t:'poly',kind:'triangle',x,y,s,w:1.0+Math.random()*0.45});
+    }else if(type==='kite'){
+      quarterShapes.push({t:'poly',kind:'kite',x,y,s,w:1.0+Math.random()*0.45});
+    }else if(type==='petal'){
+      quarterShapes.push({t:'poly',kind:'petal',x,y,s,w:1.0+Math.random()*0.45});
+    }else{
+      quarterShapes.push({t:'poly',kind:'chevron',x,y,s,w:1.0+Math.random()*0.45});
     }
   }
 
   return {
-    type:'mandala',symmetry,rings,layers,phase,ringData,cross,
-    validated:true,validationTier:'structural',coloringPage:true
+    type:'mandala',
+    frameFamily,
+    frameJitter,
+    rings,
+    quarterShapes,
+    validated:true,
+    validationTier:'structural',
+    coloringPage:true
   };
 }
+
+
+
+
 
 function mandalaSvg(item){
   const ns='http://www.w3.org/2000/svg';
@@ -2386,57 +2418,125 @@ function mandalaSvg(item){
   svg.setAttribute('viewBox','0 0 400 400');
   svg.setAttribute('class','mandala-svg');
 
-  function line(x1,y1,x2,y2,w=1.25){
+  const cx=200,cy=200;
+  const quads=[[1,-1],[-1,-1],[1,1],[-1,1]];
+
+  function line(x1,y1,x2,y2,w=1.2){
     const el=document.createElementNS(ns,'line');
     el.setAttribute('x1',x1);el.setAttribute('y1',y1);
     el.setAttribute('x2',x2);el.setAttribute('y2',y2);
-    el.setAttribute('stroke','#111');el.setAttribute('stroke-width',w);
+    el.setAttribute('stroke','#111');
+    el.setAttribute('stroke-width',w);
     svg.appendChild(el);
   }
-  function circle(r,w=1.35){
+  function circle(x,y,r,w=1.2){
     const el=document.createElementNS(ns,'circle');
-    el.setAttribute('cx','200');el.setAttribute('cy','200');el.setAttribute('r',r);
-    el.setAttribute('fill','none');el.setAttribute('stroke','#111');el.setAttribute('stroke-width',w);
+    el.setAttribute('cx',x);el.setAttribute('cy',y);el.setAttribute('r',r);
+    el.setAttribute('fill','none');
+    el.setAttribute('stroke','#111');
+    el.setAttribute('stroke-width',w);
     svg.appendChild(el);
   }
-
-  // Concentric rings.
-  item.ringData.forEach((r,i)=>circle(r.radius,i===item.ringData.length-1?2:1.3));
-
-  // Symmetry spokes.
-  for(let i=0;i<item.symmetry;i++){
-    const a=item.phase+Math.PI*2*i/item.symmetry;
-    line(200+Math.cos(a)*18,200+Math.sin(a)*18,
-         200+Math.cos(a)*178,200+Math.sin(a)*178,1.15);
+  function reflectPoint(dx,dy,sx,sy){ return [cx+sx*dx,cy+sy*dy] }
+  function drawClosedLocal(localPoints,w=1.2){
+    for(const [sx,sy] of quads){
+      const pts=localPoints.map(([dx,dy])=>reflectPoint(dx,dy,sx,sy));
+      for(let i=0;i<pts.length;i++){
+        const a=pts[i],b=pts[(i+1)%pts.length];
+        line(a[0],a[1],b[0],b[1],w);
+      }
+    }
+  }
+  function regularPolygon(radius,sides,rotation=0,w=1.25){
+    const pts=[];
+    for(let i=0;i<sides;i++){
+      let a=rotation+Math.PI*2*i/sides;
+      pts.push([cx+Math.cos(a)*radius,cy+Math.sin(a)*radius]);
+    }
+    for(let i=0;i<pts.length;i++){
+      const a=pts[i],b=pts[(i+1)%pts.length];
+      line(a[0],a[1],b[0],b[1],w);
+    }
+  }
+  function starPolygon(radius,innerRatio,points,rotation=0,w=1.25){
+    const pts=[];
+    for(let i=0;i<points*2;i++){
+      let rr=i%2===0?radius:radius*innerRatio;
+      let a=rotation+Math.PI*i/points;
+      pts.push([cx+Math.cos(a)*rr,cy+Math.sin(a)*rr]);
+    }
+    for(let i=0;i<pts.length;i++){
+      const a=pts[i],b=pts[(i+1)%pts.length];
+      line(a[0],a[1],b[0],b[1],w);
+    }
+  }
+  function quarterFramePoints(family,r,j){
+    const p=(x,y)=>[x*r,y*r];
+    if(family==='square') return [p(0,1),p(.55*j[0],1),p(1,1),p(1,.55*j[1]),p(1,0)];
+    if(family==='diamond') return [p(0,1),p(.42*j[0],.78*j[1]),p(.78*j[2],.42*j[3]),p(1,0)];
+    if(family==='lotus') return [p(0,1),p(.14*j[0],.98),p(.28*j[1],.86),p(.52*j[2],.72),p(.78*j[3],.34),p(1,0)];
+    if(family==='scallop') return [p(0,1),p(.20*j[0],.96),p(.38*j[1],.86),p(.52*j[2],.64),p(.72*j[3],.52),p(.90*j[4],.20),p(1,0)];
+    if(family==='cross') return [p(0,1),p(.28*j[0],1),p(.28*j[1],.48),p(.76*j[2],.48),p(.76*j[3],.24),p(1,.24),p(1,0)];
+    if(family==='star') return [p(0,1),p(.18*j[0],.74),p(.34*j[1],.96),p(.56*j[2],.56),p(.94*j[3],.34),p(.74*j[4],.18),p(1,0)];
+    if(family==='circle') return [p(0,1),p(.30*j[0],.95),p(.58*j[1],.80),p(.80*j[2],.58),p(.95*j[3],.30),p(1,0)];
+    return [p(0,1),p(.24*j[0],.97),p(.52*j[1],.90),p(.78*j[2],.66),p(.95*j[3],.28),p(1,0)];
   }
 
-  // Petal / kite shapes between ring levels.
-  for(let ri=0;ri<item.ringData.length;ri++){
-    const outer=item.ringData[ri].radius;
-    const inner=ri===0?20:item.ringData[ri-1].radius;
-    const mid=(inner+outer)/2;
-    const offset=item.ringData[ri].offset||0;
-    for(let i=0;i<item.symmetry;i++){
-      const a=item.phase+Math.PI*2*i/item.symmetry+offset;
-      const left=a-Math.PI/item.symmetry*.55;
-      const right=a+Math.PI/item.symmetry*.55;
-      const ix=200+Math.cos(a)*inner,iy=200+Math.sin(a)*inner;
-      const ox=200+Math.cos(a)*outer,oy=200+Math.sin(a)*outer;
-      const lx=200+Math.cos(left)*mid,ly=200+Math.sin(left)*mid;
-      const rx=200+Math.cos(right)*mid,ry=200+Math.sin(right)*mid;
-      line(ix,iy,lx,ly);line(lx,ly,ox,oy);line(ox,oy,rx,ry);line(rx,ry,ix,iy);
+  // Outer / ring silhouettes with more global variety.
+  const family=item.frameFamily||'circle';
+  const jit=item.frameJitter||[1,1,1,1,1,1];
+  for(let k=0;k<item.rings.length;k++){
+    const r=item.rings[k];
+    const w=k===item.rings.length-1?1.8:1.25;
+    if(family==='hexagon'){
+      regularPolygon(r,6,Math.PI/6,w);
+    }else if(family==='octagon'){
+      regularPolygon(r,8,Math.PI/8,w);
+    }else if(family==='star'){
+      starPolygon(r,0.58+((jit[0]-0.82)/2.6),8,Math.PI/8,w);
+    }else{
+      drawClosedLocal(quarterFramePoints(family,r/178,jit).map(([x,y])=>[x*178,y*178]),w);
     }
   }
 
-  // Cross-lines add complexity while remaining clean line art.
-  item.cross.forEach(s=>line(s.x1,s.y1,s.x2,s.y2,1.05));
-  circle(18,2);
+  // Quarter-reflected interior shapes.
+  for(const sh of item.quarterShapes||[]){
+    if(sh.t==='line'){
+      for(const [sx,sy] of quads){
+        const a=reflectPoint(sh.x1,sh.y1,sx,sy);
+        const b=reflectPoint(sh.x2,sh.y2,sx,sy);
+        line(a[0],a[1],b[0],b[1],sh.w||1.2);
+      }
+    }else if(sh.t==='circle'){
+      for(const [sx,sy] of quads){
+        const c=reflectPoint(sh.x,sh.y,sx,sy);
+        circle(c[0],c[1],sh.r,sh.w||1.2);
+      }
+    }else if(sh.t==='poly'){
+      const x=sh.x,y=sh.y,s=sh.s;
+      let pts=[];
+      if(sh.kind==='diamond') pts=[[x,y-s],[x+s,y],[x,y+s],[x-s,y]];
+      else if(sh.kind==='square') pts=[[x-s,y-s],[x+s,y-s],[x+s,y+s],[x-s,y+s]];
+      else if(sh.kind==='triangle') pts=[[x,y-s],[x+s*.95,y+s*.8],[x-s*.95,y+s*.8]];
+      else if(sh.kind==='petal') pts=[[x,y-s*1.12],[x+s*.62,y-s*.18],[x+s*.18,y+s*.82],[x-s*.18,y+s*.82],[x-s*.62,y-s*.18]];
+      else if(sh.kind==='chevron') pts=[[x-s,y-s*.62],[x,y],[x+s,y-s*.62],[x+s*.48,y+s*.68],[x,y+s*.18],[x-s*.48,y+s*.68]];
+      else pts=[[x,y-s*1.18],[x+s*.78,y],[x,y+s*.92],[x-s*.46,y]];
+      drawClosedLocal(pts,sh.w||1.2);
+    }
+  }
+
+  // Symmetry axes and center.
+  line(cx,18,cx,382,1.05);
+  line(18,cy,382,cy,1.05);
+  circle(cx,cy,16,1.9);
 
   const wrap=document.createElement('div');
   wrap.className='mandala-wrap';
   wrap.appendChild(svg);
   return wrap;
 }
+
+
 
 function genericTable(grid,opts={}){
  let t=document.createElement('table');t.className='generic-grid '+(opts.small?'small ':'')+(opts.cls||'');
@@ -2639,7 +2739,7 @@ function render(){
      if(!tinySection){
        if(($('startSectionsRight').checked||smartBalance) && page%2===0)page=addBlankPage(root,page);
        let sectionName=mixed?(PUZZLE_OPTIONS.find(x=>x[0]===group)?.[1]||group):group;
-       let body=`<p>${items.length} ${mixed?'':group.toLowerCase()+' '}${items[0].type==='maze'?'mazes':'puzzles'}</p>`;
+       let body=`<p>${items.length} ${mixed?'':group.toLowerCase()+' '}${items[0].type==='maze'?'mazes':items[0].type==='mandala'?'mandalas':'puzzles'}</p>`;
        append(makeSpecial('section',sectionName,body),false);
      }
    }
@@ -2666,7 +2766,7 @@ function render(){
    for(let item of items){
      let globalIndex=project.items.indexOf(item);
      let label={sudoku:'Sudoku',maze:'Maze',kakuro:'Kakuro',slither:'Slitherlink',wordsearch:'Word Search',numbersearch:'Number Search',cryptogram:'Cryptogram',nonogram:'Nonogram',killer:'Killer Sudoku',diagonal:'Diagonal Sudoku',irregular:'Irregular Sudoku',mini:'Mini Sudoku',kenken:'KenKen',hidato:'Hidato',takuzu:'Takuzu',magicsquare:'Magic Square',missingnumber:'Missing Number',mandala:'Mandala Coloring Page'}[item.type];
-     let s=makeSheet(`Puzzle ${globalIndex+1}`,`${label}`);
+     let s=item.type==='mandala' ? makeSheet(`Mandala ${globalIndex+1}`,'') : makeSheet(`Puzzle ${globalIndex+1}`,`${label}`);
      let w=s.querySelector('.puzzle-wrap');
      if(item.type==='sudoku')w.appendChild(sudokuTable(item.puzzle));
      if(item.type==='maze')w.appendChild(mazeSvg(item,false));
@@ -3222,7 +3322,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=12.5',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=12.7',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
@@ -3235,7 +3335,7 @@ async function updateOfflineStatus(){
   }
   try{
     await navigator.serviceWorker.ready;
-    const cache=await caches.open('puzzle-studio-v12-5');
+    const cache=await caches.open('puzzle-studio-v12-7');
     const cached=await cache.match('./index.html');
     el.textContent=cached
       ? 'Offline ready — this version is cached on this device.'
