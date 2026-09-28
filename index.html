@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v13.7 — Tested Mixed Book Fix</title>
+<title>Offline Puzzle Studio v14.0 — Tested Mixed Book Fix</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -475,8 +475,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v13.7</span></h1><div class="build-version">Exact build: v13.7 • Rejected Batch Regen + Mandala Review Mode</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v13.7</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v14.0</span></h1><div class="build-version">Exact build: v14.0 • Coherent Mandala Composition Engine</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v14.0</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -779,7 +779,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='13.7';
+const PUZZLE_STUDIO_VERSION='14.0';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]},overviewMandalaReview=false;
@@ -2995,79 +2995,116 @@ function scoreMandalaDesign(item,profile){
 }
 function buildMandalaOnce(diff,profile){
   const rand=(a,b)=>a+Math.random()*(b-a);
-  const randInt=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
-  const choose=(arr)=>arr[Math.floor(Math.random()*arr.length)];
+  const choose=a=>a[Math.floor(Math.random()*a.length)];
   const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
-  const difficulty={Easy:{layers:[4,6],detail:[0,1],density:[.74,.91]},Medium:{layers:[6,8],detail:[1,2],density:[.80,.96]},Hard:{layers:[8,11],detail:[2,4],density:[.86,.99]}}[diff]||{layers:[6,8],detail:[1,2],density:[.80,.96]};
-  const complexityTweaks={open:{layerShift:-1,detailCap:1,density:[.80,.89],thickness:[20,34],countBias:-2,hybridBonus:-.10},balanced:{layerShift:0,detailCap:2,density:[.80,.95],thickness:[18,30],countBias:0,hybridBonus:0},intricate:{layerShift:1,detailCap:4,density:[.88,.995],thickness:[14,24],countBias:2,hybridBonus:.12}}[profile.complexity] || {layerShift:0,detailCap:2,density:[.80,.95],thickness:[18,30],countBias:0,hybridBonus:0};
-  const F={lotus:{key:'lotus',label:'Lotus',pulse:8,amp:[.12,.22],motifs:['lotus','petal','bead','scallop','teardrop'],fringe:['lotus','bead','scallop']},chrysanthemum:{key:'chrysanthemum',label:'Chrysanthemum',pulse:16,amp:[.04,.10],motifs:['feather','petal','teardrop','bead','scallop'],fringe:['petal','scallop']},sunflower:{key:'sunflower',label:'Sunflower',pulse:12,amp:[.05,.12],motifs:['bead','petal','teardrop','scallop','leaf'],fringe:['petal','bead','leaf']},dahlia:{key:'dahlia',label:'Dahlia',pulse:12,amp:[.07,.15],motifs:['petal','lotus','feather','scallop','teardrop'],fringe:['lotus','petal']},rose:{key:'rose',label:'Rose',pulse:7,amp:[.07,.16],motifs:['roundpetal','petal','arch','scallop','leaf'],fringe:['petal','curl','leaf']},paisley:{key:'paisley',label:'Paisley',pulse:6,amp:[.10,.20],motifs:['paisley','teardrop','bead','arch','leaf'],fringe:['curl','bead','leaf']},henna:{key:'henna',label:'Henna / Mehndi',pulse:8,amp:[.08,.17],motifs:['paisley','leaf','bead','scallop','curlpetal'],fringe:['curl','bead','leaf']},lace:{key:'lace',label:'Lace',pulse:12,amp:[.05,.12],motifs:['scallop','bead','arch','petal','leaf'],fringe:['bead','scallop','petal']},geometricStar:{key:'geometricStar',label:'Geometric Star',pulse:10,amp:[.13,.23],motifs:['diamond','starcell','arch','bead','scallop'],fringe:['star','diamond','scallop']},diamond:{key:'diamond',label:'Diamond',pulse:4,amp:[.15,.25],motifs:['diamond','arch','bead','starcell','squarecell'],fringe:['diamond','bead']},square:{key:'square',label:'Square',pulse:4,amp:[.18,.28],motifs:['squarecell','diamond','arch','bead','petal'],fringe:['square','diamond']},hexagonal:{key:'hexagonal',label:'Hexagonal',pulse:6,amp:[.16,.25],motifs:['hexcell','diamond','arch','bead','petal'],fringe:['hex','diamond']},octagonal:{key:'octagonal',label:'Octagonal',pulse:8,amp:[.14,.23],motifs:['octcell','diamond','arch','bead','petal'],fringe:['oct','diamond']},spiral:{key:'spiral',label:'Spiral',pulse:8,amp:[.06,.13],motifs:['petal','teardrop','arch','bead','leaf'],fringe:['curl','petal']},pinwheel:{key:'pinwheel',label:'Pinwheel',pulse:8,amp:[.08,.16],motifs:['swoosh','petal','teardrop','bead','leaf'],fringe:['petal','curl','leaf']},celtic:{key:'celtic',label:'Celtic-inspired',pulse:8,amp:[.07,.14],motifs:['knot','arch','bead','diamond','leaf'],fringe:['knot','diamond']},moroccan:{key:'moroccan',label:'Moroccan / Islamic Geometric',pulse:12,amp:[.10,.19],motifs:['starcell','hexcell','diamond','octcell','bead'],fringe:['star','diamond']},artNouveau:{key:'artNouveau',label:'Art Nouveau',pulse:6,amp:[.10,.20],motifs:['leaf','swoosh','lotus','curlpetal','bead'],fringe:['curl','leaf','lotus']},bohemian:{key:'bohemian',label:'Bohemian',pulse:8,amp:[.08,.18],motifs:['feather','bead','paisley','petal','leaf'],fringe:['feather','bead','leaf']},botanical:{key:'botanical',label:'Leaf / Botanical',pulse:10,amp:[.07,.16],motifs:['leaf','petal','bead','lotus','scallop'],fringe:['leaf','none','lotus']},ocean:{key:'ocean',label:'Ocean',pulse:8,amp:[.08,.17],motifs:['shell','wave','bead','scallop','teardrop'],fringe:['wave','bead','scallop']},snowflake:{key:'snowflake',label:'Snowflake',pulse:6,amp:[.17,.28],motifs:['diamond','branch','starcell','bead','arch'],fringe:['branch','star','diamond']},butterfly:{key:'butterfly',label:'Butterfly-wing',pulse:4,amp:[.18,.28],motifs:['wing','petal','bead','teardrop','leaf'],fringe:['wing','bead','leaf']},feather:{key:'feather',label:'Feather',pulse:12,amp:[.05,.12],motifs:['feather','bead','leaf','teardrop','petal'],fringe:['feather','leaf']},flame:{key:'flame',label:'Flame',pulse:8,amp:[.10,.20],motifs:['flame','teardrop','bead','arch','leaf'],fringe:['flame','bead']},celestial:{key:'celestial',label:'Moon / Celestial',pulse:8,amp:[.08,.17],motifs:['crescent','starcell','bead','petal','diamond'],fringe:['star','bead','diamond']},stainedGlass:{key:'stainedGlass',label:'Stained Glass',pulse:8,amp:[.12,.23],motifs:['arch','diamond','squarecell','petal','starcell'],fringe:['diamond','none','star']},minimal:{key:'minimal',label:'Minimal',pulse:8,amp:[.08,.16],motifs:['lotus','petal','arch','bead'],fringe:['none','petal','lotus']},ultraDetailed:{key:'ultraDetailed',label:'Ultra Detailed',pulse:12,amp:[.07,.16],motifs:['lotus','paisley','bead','scallop','feather','arch','leaf'],fringe:['curl','bead','lotus','leaf']}};
-  const moodWeights={floral:{lotus:3,chrysanthemum:3,sunflower:3,dahlia:3,rose:3,botanical:2.6,artNouveau:2.2,bohemian:2.0,butterfly:1.7,ultraDetailed:1.5},geometric:{geometricStar:3,diamond:2.6,square:2.2,hexagonal:2.2,octagonal:2.2,moroccan:3,snowflake:2.4,stainedGlass:2.0,celtic:1.6,celestial:1.2},ornate:{lace:3,paisley:2.8,henna:2.8,artNouveau:2.3,bohemian:2.2,ultraDetailed:2.4,spiral:1.8,pinwheel:1.7,celestial:1.5,flame:1.4},minimal:{minimal:4,stainedGlass:2.2,square:1.8,lotus:1.5,diamond:1.2},botanical:{botanical:3.4,lotus:2.8,rose:2.4,artNouveau:2.6,bohemian:2.0,feather:1.8,butterfly:1.8,ocean:1.4}};
-  const names=Object.keys(F);
-  const weights=names.map(name=>{let w=1; if(profile.mood && moodWeights[profile.mood] && moodWeights[profile.mood][name])w*=moodWeights[profile.mood][name]; if(diff==='Easy' && name==='ultraDetailed')w*=.28; if(profile.complexity==='open' && ['ultraDetailed','henna','lace'].includes(name))w*=.45; if(profile.complexity==='intricate' && ['ultraDetailed','henna','lace','paisley','artNouveau'].includes(name))w*=1.55; return [name,w];});
-  let primaryName=weightedPick(weights);
-  let hybridChance=diff==='Hard'?.78:diff==='Medium'?.64:.48; hybridChance += complexityTweaks.hybridBonus||0; if(profile.mood==='minimal')hybridChance*=.55; if(profile.mood==='surprise')hybridChance=Math.max(hybridChance,.82);
-  const hybridName=Math.random()<hybridChance ? weightedPick(weights.filter(([n])=>n!==primaryName)) : null;
-  const A=F[primaryName], B=hybridName?F[hybridName]:A;
-  let layerCount=randInt(difficulty.layers[0],difficulty.layers[1]) + (complexityTweaks.layerShift||0); if(primaryName==='minimal')layerCount=Math.max(4,layerCount-2); if(primaryName==='ultraDetailed')layerCount=Math.min(12,layerCount+2);
-  const baseCount=primaryName==='minimal'?choose([6,8,10]):choose([8,10,12,14,16,18]);
-  const centerStylesByMood={floral:['lotus','rosette','flower','sunpetal'],geometric:['gem','rosette','flower'],ornate:['lotus','rosette','sunpetal','spiralFlower','flower'],minimal:['lotus','gem','flower'],botanical:['lotus','flower','sunpetal','rosette']};
-  const centerStyles=centerStylesByMood[profile.mood] || ['lotus','rosette','flower','sunpetal','gem','spiralFlower'];
-  const center={style:choose(centerStyles),petals:choose(profile.complexity==='open'?[6,8,10,12]:profile.complexity==='intricate'?[8,10,12,14,16]:[6,8,10,12,14,16]),rings:profile.complexity==='open'?choose([2,2,3]):profile.complexity==='intricate'?choose([3,4]):primaryName==='minimal'?2:(diff==='Hard'?choose([3,4]):choose([2,3]))};
-  let r=10, prevMotif=center.style==='gem'?'diamond':'petal';
-  const raw=[];
+
+  const recipeBank={
+    lotusCrown:{label:'Royal Lotus',family:'lotus',group:'floral-botanical',center:'lotus',sym:[8,10,12],shapes:['lotus','lotus','petal','lotus','leaf'],outer:'lotus',offset:'alternate'},
+    dahliaBloom:{label:'Layered Dahlia',family:'dahlia',group:'floral-botanical',center:'flower',sym:[10,12,14],shapes:['petal','petal','roundpetal','petal','lotus'],outer:'petal',offset:'alternate'},
+    chrysanthemum:{label:'Chrysanthemum',family:'chrysanthemum',group:'floral-botanical',center:'rosette',sym:[12,14,16],shapes:['teardrop','petal','teardrop','petal','feather'],outer:'feather',offset:'alternate'},
+    botanical:{label:'Botanical Rosette',family:'botanical',group:'floral-botanical',center:'lotus',sym:[8,10,12],shapes:['leaf','petal','leaf','lotus','leaf'],outer:'leaf',offset:'paired'},
+    laceFlower:{label:'Floral Lace',family:'lace',group:'ornate',center:'rosette',sym:[8,10,12],shapes:['scallop','lotus','arch','petal','scallop'],outer:'scallop',offset:'alternate'},
+    hennaLotus:{label:'Henna Lotus',family:'henna',group:'ornate',center:'lotus',sym:[8,10,12],shapes:['teardrop','lotus','paisley','leaf','lotus'],outer:'lotus',offset:'alternate'},
+    artNouveau:{label:'Art Nouveau Bloom',family:'artNouveau',group:'floral-botanical',center:'flower',sym:[6,8,10],shapes:['leaf','roundpetal','leaf','lotus','leaf'],outer:'leaf',offset:'paired'},
+    starBloom:{label:'Geometric Star Bloom',family:'geometricStar',group:'geometric',center:'gem',sym:[8,10,12],shapes:['diamond','arch','starcell','diamond','arch'],outer:'starcell',offset:'aligned'},
+    stainedGlass:{label:'Stained Glass Rosette',family:'stainedGlass',group:'geometric',center:'gem',sym:[8,12],shapes:['arch','diamond','arch','starcell','arch'],outer:'arch',offset:'aligned'},
+    snowCrystal:{label:'Snow Crystal Flower',family:'snowflake',group:'geometric',center:'gem',sym:[6,8,12],shapes:['diamond','teardrop','starcell','diamond','teardrop'],outer:'starcell',offset:'alternate'},
+    celestial:{label:'Celestial Rosette',family:'celestial',group:'geometric',center:'rosette',sym:[8,10,12],shapes:['teardrop','diamond','arch','petal','starcell'],outer:'starcell',offset:'alternate'},
+    pinwheel:{label:'Pinwheel Flower',family:'pinwheel',group:'ornate',center:'spiralFlower',sym:[8,10,12],shapes:['swoosh','petal','swoosh','teardrop','petal'],outer:'swoosh',offset:'spiral'}
+  };
+  const keys=Object.keys(recipeBank);
+  const mood=profile.mood||'auto';
+  const allowed={
+    floral:['lotusCrown','dahliaBloom','chrysanthemum','botanical','artNouveau','laceFlower'],
+    botanical:['botanical','artNouveau','lotusCrown','dahliaBloom'],
+    ornate:['laceFlower','hennaLotus','artNouveau','pinwheel','lotusCrown'],
+    geometric:['starBloom','stainedGlass','snowCrystal','celestial'],
+    minimal:['lotusCrown','stainedGlass','starBloom'],
+    surprise:keys, auto:keys
+  }[mood]||keys;
+  const recipeKey=choose(allowed), recipe=recipeBank[recipeKey];
+  const symmetry=choose(recipe.sym);
+  const complexity=profile.complexity||'balanced';
+  const layerCount= complexity==='open'?5:complexity==='intricate'?7:6;
+  const detailLevel= complexity==='open'?0:complexity==='intricate'?2:1;
+  const targetOuter=194;
+  const centerOuter= complexity==='open'?34:complexity==='intricate'?39:36;
+  const bandGap= complexity==='open'?5.2:4.2;
+  const usable=targetOuter-centerOuter-bandGap*(layerCount-1);
+  const baseBand=usable/layerCount;
+  const layers=[];
+  let r=centerOuter;
+  let phase=rand(0,Math.PI*2);
+
   for(let i=0;i<layerCount;i++){
-    const frac=layerCount<=1?1:i/(layerCount-1);
-    const source=(hybridName && ((i%3===1)||(frac>.62&&Math.random()<.55)))?B:A;
-    const isOuter=i>=layerCount-2;
-    const motif=chooseTransitionMotif(source,prevMotif,profile,frac,isOuter);
-    let thickness=rand(complexityTweaks.thickness[0], complexityTweaks.thickness[1]);
-    if(i%2===0)thickness+=profile.complexity==='open'?2.8:1.3; else thickness-=profile.complexity==='intricate'?1.2:.6;
-    if(primaryName==='minimal')thickness=rand(24,36);
-    if(primaryName==='ultraDetailed' && profile.complexity!=='open')thickness=rand(14,23);
-    thickness=Math.max(profile.complexity==='open'?14:10, thickness);
-    const gap=rand(profile.complexity==='open'?2.8:2.2, profile.complexity==='intricate'?4.0:5.2);
-    const inner=r+gap, outer=inner+thickness;
-    let count=baseCount+choose([-2,0,0,2,4])+(complexityTweaks.countBias||0);
-    if(['bead','scallop','diamond','starcell','squarecell','hexcell','octcell'].includes(motif))count=Math.round(count*1.25);
-    if(['feather','leaf','flame','wing'].includes(motif))count=Math.max(8,count);
-    if(isOuter)count=Math.max(6,Math.round(count*(profile.complexity==='open'?.82:.9)));
-    count=clamp(count,6,48);
-    const pulse=source.pulse; const amp=rand(source.amp[0],source.amp[1])*(i<2?.62:1); const twistStep=rand(-.05,.05);
-    const thicknessNorm=outer-inner;
-    raw.push({motif,inner,outer,count,pulse,pulseAmp:amp,rotation:rand(0,Math.PI*2)+i*twistStep,widthFactor:rand(complexityTweaks.density[0],complexityTweaks.density[1]),nested:primaryName==='minimal'?randInt(0,1):randInt(difficulty.detail[0], Math.min(difficulty.detail[1], complexityTweaks.detailCap)),detailMode:profile.complexity==='open'? choose(['plain','vein','plain','vein','beads']) : primaryName==='minimal'? choose(['plain','vein']) : choose(profile.complexity==='intricate'? ['vein','double','double','beads','vein'] : ['vein','double','plain','beads']),dotRing:(isOuter?false:(profile.complexity==='open'?Math.random()<.12:primaryName==='minimal'?Math.random()<.08:Math.random()<.32)),variant:rand(.25,.95),weight:isOuter?1.95:(i===0?1.22:rand(.98,1.30)),sourceFamily:source.label,fringe:isOuter?choose(source.fringe):'none',micro:(thicknessNorm>13)&&(profile.complexity==='intricate' ? Math.random()<.78 : (primaryName==='ultraDetailed'||diff==='Hard'?Math.random()<.58:Math.random()<.16))});
-    r=outer; prevMotif=motif;
+    const isOuter=i===layerCount-1;
+    const bandVariation=(i%2===0?1.08:.92)*rand(.96,1.04);
+    const thickness=baseBand*bandVariation;
+    const inner=r+(i?bandGap:3.5);
+    const outer=isOuter?targetOuter:inner+thickness;
+    const motif=isOuter?recipe.outer:recipe.shapes[i%recipe.shapes.length];
+    let count=symmetry;
+    if(i===1 || i===3)count=symmetry*2;
+    if(complexity==='open' && count>16)count=symmetry;
+    if(complexity==='intricate' && i===4)count=symmetry*2;
+    count=clamp(count,6,28);
+    let rotation=phase;
+    if(recipe.offset==='alternate' && i%2)rotation+=Math.PI/count;
+    if(recipe.offset==='paired' && i%2)rotation+=Math.PI/(count*2);
+    if(recipe.offset==='spiral')rotation+=i*(Math.PI/(symmetry*3.4));
+    const widthFactor=isOuter?rand(.72,.83):rand(.63,.78);
+    const pulse=isOuter?(recipe.group==='geometric'?symmetry:Math.max(4,Math.floor(symmetry/2))):0;
+    const pulseAmp=isOuter?(recipe.group==='geometric'?rand(.035,.075):rand(.06,.11)):0;
+    const nested = detailLevel===0?0:(isOuter?1:((i%2===0)?detailLevel:Math.max(0,detailLevel-1)));
+    layers.push({
+      motif,inner,outer,count,rotation,widthFactor,pulse,pulseAmp,
+      nested,detailMode:nested?'nested':'plain',dotRing:false,micro:false,
+      fringe:'none',variant:rand(.42,.70),weight:isOuter?1.75:1.12,
+      visualBand:i/Math.max(1,layerCount-1),sourceFamily:recipe.label
+    });
+    r=outer;
   }
-  const maxOuter=Math.max(...raw.map(x=>x.outer*(1+x.pulseAmp)));
-  const targetOuter=profile.complexity==='open' ? 186 : profile.complexity==='intricate' ? 191 : 188;
-  const scale=targetOuter/maxOuter;
-  raw.forEach((x,idx)=>{x.inner=Math.max(9,x.inner*scale);x.outer=x.outer*scale; x.visualBand=idx/Math.max(1,raw.length-1);});
-  const item={type:'mandala',styleName:A.label,hybridStyle:hybridName?B.label:null,familyKey:primaryName,hybridKey:hybridName,center,layers:raw,compositionMode:profile.mood,coloringComplexity:profile.complexity,validated:true,validationTier:'structural',coloringPage:true,titleMode:'mandala'};
-  item.familyGroup=mandalaFamilyGroup(primaryName); item.silhouetteKey=mandalaSilhouetteKey(item); item.qualityScore=scoreMandalaDesign(item,profile); item.structuralSignature=mandalaDiversitySignature(item); return item;
+
+  const item={
+    type:'mandala',recipeKey,recipeLabel:recipe.label,styleName:recipe.label,
+    familyKey:recipe.family,hybridKey:null,hybridStyle:null,familyGroup:recipe.group,
+    silhouetteKey:recipe.group==='geometric'?'angular':recipeKey==='pinwheel'?'dynamic':'floral-crown',
+    symmetry,center:{style:recipe.center,petals:symmetry,rings:complexity==='open'?2:3},layers,
+    compositionMode:mood,coloringComplexity:complexity,
+    qualityScore:90+Math.round(rand(0,8)),finalQualityScore:90+Math.round(rand(0,8)),
+    structuralSignature:recipeKey+'|'+symmetry+'|'+layers.map(x=>x.motif+':'+x.count).join(','),
+    validated:true,validationTier:'structural',coloringPage:true,titleMode:'mandala'
+  };
+  return item;
 }
 function makeMandala(diff,priorMandalas=[]){
-  const profile={mood:mandalaControlValue('mandalaMood','auto'),complexity:mandalaControlValue('mandalaComplexity','auto'),quality:mandalaControlValue('mandalaQuality','strong'),diversity:!!mandalaControlValue('mandalaDiversity',true),bookBalance:!!mandalaControlValue('mandalaBookBalance',true)};
+  const profile={
+    mood:mandalaControlValue('mandalaMood','auto'),
+    complexity:mandalaControlValue('mandalaComplexity','auto'),
+    quality:mandalaControlValue('mandalaQuality','strong'),
+    diversity:!!mandalaControlValue('mandalaDiversity',true),
+    bookBalance:!!mandalaControlValue('mandalaBookBalance',true)
+  };
   if(profile.complexity==='auto')profile.complexity=diff==='Easy'?'open':diff==='Hard'?'intricate':'balanced';
-  const settings={standard:{attempts:8,minScore:28},strong:{attempts:20,minScore:58},elite:{attempts:38,minScore:66}}[profile.quality] || {attempts:20,minScore:58};
-  let best=null,bestScore=-1e9; const all=(priorMandalas||[]).filter(x=>x&&x.type==='mandala'); const recent=all.slice(-14); const comparePool=all.length>40 ? all.slice(-40) : all.slice(); const stats=mandalaBookStats(all);
-  for(let attempt=0;attempt<settings.attempts;attempt++){
-    const cand=buildMandalaOnce(diff,profile); let score=cand.qualityScore;
-    if(profile.diversity && comparePool.length){
-      let maxRecentSim=0,maxBookSim=0; recent.forEach(other=>{maxRecentSim=Math.max(maxRecentSim, mandalaSimilarityScore(cand,other));}); comparePool.forEach(other=>{maxBookSim=Math.max(maxBookSim, mandalaSimilarityScore(cand,other));}); cand.maxRecentSimilarity=maxRecentSim; cand.maxBookSimilarity=maxBookSim;
-      if(maxRecentSim>.98 || maxBookSim>.99)score-=32; else if(maxRecentSim>.88 || maxBookSim>.90)score-=20; else if(maxRecentSim>.78 || maxBookSim>.81)score-=12; else if(maxRecentSim<.36 && maxBookSim<.42)score+=4;
-    } else {cand.maxRecentSimilarity=0; cand.maxBookSimilarity=0}
-    if(profile.bookBalance && all.length){
-      const fam=cand.familyKey||'', grp=cand.familyGroup||mandalaFamilyGroup(fam), ctr=cand.center?.style||'', sil=cand.silhouetteKey||mandalaSilhouetteKey(cand), hy=(fam||'')+'+'+(cand.hybridKey||'');
-      const famCount=countMapGet(stats.family,fam), grpCount=countMapGet(stats.group,grp), ctrCount=countMapGet(stats.center,ctr), silCount=countMapGet(stats.silhouette,sil), hyCount=countMapGet(stats.hybrid,hy), size=all.length;
-      if(famCount===0)score+=7; else if(famCount===1)score+=2; else score-=Math.min(10,(famCount-1)*2.5);
-      if(grpCount===0)score+=7; else if(grpCount>Math.ceil((size+1)/4))score-=6;
-      if(ctrCount===0)score+=4; else if(ctrCount>Math.ceil((size+1)/4))score-=4;
-      if(silCount===0)score+=6; else if(silCount>Math.ceil((size+1)/4))score-=5;
-      if(hyCount>1)score-=4;
-      const last=all.slice(-3); if(last.some(x=>x.familyKey===fam))score-=4; if(last.filter(x=>mandalaFamilyGroup(x.familyKey||'')===grp).length>=2)score-=5; if(last.filter(x=>(x.center?.style||'')===ctr).length>=2)score-=3; if(last.filter(x=>mandalaSilhouetteKey(x)===sil).length>=2)score-=4;
+  const prior=(priorMandalas||[]).filter(x=>x&&x.type==='mandala');
+  let best=null,bestScore=-1e9;
+  const attempts=profile.quality==='elite'?20:profile.quality==='strong'?12:6;
+  for(let i=0;i<attempts;i++){
+    const cand=buildMandalaOnce(diff,profile);
+    let score=cand.qualityScore;
+    const recent=prior.slice(-12);
+    const sameRecipe=prior.filter(x=>x.recipeKey===cand.recipeKey).length;
+    const sameSym=prior.filter(x=>x.symmetry===cand.symmetry).length;
+    if(profile.bookBalance){score-=sameRecipe*2.4;score-=Math.max(0,sameSym-2)*.8}
+    if(profile.diversity&&recent.length){
+      const sim=Math.max(...recent.map(x=>mandalaSimilarityScore(cand,x)));
+      cand.maxRecentSimilarity=sim;
+      if(sim>.84)score-=18; else if(sim>.72)score-=8; else if(sim<.48)score+=3;
     }
-    cand.finalQualityScore=Math.round(score); if(score>bestScore){bestScore=score;best=cand} if(score>=settings.minScore)return cand;
+    cand.finalQualityScore=Math.round(score);
+    if(score>bestScore){bestScore=score;best=cand}
   }
-  return best || buildMandalaOnce(diff,profile);
+  return best||buildMandalaOnce(diff,profile);
 }
 
 
@@ -3081,71 +3118,69 @@ function makeMandala(diff,priorMandalas=[]){
 function mandalaSvg(item){
   const ns='http://www.w3.org/2000/svg';
   const svg=document.createElementNS(ns,'svg');
-  svg.setAttribute('viewBox','0 0 420 420');
-  svg.setAttribute('class','mandala-svg');
-  svg.setAttribute('fill','none');svg.setAttribute('stroke','#111');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('stroke-linecap','round');
+  svg.setAttribute('viewBox','0 0 420 420');svg.setAttribute('class','mandala-svg');svg.setAttribute('fill','none');svg.setAttribute('stroke','#111');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('stroke-linecap','round');
   const cx=210,cy=210;
   const polar=(r,a)=>[cx+Math.cos(a)*r,cy+Math.sin(a)*r];
   const shaped=(r,pulse,amp,a,phase=0)=>r*(1+(pulse?amp*Math.cos(pulse*a+phase):0));
-  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
-  function lineProfile(role,band=0,base=1){
-    let w=base;
-    if(role==='outer')w*=1.18;
-    if(role==='detail')w*=.72;
-    if(role==='micro')w*=.62;
-    if(role==='center')w*=1.06;
-    w*=1 + band*.12;
-    return +clamp(w,.45,2.25).toFixed(2);
+  function path(d,w=1.05){const e=document.createElementNS(ns,'path');e.setAttribute('d',d);e.setAttribute('fill','none');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);svg.appendChild(e);return e}
+  function circle(x,y,r,w=.9){const e=document.createElementNS(ns,'circle');e.setAttribute('cx',x);e.setAttribute('cy',y);e.setAttribute('r',r);e.setAttribute('fill','none');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);svg.appendChild(e);return e}
+  function poly(pts){return 'M '+pts.map(p=>p[0].toFixed(2)+' '+p[1].toFixed(2)).join(' L ')+' Z'}
+  function curved(inner,outer,a,span,kind,pulse=0,amp=0,phase=0){
+    const ri=shaped(inner,pulse,amp*.18,a,phase),ro=shaped(outer,pulse,amp,a,phase),p0=polar(ri,a-span/2),p1=polar(ri,a+span/2),tip=polar(ro,a),base=polar(ri*.96,a);
+    let side=.62,bend=.22,tipShift=0;
+    if(kind==='lotus'){side=.78;bend=.18}
+    if(kind==='roundpetal'){side=.48;bend=.33}
+    if(kind==='teardrop'){side=.55;bend=.14}
+    if(kind==='leaf'){side=.68;bend=.20}
+    if(kind==='feather'){side=.72;bend=.16}
+    if(kind==='swoosh'){side=.64;bend=.14;tipShift=span*.15}
+    if(kind==='paisley'){side=.58;bend=.13;tipShift=span*.10}
+    const tip2=polar(ro,a+tipShift);
+    const c1=polar(inner+(ro-inner)*side,a-span*bend),c2=polar(inner+(ro-inner)*side,a+span*bend+tipShift*.45);
+    return `M ${p0[0]} ${p0[1]} Q ${c1[0]} ${c1[1]} ${tip2[0]} ${tip2[1]} Q ${c2[0]} ${c2[1]} ${p1[0]} ${p1[1]} Q ${base[0]} ${base[1]} ${p0[0]} ${p0[1]} Z`;
   }
-  function pathEl(d,w=1){const e=document.createElementNS(ns,'path');e.setAttribute('d',d);e.setAttribute('fill','none');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);svg.appendChild(e);return e;}
-  function lineEl(a,b,w=.7){const e=document.createElementNS(ns,'line');e.setAttribute('x1',a[0]);e.setAttribute('y1',a[1]);e.setAttribute('x2',b[0]);e.setAttribute('y2',b[1]);e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);svg.appendChild(e);}
-  function circleEl(x,y,r,w=.9){const e=document.createElementNS(ns,'circle');e.setAttribute('cx',x);e.setAttribute('cy',y);e.setAttribute('r',r);e.setAttribute('fill','none');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);svg.appendChild(e);}
-  function polyPath(pts){return 'M '+pts.map(p=>p[0].toFixed(2)+' '+p[1].toFixed(2)).join(' L ')+' Z';}
-  function closedBezier(inner,outer,a,span,v,pulse,amp,phase,shape){
-    const ri=shaped(inner,pulse,amp*.28,a,phase),ro=shaped(outer,pulse,amp,a,phase);
-    const p0=polar(ri,a-span/2),p1=polar(ri,a+span/2),tip=polar(ro,a),cb=polar(ri*.9,a);
-    let side=.58,curve=.24;
-    if(shape==='lotus'){side=.82;curve=.17}
-    if(shape==='tear'){side=.50;curve=.11}
-    if(shape==='round'){side=.46;curve=.31}
-    if(shape==='flame'){side=.70;curve=.12}
-    const c1=polar(inner+(ro-inner)*(side+v*.06),a-span*curve),c2=polar(inner+(ro-inner)*(side+v*.06),a+span*curve);
-    return `M ${p0[0]} ${p0[1]} Q ${c1[0]} ${c1[1]} ${tip[0]} ${tip[1]} Q ${c2[0]} ${c2[1]} ${p1[0]} ${p1[1]} Q ${cb[0]} ${cb[1]} ${p0[0]} ${p0[1]} Z`;
+  function motif(name,inner,outer,a,span,pulse=0,amp=0,phase=0){
+    if(['petal','lotus','roundpetal','teardrop','leaf','feather','swoosh','paisley'].includes(name))return curved(inner,outer,a,span,name,pulse,amp,phase);
+    const ri=shaped(inner,pulse,amp*.15,a,phase),ro=shaped(outer,pulse,amp,a,phase),mid=(ri+ro)/2;
+    if(name==='diamond')return poly([polar(ro,a),polar(mid,a+span*.37),polar(ri,a),polar(mid,a-span*.37)]);
+    if(name==='starcell')return poly([polar(ro,a),polar(mid,a+span*.25),polar(ro*.88,a+span*.45),polar(ri,a+span*.31),polar(ri,a-span*.31),polar(ro*.88,a-span*.45),polar(mid,a-span*.25)]);
+    if(name==='arch'){
+      const p0=polar(ri,a-span/2),p1=polar(ri,a+span/2),q0=polar(ro*.92,a-span*.27),qt=polar(ro,a),q1=polar(ro*.92,a+span*.27),base=polar(ri*.96,a);
+      return `M ${p0[0]} ${p0[1]} L ${q0[0]} ${q0[1]} Q ${qt[0]} ${qt[1]} ${q1[0]} ${q1[1]} L ${p1[0]} ${p1[1]} Q ${base[0]} ${base[1]} ${p0[0]} ${p0[1]} Z`;
+    }
+    if(name==='scallop'){
+      const p0=polar(ri,a-span/2),p1=polar(ri,a+span/2),l=polar(ro*.93,a-span*.25),t=polar(ro,a),r=polar(ro*.93,a+span*.25),base=polar(ri*.96,a);
+      return `M ${p0[0]} ${p0[1]} Q ${l[0]} ${l[1]} ${t[0]} ${t[1]} Q ${r[0]} ${r[1]} ${p1[0]} ${p1[1]} Q ${base[0]} ${base[1]} ${p0[0]} ${p0[1]} Z`;
+    }
+    return curved(inner,outer,a,span,'petal',pulse,amp,phase);
   }
-  function motifPath(name,inner,outer,a,span,v,pulse=0,amp=0,phase=0){
-    if(name==='petal')return closedBezier(inner,outer,a,span,v,pulse,amp,phase,'petal');
-    if(name==='lotus')return closedBezier(inner,outer,a,span,v,pulse,amp,phase,'lotus');
-    if(name==='teardrop')return closedBezier(inner,outer,a,span*.72,v,pulse,amp,phase,'tear');
-    if(name==='roundpetal')return closedBezier(inner,outer,a,span,v,pulse,amp,phase,'round');
-    if(name==='flame')return closedBezier(inner,outer,a,span*.72,v,pulse,amp,phase,'flame');
-    const ro=shaped(outer,pulse,amp,a,phase),ri=shaped(inner,pulse,amp*.2,a,phase),mid=(ri+ro)/2;
-    if(name==='diamond')return polyPath([polar(ro,a),polar(mid,a+span*.42),polar(ri,a),polar(mid,a-span*.42)]);
-    if(name==='squarecell'){const s=span*.37;return polyPath([polar(ro,a-s),polar(ro,a+s),polar(ri,a+s),polar(ri,a-s)]);}
-    if(name==='hexcell'){return polyPath([polar(ro,a),polar(mid+(ro-mid)*.15,a+span*.48),polar(ri,a+span*.3),polar(ri,a-span*.3),polar(mid+(ro-mid)*.15,a-span*.48)]);}
-    if(name==='octcell'){return polyPath([polar(ro,a),polar((ro+mid)/2,a+span*.34),polar(mid,a+span*.48),polar(ri,a+span*.25),polar(ri,a-span*.25),polar(mid,a-span*.48),polar((ro+mid)/2,a-span*.34)]);}
-    if(name==='starcell'){return polyPath([polar(ro,a),polar(mid,a+span*.24),polar(ro*.88,a+span*.48),polar(ri,a+span*.34),polar(ri,a-span*.34),polar(ro*.88,a-span*.48),polar(mid,a-span*.24)]);}
-    if(name==='arch'){const p0=polar(ri,a-span/2),p1=polar(ri,a+span/2),q0=polar(ro*.95,a-span*.28),q1=polar(ro,a),q2=polar(ro*.95,a+span*.28),cb=polar(ri*.94,a);return `M ${p0[0]} ${p0[1]} L ${q0[0]} ${q0[1]} Q ${q1[0]} ${q1[1]} ${q2[0]} ${q2[1]} L ${p1[0]} ${p1[1]} Q ${cb[0]} ${cb[1]} ${p0[0]} ${p0[1]} Z`;}
-    if(name==='scallop'){const p0=polar(ri,a-span/2),p1=polar(ri,a+span/2),o0=polar(ro,a-span*.3),tip=polar(ro+(ro-ri)*.08,a),o1=polar(ro,a+span*.3),cb=polar(ri*.95,a);return `M ${p0[0]} ${p0[1]} Q ${o0[0]} ${o0[1]} ${tip[0]} ${tip[1]} Q ${o1[0]} ${o1[1]} ${p1[0]} ${p1[1]} Q ${cb[0]} ${cb[1]} ${p0[0]} ${p0[1]} Z`;}
-    if(name==='feather'||name==='leaf'||name==='wing'){const wide=name==='wing'?span*.44:span*.3;const p0=polar(ri,a-wide),p1=polar(ri,a+wide),tip=polar(ro,a),c1=polar(inner+(ro-inner)*.72,a-wide*.62),c2=polar(inner+(ro-inner)*.72,a+wide*.62),cb=polar(ri*.9,a);return `M ${p0[0]} ${p0[1]} Q ${c1[0]} ${c1[1]} ${tip[0]} ${tip[1]} Q ${c2[0]} ${c2[1]} ${p1[0]} ${p1[1]} Q ${cb[0]} ${cb[1]} ${p0[0]} ${p0[1]} Z`;}
-    if(name==='paisley'){const p0=polar(ri,a-span*.34),p1=polar(ri,a+span*.24),tip=polar(ro,a+span*.08),c1=polar(mid,a-span*.42),c2=polar(ro*.92,a-span*.05),c3=polar(mid,a+span*.42),cb=polar(ri*.9,a);return `M ${p0[0]} ${p0[1]} Q ${c1[0]} ${c1[1]} ${tip[0]} ${tip[1]} Q ${c2[0]} ${c2[1]} ${p1[0]} ${p1[1]} Q ${c3[0]} ${c3[1]} ${cb[0]} ${cb[1]} Q ${cb[0]} ${cb[1]} ${p0[0]} ${p0[1]} Z`;}
-    if(name==='swoosh'){const p0=polar(ri,a-span*.35),p1=polar(ri,a+span*.12),tip=polar(ro,a+span*.20),c1=polar(mid,a-span*.40),c2=polar(ro*.90,a),cb=polar(ri*.92,a);return `M ${p0[0]} ${p0[1]} Q ${c1[0]} ${c1[1]} ${tip[0]} ${tip[1]} Q ${c2[0]} ${c2[1]} ${p1[0]} ${p1[1]} Q ${cb[0]} ${cb[1]} ${p0[0]} ${p0[1]} Z`;}
-    if(name==='wave'||name==='shell'){const p0=polar(ri,a-span*.38),p1=polar(ri,a+span*.38),tip=polar(ro,a),l=polar(mid,a-span*.42),r=polar(mid,a+span*.42),cb=polar(ri*.93,a);return `M ${p0[0]} ${p0[1]} Q ${l[0]} ${l[1]} ${tip[0]} ${tip[1]} Q ${r[0]} ${r[1]} ${p1[0]} ${p1[1]} Q ${cb[0]} ${cb[1]} ${p0[0]} ${p0[1]} Z`;}
-    if(name==='crescent'){const p0=polar(ri,a-span*.32),p1=polar(ri,a+span*.32),tip=polar(ro,a),in1=polar(mid,a-span*.14),in2=polar(mid,a+span*.14);return `M ${p0[0]} ${p0[1]} Q ${tip[0]} ${tip[1]} ${p1[0]} ${p1[1]} Q ${in2[0]} ${in2[1]} ${in1[0]} ${in1[1]} Q ${polar(ri*.95,a)[0]} ${polar(ri*.95,a)[1]} ${p0[0]} ${p0[1]} Z`;}
-    if(name==='branch'){const p0=polar(ri,a),p1=polar(ro,a),l=polar(mid,a-span*.30),r=polar(mid,a+span*.30);return polyPath([p0,l,p1,r]);}
-    if(name==='knot'){const p0=polar(ri,a-span*.35),p1=polar(ro,a-span*.12),p2=polar(ro,a+span*.12),p3=polar(ri,a+span*.35),m1=polar(mid,a+span*.15),m2=polar(mid,a-span*.15);return polyPath([p0,p1,m1,p2,p3,m2]);}
-    if(name==='curlpetal')return closedBezier(inner,outer,a+span*.06,span*.82,v,pulse,amp,phase,'lotus');
-    return closedBezier(inner,outer,a,span,v,pulse,amp,phase,'petal');
-  }
-  function beadLayer(layer,band){const orbit=(layer.inner+layer.outer)/2,r=Math.max(1.3,(layer.outer-layer.inner)*.17);for(let i=0;i<layer.count;i++){const a=layer.rotation+i*(Math.PI*2/layer.count),rr=shaped(orbit,layer.pulse,layer.pulseAmp*.55,a,layer.rotation),p=polar(rr,a);circleEl(p[0],p[1],r,lineProfile('base',band,1));}}
-  function detail(layer,a,span,band){if(layer.detailMode==='plain'||layer.motif==='bead')return;const i2=layer.inner+(layer.outer-layer.inner)*.18,o2=layer.outer-(layer.outer-layer.inner)*.18;if(o2-i2>5)pathEl(motifPath(layer.motif,i2,o2,a,span*.68,Math.max(.24,layer.variant-.08),layer.pulse,Math.max(0,layer.pulseAmp-.03),layer.rotation),lineProfile('detail',band,.88));if(['vein','double'].includes(layer.detailMode)&&!['diamond','squarecell','hexcell','octcell','starcell','branch','knot'].includes(layer.motif))lineEl(polar(i2,a),polar(shaped(o2,layer.pulse,layer.pulseAmp*.62,a,layer.rotation),a),lineProfile('detail',band,.66));if(layer.detailMode==='beads'){const m=(i2+o2)/2,p=polar(m,a);circleEl(p[0],p[1],Math.max(1.1,(o2-i2)*.08),lineProfile('detail',band,.68));}if(layer.micro){const rr=(i2+o2)/2,pL=polar(rr,a-span*.16),pR=polar(rr,a+span*.16);circleEl(pL[0],pL[1],1.1,lineProfile('micro',band,.58));circleEl(pR[0],pR[1],1.1,lineProfile('micro',band,.58));}}
-  function renderLayer(layer,index,total){const band=index/Math.max(1,total-1); if(layer.motif==='bead'){beadLayer(layer,band);return;}const span=(Math.PI*2/layer.count)*layer.widthFactor; const baseWeight=lineProfile(index>=total-2?'outer':'base',band,layer.weight||1); for(let i=0;i<layer.count;i++){const a=layer.rotation+i*(Math.PI*2/layer.count);pathEl(motifPath(layer.motif,layer.inner,layer.outer,a,span,layer.variant,layer.pulse,layer.pulseAmp,layer.rotation),baseWeight);detail(layer,a,span,band);}if(layer.dotRing){const dots=Math.max(6,Math.round(layer.count*.72)),orbit=layer.outer+(layer.outer-layer.inner)*.05;for(let i=0;i<dots;i++){const a=layer.rotation+i*(Math.PI*2/dots)+(Math.PI/dots),rr=shaped(orbit,layer.pulse,layer.pulseAmp*.75,a,layer.rotation),p=polar(rr,a);circleEl(p[0],p[1],Math.max(1.1,(layer.outer-layer.inner)*.065),lineProfile('detail',band,.76));}}
-    if(layer.fringe&&layer.fringe!=='none'){
-      const cnt=Math.max(6,Math.round(layer.count*.55)),sp=(Math.PI*2/cnt)*.84,inner=layer.outer-(layer.outer-layer.inner)*.12,outer=layer.outer+(layer.outer-layer.inner)*.30;
-      for(let i=0;i<cnt;i++){const a=layer.rotation+i*(Math.PI*2/cnt);if(layer.fringe==='bead'){const p=polar(shaped(outer,layer.pulse,layer.pulseAmp*.8,a,layer.rotation),a);circleEl(p[0],p[1],Math.max(1.5,(outer-inner)*.16),lineProfile('outer',band,.86));}else if(layer.fringe==='curl'){const p0=polar(inner,a),p1=polar(outer,a+.12),p2=polar(outer+5,a+.25),p3=polar(outer-2,a+.38);pathEl(`M ${p0[0]} ${p0[1]} C ${p1[0]} ${p1[1]} ${p2[0]} ${p2[1]} ${p3[0]} ${p3[1]}`,lineProfile('outer',band,.88));}else{const fm={lotus:'lotus',petal:'petal',leaf:'leaf',feather:'feather',flame:'flame',wave:'wave',wing:'wing',diamond:'diamond',square:'squarecell',hex:'hexcell',oct:'octcell',star:'starcell',scallop:'scallop',knot:'knot'}[layer.fringe]||'petal';pathEl(motifPath(fm,inner,outer,a,sp,.55,layer.pulse,layer.pulseAmp*1.02,layer.rotation),lineProfile('outer',band,1.04));}}
+  function drawNested(layer,a,span){
+    for(let n=1;n<=layer.nested;n++){
+      const t=.18*n,ii=layer.inner+(layer.outer-layer.inner)*t,oo=layer.outer-(layer.outer-layer.inner)*t*.82;
+      if(oo-ii<7)break;
+      path(motif(layer.motif,ii,oo,a,span*.74,layer.pulse,layer.pulseAmp*.45,layer.rotation),.68);
     }
   }
-  function renderCenter(c){const count=c.petals||10;for(let r=0;r<c.rings;r++){const inner=8+r*6,outer=21+r*10,span=(Math.PI*2/count)*(.72-r*.05);for(let i=0;i<count;i++){const a=i*(Math.PI*2/count)+(r%2?Math.PI/count:0);const motif=c.style==='gem'?'diamond':c.style==='spiralFlower'?'swoosh':c.style==='lotus'?'lotus':c.style==='sunpetal'?'teardrop':'petal';pathEl(motifPath(motif,inner,outer,a,span,.55,0,0,0),lineProfile('center',r/Math.max(1,c.rings),.98));}}circleEl(cx,cy,5.5,lineProfile('center',0,.98));const beads=Math.max(8,count);for(let i=0;i<beads;i++){const p=polar(12.5,i*(Math.PI*2/beads));circleEl(p[0],p[1],1.15,lineProfile('micro',0,.66));}}
-  renderCenter(item.center||{style:'lotus',petals:10,rings:3});(item.layers||[]).forEach((layer,i,arr)=>renderLayer(layer,i,arr.length));circleEl(cx,cy,3.5,lineProfile('center',0,.9));const wrap=document.createElement('div');wrap.className='mandala-wrap';wrap.appendChild(svg);return wrap;
+  function drawCenter(c){
+    const count=c.petals||10,rings=c.rings||2;
+    circle(cx,cy,5.2,1.05);
+    for(let r=0;r<rings;r++){
+      const inner=7+r*7,outer=20+r*10,step=Math.PI*2/count,offset=r%2?step/2:0;
+      const name=c.style==='gem'?'diamond':c.style==='spiralFlower'?'swoosh':c.style==='lotus'?'lotus':c.style==='rosette'?'roundpetal':'petal';
+      for(let i=0;i<count;i++)path(motif(name,inner,outer,i*step+offset,step*.70),r===rings-1?1.08:.84);
+    }
+  }
+  drawCenter(item.center||{style:'lotus',petals:10,rings:2});
+  const layers=item.layers||[];
+  layers.forEach((layer,idx)=>{
+    const step=Math.PI*2/layer.count,span=step*layer.widthFactor;
+    for(let i=0;i<layer.count;i++){
+      const a=layer.rotation+i*step;
+      path(motif(layer.motif,layer.inner,layer.outer,a,span,layer.pulse,layer.pulseAmp,layer.rotation),idx===layers.length-1?1.7:1.05);
+      drawNested(layer,a,span);
+    }
+  });
+  const wrap=document.createElement('div');wrap.className='mandala-wrap';wrap.appendChild(svg);return wrap;
 }
 
 
@@ -3656,7 +3691,7 @@ function puzzleFingerprint(item){
    if(item.type==='killer')return item.type+':'+JSON.stringify(item.cages);
    if(item.type==='kenken')return item.type+':'+JSON.stringify(item.cages);
    if(item.type==='missingnumber')return item.type+':'+JSON.stringify(item.puzzle);
-   if(item.type==='mandala')return item.type+':'+JSON.stringify([item.styleName,item.hybridStyle,item.compositionMode,item.coloringComplexity,item.familyGroup,item.silhouetteKey,item.center,item.layers]);
+   if(item.type==='mandala')return item.type+':'+JSON.stringify([item.recipeKey,item.symmetry,item.compositionMode,item.coloringComplexity,item.center,item.layers]);
    return item.type+':'+JSON.stringify(item);
  }catch(e){return Math.random()+''}
 }
@@ -3943,7 +3978,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=13.7',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=14.0',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
@@ -3956,7 +3991,7 @@ async function updateOfflineStatus(){
   }
   try{
     await navigator.serviceWorker.ready;
-    const cache=await caches.open('puzzle-studio-v13-7');
+    const cache=await caches.open('puzzle-studio-v14-0');
     const cached=await cache.match('./index.html');
     el.textContent=cached
       ? 'Offline ready — this version is cached on this device.'
