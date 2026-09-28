@@ -475,7 +475,7 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v16.2</span></h1><div class="build-version">Exact build: v16.2 • More Mandala Families + Bigger Fill + Safe Fit</div></header>
+<header><h1>Offline Puzzle Studio <span class="badge">v16.2</span></h1><div class="build-version">Exact build: v16.2.1 • Mandala Blank-Page Hotfix</div></header>
 <div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v16.2</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
@@ -3004,7 +3004,7 @@ function buildMandalaOnce(diff,profile){
     cushion4:0,scallop12:Math.random()*Math.PI/12,petal8:Math.random()*Math.PI/8,octagon8:Math.PI/8
   };
   const densityScale = diff==='Easy'?0.92:diff==='Medium'?1:1.08;
-  const fillScale = 1.02 + Math.random()*0.12;
+  const fillScale = 0.98 + Math.random()*0.06;
   const all=[inner,mid,outer];
   return {
     type:'mandala',blueprintKey:[familyChoice,inner,mid,outer,silhouette].join('-'),blueprintLabel:'Premium Smooth Mandala',recipeKey:[familyChoice,inner,mid,outer,silhouette].join('-'),recipeLabel:'Premium Smooth Mandala',styleName:'Premium Smooth Mandala',
@@ -3057,28 +3057,26 @@ function mandalaSvg(item){
   const stroke=item.difficulty==='Easy'?.84:item.difficulty==='Hard'?.60:.70;
   const silhouette=item.silhouette||item.silhouetteKey||'round';
   const rot=item.shapeRotation||0;
-  const fillScale=item.fillScale||1.06;
+  const fillScale=item.fillScale||1.0;
   const densityScale=item.densityScale||1;
-  const cx=210,cy=210,baseScale=.90*fillScale;
-  const art=document.createElementNS(ns,'g');
-  svg.appendChild(art);
+  const cx=210,cy=210,baseScale=.84*fillScale;
 
   function warpPoint(x,y){
     let dx=x-cx,dy=y-cy;
     let a=Math.atan2(dy,dx)+rot,r=Math.hypot(dx,dy)*baseScale;
     let sx=1,sy=1,m=1;
-    if(silhouette==='ovalTall'){sx=.86;sy=1.10}
-    else if(silhouette==='ovalWide'){sx=1.10;sy=.86}
-    else if(silhouette==='lotus6')m=.93+.09*Math.cos(6*a);
-    else if(silhouette==='lotus8')m=.92+.10*Math.cos(8*a);
-    else if(silhouette==='star8')m=.90+.11*Math.cos(8*a);
-    else if(silhouette==='star12')m=.89+.12*Math.cos(12*a);
-    else if(silhouette==='diamond4')m=.90+.11*Math.cos(4*a);
-    else if(silhouette==='square4')m=.92+.08*Math.cos(4*a);
-    else if(silhouette==='cushion4')m=.96+.05*Math.cos(4*a);
-    else if(silhouette==='scallop12')m=.95+.06*Math.cos(12*a);
-    else if(silhouette==='petal8')m=.93+.08*Math.cos(8*a-Math.PI/8);
-    else if(silhouette==='octagon8')m=.95+.05*Math.cos(8*a);
+    if(silhouette==='ovalTall'){sx=.84;sy=1.05}
+    else if(silhouette==='ovalWide'){sx=1.05;sy=.84}
+    else if(silhouette==='lotus6')m=.93+.07*Math.cos(6*a);
+    else if(silhouette==='lotus8')m=.93+.08*Math.cos(8*a);
+    else if(silhouette==='star8')m=.92+.08*Math.cos(8*a);
+    else if(silhouette==='star12')m=.92+.08*Math.cos(12*a);
+    else if(silhouette==='diamond4')m=.92+.08*Math.cos(4*a);
+    else if(silhouette==='square4')m=.94+.05*Math.cos(4*a);
+    else if(silhouette==='cushion4')m=.96+.04*Math.cos(4*a);
+    else if(silhouette==='scallop12')m=.96+.04*Math.cos(12*a);
+    else if(silhouette==='petal8')m=.94+.06*Math.cos(8*a-Math.PI/8);
+    else if(silhouette==='octagon8')m=.96+.03*Math.cos(8*a);
     r*=densityScale;
     dx=Math.cos(a)*r*m*sx;dy=Math.sin(a)*r*m*sy;
     return [cx+dx,cy+dy];
@@ -3105,17 +3103,8 @@ function mandalaSvg(item){
     const template=MANDALA_PREMIUM_TEMPLATES[bands[key]]||MANDALA_PREMIUM_TEMPLATES.lotusA;
     const g=document.createElementNS(ns,'g');g.setAttribute('fill','none');g.setAttribute('stroke','#111');g.setAttribute('stroke-width',stroke);g.setAttribute('stroke-linecap','round');g.setAttribute('stroke-linejoin','round');
     template.forEach(entry=>{if(entry[1]!==band)return;const d=smoothD(entry[0]);if(!d)return;const p=document.createElementNS(ns,'path');p.setAttribute('d',d);g.appendChild(p);});
-    art.appendChild(g);
+    svg.appendChild(g);
   }
-  try{
-    const bbox=art.getBBox();
-    const pad=18;
-    const avail=420-pad*2;
-    const scale=Math.min(avail/Math.max(1,bbox.width), avail/Math.max(1,bbox.height));
-    const tx=210-(bbox.x+bbox.width/2)*scale;
-    const ty=210-(bbox.y+bbox.height/2)*scale;
-    art.setAttribute('transform',`translate(${tx.toFixed(2)} ${ty.toFixed(2)}) scale(${scale.toFixed(4)})`);
-  }catch(e){}
   const wrap=document.createElement('div');wrap.className='mandala-wrap';wrap.appendChild(svg);return wrap;
 }
 
