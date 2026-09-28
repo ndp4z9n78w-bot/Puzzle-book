@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v10.5 — Offline Reliability</title>
+<title>Offline Puzzle Studio v10.6 — Visual How-To Pages</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -282,11 +282,58 @@ details summary{cursor:pointer;font-weight:700}
   letter-spacing:.04em;
   margin-top:5px;
 }
+
+.visual-howto{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:10px 0 14px;
+}
+.visual-card{
+  border:1px solid #aaa;
+  border-radius:10px;
+  padding:10px;
+  background:#fff;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+.visual-card h4{margin:0 0 6px;font-size:14px}
+.visual-grid{
+  border-collapse:collapse;
+  margin:8px auto;
+}
+.visual-grid td{
+  width:28px;height:28px;
+  border:1px solid #222;
+  text-align:center;
+  vertical-align:middle;
+  font-weight:700;
+  font-size:13px;
+  padding:0;
+}
+.visual-grid .hi{background:#e7e7e7}
+.visual-grid .dark{background:#222;color:#fff}
+.visual-grid .soft{background:#f3f3f3}
+.visual-arrow{
+  text-align:center;
+  font-weight:700;
+  font-size:18px;
+  margin:5px 0;
+}
+.visual-seq{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  text-align:center;
+  font-weight:700;
+  font-size:16px;
+  margin:10px 0;
+}
+.visual-note{font-size:12px;line-height:1.35}
+@media(max-width:700px){.visual-howto{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v10.5</span></h1><div class="build-version">Exact build: v10.5 • Offline Reliability</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v10.5</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v10.6</span></h1><div class="build-version">Exact build: v10.6 • Visual How-To Pages</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v10.6</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -531,7 +578,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 
 <p class="small"><b>Offline:</b> no internet, server, account, or installation is required.</p><p class="small"><b>KDP Book Builder:</b> mix Easy, Medium, and Hard puzzles in one interior, add front matter and section dividers, and send all answer keys to the back automatically.</p><p class="small"><b>Expanded library:</b> word, number, logic, Sudoku-variant, and math puzzle generators.</p><p class="small"><b>Quality tools:</b> validation still runs behind the scenes for Quality Check and Preflight, but verification labels are no longer printed on puzzle pages.</p><p class="small"><b>Difficulty:</b> Book difficulty is controlled by the Easy / Medium / Hard puzzle counts, or per-row difficulty in Mixed Puzzle Book. The old standalone difficulty selector has been removed.</p><p class="small"><b>Presets & editing:</b> choose a book preset, use Large Print, open Book Overview, regenerate individual puzzles, delete them, or move them up/down without rebuilding the whole book.</p><p class="small"><b>Variety:</b> High/Maximum variety changes pattern families, sequence rules, cage layouts, path styles, search directions, and cryptogram mappings so large books feel less repetitive.</p><p class="small"><b>KDP readiness:</b> Preflight now checks puzzle/solution matching, mixed-book counts, page-count consistency, frames/safe-area heuristics, blank pages, section starts, and export readiness.</p><p class="small"><b>Mixed books:</b> choose puzzle type, difficulty, and quantity for every mixed-book row. <b>Design:</b> frame templates, page typography, multi-puzzle layouts, mirrored page numbers, right-hand section starts, spread preview, and final preflight checks.</p>
 <p class="small"><b>Validation:</b> Sudoku, Kakuro, and Slitherlink are solver-checked. The generator rejects a puzzle unless it finds exactly one solution. Mazes are generated with a verified entrance-to-exit path.</p>
-<p class="small"><b>Smart assembly:</b> tiny sections avoid wasteful divider pages, larger section dividers stay right-page aligned, solution pages adapt their density to each puzzle type, and PDF/JSON exports receive organized filenames automatically.</p><p class="small"><b>How-to pages:</b> Each puzzle type now gets its own instruction page with multiple worked examples. Sudoku includes row, column, and 3×3 box elimination examples.<br><b>PDF:</b> choose “Create PDF,” then select <b>Save as PDF</b>. For KDP interiors, keep browser scaling at 100% and margins set to none/default as appropriate.</p>
+<p class="small"><b>Smart assembly:</b> tiny sections avoid wasteful divider pages, larger section dividers stay right-page aligned, solution pages adapt their density to each puzzle type, and PDF/JSON exports receive organized filenames automatically.</p><p class="small"><b>How-to pages:</b> Each puzzle type now gets a visual instruction page with mini grids, arrows, highlighted cells, and worked examples.<br><b>PDF:</b> choose “Create PDF,” then select <b>Save as PDF</b>. For KDP interiors, keep browser scaling at 100% and margins set to none/default as appropriate.</p>
 </section>
 
 <section class="panel preview">
@@ -548,7 +595,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='10.5';
+const PUZZLE_STUDIO_VERSION='10.6';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]};
@@ -1974,131 +2021,166 @@ function makeSpecial(kind,title,body,extra=''){
  s.innerHTML=`<div class="special-page"><h1>${title}</h1>${extra}<div class="rule"></div>${body}</div>`;
  return applyDesign(s)
 }
+
+function visualGrid(rows,hi=[]){
+  let set=new Set(hi.map(x=>x.join(',')));
+  return `<table class="visual-grid">${rows.map((row,r)=>`<tr>${row.map((v,c)=>`<td class="${set.has(r+','+c)?'hi':''}">${v??''}</td>`).join('')}</tr>`).join('')}</table>`;
+}
+function visualCard(title,body,note=''){
+  return `<div class="visual-card"><h4>${title}</h4>${body}${note?`<div class="visual-note">${note}</div>`:''}</div>`;
+}
 function instructionHtml(type){
+ const sudokuA=visualGrid([
+   ['1','2','3','4','5','6','7','','9']
+ ],[[0,7]]);
+ const sudokuB=visualGrid([
+   ['1','','3'],
+   ['4','5','6'],
+   ['7','8','9']
+ ],[[0,1]]);
+ const mini=visualGrid([
+   ['1','2','','4'],
+   ['','4','1','2'],
+   ['2','1','4','3'],
+   ['4','3','2','1']
+ ],[[0,2]]);
+ const tak=visualGrid([
+   ['0','0',''],
+   ['1','','1'],
+   ['','','']
+ ],[[0,2],[1,1]]);
+ const magic=visualGrid([
+   ['8','1',''],
+   ['3','5','7'],
+   ['4','9','2']
+ ],[[0,2]]);
+ const nono=`<div class="visual-seq">2 1 → ■ ■ □ ■</div>`;
+ const kakuro=`<div class="visual-seq">4 → [ 1 ][ 3 ]</div>`;
+ const ken=`<div class="visual-seq">6× → 2 × 3</div>`;
+ const crypto=`<div class="visual-seq">X Q → T H</div>`;
+ const hidato=`<div class="visual-seq">12 → 13 → 14</div>`;
+ const missing=`<div class="visual-seq">2, 4, 6, ?, 10 → 8</div>`;
+ const word=`<div class="visual-seq">B → I → R → D</div>`;
+ const num=`<div class="visual-seq">4 → 2 → 8 → 1</div>`;
+ const slither=`<svg viewBox="0 0 120 90" style="width:160px;display:block;margin:auto">
+   <rect x="20" y="15" width="60" height="60" fill="none" stroke="#111" stroke-width="3"/>
+   <text x="50" y="52" text-anchor="middle" font-size="26" font-weight="700">3</text>
+   <line x1="20" y1="15" x2="80" y2="15" stroke="#111" stroke-width="6"/>
+   <line x1="80" y1="15" x2="80" y2="75" stroke="#111" stroke-width="6"/>
+   <line x1="20" y1="75" x2="80" y2="75" stroke="#111" stroke-width="6"/>
+ </svg>`;
+ const maze=`<svg viewBox="0 0 180 100" style="width:200px;display:block;margin:auto">
+   <path d="M10 50 H60 V20 H110 V50 H165" fill="none" stroke="#111" stroke-width="8" stroke-linecap="round"/>
+   <path d="M60 50 V85" fill="none" stroke="#777" stroke-width="5"/>
+   <text x="6" y="42" font-size="12">START</text><text x="135" y="42" font-size="12">FINISH</text>
+ </svg>`;
+
  const map={
-  sudoku:`<div class="instructions-section">
-    <h3>How to Play Sudoku</h3>
-    <p>Fill every row, column, and 3×3 box with the numbers 1–9. Each number can appear only once in each row, column, and box.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1 — Row elimination</strong>
-        <p>A row contains every number except 8, so the empty square must be 8.</p>
-        <div class="howto-rule">1 2 3 | 4 5 6 | 7 _ 9  →  8</div>
-      </div>
-      <div class="howto-step"><strong>Example 2 — Column elimination</strong>
-        <p>If a column already contains 1, 2, 3, 4, 6, 7, 8, and 9, the only possible number for its empty cell is 5.</p>
-        <div class="howto-rule">Missing from column: 5</div>
-      </div>
-      <div class="howto-step"><strong>Example 3 — Box elimination</strong>
-        <p>Suppose a 3×3 box is missing 2 and 6. One empty cell shares a row that already contains 6, so that cell must be 2. The other cell becomes 6.</p>
-        <div class="howto-rule">Candidates {2,6} → row blocks 6 → place 2</div>
-      </div>
-    </div>
-    <h3>Good way to start</h3>
-    <ul>
-      <li>Look first for rows, columns, or boxes with only one or two empty cells.</li>
-      <li>For each empty cell, eliminate numbers already used in its row, column, and box.</li>
-      <li>Use pencil candidates when more than one value is possible.</li>
-      <li>Avoid guessing until logical elimination no longer gives you a move.</li>
-    </ul>
-  </div>`,
-
-  maze:`<div class="instructions-section"><h3>How to Solve Mazes</h3><p>Travel from Start to Finish without crossing any wall.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1 — Dead end</strong><p>If a corridor closes, return to the last fork and take the other branch.</p><div class="howto-rule">START → fork → dead end ↩ → other branch</div></div>
-      <div class="howto-step"><strong>Example 2 — Trace carefully</strong><p>At a three-way junction, lightly mark the route you try so you do not keep repeating the same dead end.</p></div>
-    </div><h3>Tip</h3><p>Working backward from Finish can sometimes reveal a useful route.</p></div>`,
-
-  kakuro:`<div class="instructions-section"><h3>How to Play Kakuro</h3><p>Fill white cells with digits 1–9 so each run adds to its clue. A digit cannot repeat within the same run.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1 — Sum of 4 in two cells</strong><p>The only non-repeating pair is 1 and 3.</p><div class="howto-rule">4 → 1 + 3</div></div>
-      <div class="howto-step"><strong>Example 2 — Sum of 17 in two cells</strong><p>The only non-repeating pair is 8 and 9.</p><div class="howto-rule">17 → 8 + 9</div></div>
-    </div><p>Use the crossing run to determine which order the digits belong in.</p></div>`,
-
-  slither:`<div class="instructions-section"><h3>How to Play Slitherlink</h3><p>Draw one closed loop. A clue tells how many sides of that cell belong to the loop.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1 — A 0 clue</strong><p>No edge surrounding that cell may be used.</p><div class="howto-rule">0 → 0 surrounding edges</div></div>
-      <div class="howto-step"><strong>Example 2 — A 3 clue</strong><p>Exactly three of the cell's four borders must be part of the loop.</p><div class="howto-rule">3 → exactly 3 surrounding edges</div></div>
-    </div><p>The finished loop cannot branch, cross itself, or split into separate loops.</p></div>`,
-
-  wordsearch:`<div class="instructions-section"><h3>How to Play Word Search</h3><p>Find every listed word in the letter grid.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1 — Forward</strong><div class="howto-rule">B → I → R → D</div></div>
-      <div class="howto-step"><strong>Example 2 — Backward</strong><p>The same word could appear in reverse.</p><div class="howto-rule">D → R → I → B</div></div>
-    </div><p>Words may be horizontal, vertical, diagonal, forward, or backward.</p></div>`,
-
-  numbersearch:`<div class="instructions-section"><h3>How to Play Number Search</h3><p>Find every listed number sequence in the grid.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1</strong><div class="howto-rule">4 → 2 → 8 → 1</div></div>
-      <div class="howto-step"><strong>Example 2</strong><p>If the first two digits match, keep checking in the exact same direction for the rest of the sequence.</p></div>
+  sudoku:`<div class="instructions-section"><h3>How to Play Sudoku</h3><p>Fill every row, column, and 3×3 box with 1–9, with no repeats.</p>
+    <div class="visual-howto">
+      ${visualCard('1. Row example',sudokuA+'<div class="visual-arrow">→ 8</div>','Only 8 is missing from the row.')}
+      ${visualCard('2. Column / box example',sudokuB+'<div class="visual-arrow">→ 2</div>','The highlighted cell must satisfy both its column and its 3×3 box.')}
+      ${visualCard('3. Candidate thinking','<div class="visual-seq">{2,6} → row already has 6 → choose 2</div>','Cross out values already used in the row, column, and box.')}
+      ${visualCard('4. Best place to start','<div class="visual-seq">Look for rows, columns, or boxes with only 1–2 blanks.</div>')}
     </div></div>`,
 
-  cryptogram:`<div class="instructions-section"><h3>How to Solve Cryptograms</h3><p>Each cipher letter represents another letter. The substitution stays consistent throughout that puzzle.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1</strong><p>If X=T and Q=H, then XQ becomes TH.</p><div class="howto-rule">X Q → T H</div></div>
-      <div class="howto-step"><strong>Example 2</strong><p>A one-letter word is usually A or I. Repeated patterns can also reveal common words.</p></div>
+  maze:`<div class="instructions-section"><h3>How to Solve Mazes</h3><p>Find one continuous route from Start to Finish without crossing walls.</p>
+    <div class="visual-howto">
+      ${visualCard('Follow the path',maze)}
+      ${visualCard('Dead-end rule','<div class="visual-seq">Fork → dead end ↩ → try the other branch</div>')}
     </div></div>`,
 
-  nonogram:`<div class="instructions-section"><h3>How to Play Nonograms</h3><p>Row and column clues describe groups of consecutive filled cells.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1 — Single group</strong><div class="howto-rule">3 → ■ ■ ■</div></div>
-      <div class="howto-step"><strong>Example 2 — Multiple groups</strong><p>At least one blank separates the groups.</p><div class="howto-rule">2 1 → ■ ■ □ ■</div></div>
-      <div class="howto-step"><strong>Example 3 — Exact fit</strong><p>In a 5-cell row, clue 5 means every cell is filled.</p><div class="howto-rule">5 → ■ ■ ■ ■ ■</div></div>
+  kakuro:`<div class="instructions-section"><h3>How to Play Kakuro</h3><p>Each run must add to its clue, and digits cannot repeat within that run.</p>
+    <div class="visual-howto">
+      ${visualCard('Two cells total 4',kakuro,'1+3 works. 2+2 is not allowed because digits repeat.')}
+      ${visualCard('Two cells total 17','<div class="visual-seq">17 → [ 8 ][ 9 ]</div>')}
     </div></div>`,
 
-  killer:`<div class="instructions-section"><h3>How to Play Killer Sudoku</h3><p>Follow normal Sudoku rules and make each cage add to its target without repeating a digit inside a cage.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1</strong><div class="howto-rule">2-cell cage 3 → {1,2}</div></div>
-      <div class="howto-step"><strong>Example 2</strong><div class="howto-rule">2-cell cage 17 → {8,9}</div></div>
-    </div><p>Row, column, and box restrictions determine which cell receives which digit.</p></div>`,
-
-  diagonal:`<div class="instructions-section"><h3>How to Play Diagonal Sudoku</h3><p>Use normal Sudoku rules, plus each main diagonal must contain 1–9 exactly once.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1</strong><p>If 7 already appears on a main diagonal, no other cell on that diagonal may be 7.</p></div>
-      <div class="howto-step"><strong>Example 2</strong><p>A cell on a diagonal must satisfy four restrictions at once: row, column, box, and diagonal.</p></div>
+  slither:`<div class="instructions-section"><h3>How to Play Slitherlink</h3><p>Draw one closed loop. Each clue tells how many sides of that cell belong to the loop.</p>
+    <div class="visual-howto">
+      ${visualCard('A clue of 3',slither,'Exactly three sides touch the clue cell.')}
+      ${visualCard('A clue of 0','<div class="visual-seq">0 → no surrounding sides</div>')}
     </div></div>`,
 
-  irregular:`<div class="instructions-section"><h3>How to Play Irregular Sudoku</h3><p>Fill 1–9 so every row, column, and outlined irregular region contains each digit exactly once.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1</strong><p>Treat an outlined irregular shape exactly like a normal Sudoku 3×3 box.</p></div>
-      <div class="howto-step"><strong>Example 2</strong><p>If a region is missing only 4, its remaining empty cell must be 4 even if the region bends around the grid.</p></div>
+  wordsearch:`<div class="instructions-section"><h3>How to Play Word Search</h3><p>Find every listed word in a straight line.</p>
+    <div class="visual-howto">
+      ${visualCard('Forward',word)}
+      ${visualCard('Backward','<div class="visual-seq">D → R → I → B</div>','Words may also be vertical or diagonal.')}
     </div></div>`,
 
-  mini:`<div class="instructions-section"><h3>How to Play Mini Sudoku</h3><p>Use the same logic as Sudoku on a smaller grid.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1</strong><div class="howto-rule">1 2 _ 4 → 3</div></div>
-      <div class="howto-step"><strong>Example 2</strong><p>Check the row, column, and small box before placing a number.</p></div>
+  numbersearch:`<div class="instructions-section"><h3>How to Play Number Search</h3><p>Find each listed number sequence in a straight direction.</p>
+    <div class="visual-howto">
+      ${visualCard('Sequence example',num)}
+      ${visualCard('Keep direction','<div class="visual-seq">Once 4→2 matches, keep moving in that same direction for 8→1.</div>')}
     </div></div>`,
 
-  kenken:`<div class="instructions-section"><h3>How to Play KenKen / Calcudoku</h3><p>Use each number once per row and column. Cage values must make the target using the shown operation.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1 — Multiplication</strong><div class="howto-rule">6× → 2 × 3</div></div>
-      <div class="howto-step"><strong>Example 2 — Subtraction</strong><div class="howto-rule">1− → |3 − 2|</div></div>
-      <div class="howto-step"><strong>Example 3 — Division</strong><div class="howto-rule">2÷ → 4 ÷ 2</div></div>
+  cryptogram:`<div class="instructions-section"><h3>How to Solve Cryptograms</h3><p>Each cipher letter always represents the same original letter within the puzzle.</p>
+    <div class="visual-howto">
+      ${visualCard('Letter substitution',crypto)}
+      ${visualCard('Word-pattern clue','<div class="visual-seq">A one-letter word is usually A or I</div>')}
     </div></div>`,
 
-  hidato:`<div class="instructions-section"><h3>How to Play Hidato</h3><p>Fill the missing numbers so consecutive numbers touch horizontally, vertically, or diagonally.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1</strong><div class="howto-rule">12 → 13 → 14</div></div>
-      <div class="howto-step"><strong>Example 2</strong><p>If only one empty cell touches both 20 and 22, that cell must be 21.</p></div>
+  nonogram:`<div class="instructions-section"><h3>How to Play Nonograms</h3><p>Clues describe groups of consecutive filled cells.</p>
+    <div class="visual-howto">
+      ${visualCard('Single group','<div class="visual-seq">3 → ■ ■ ■</div>')}
+      ${visualCard('Separated groups',nono,'At least one blank separates the groups.')}
+      ${visualCard('Exact fit','<div class="visual-seq">5 → ■ ■ ■ ■ ■</div>')}
     </div></div>`,
 
-  takuzu:`<div class="instructions-section"><h3>How to Play Takuzu</h3><p>Fill the grid with 0s and 1s. Rows and columns contain equal quantities of each digit, no three identical digits touch, and completed rows/columns must be unique.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1</strong><div class="howto-rule">0 0 _ → 0 0 1</div></div>
-      <div class="howto-step"><strong>Example 2</strong><div class="howto-rule">1 _ 1 → 1 0 1</div></div>
+  killer:`<div class="instructions-section"><h3>How to Play Killer Sudoku</h3><p>Use normal Sudoku rules plus the cage totals.</p>
+    <div class="visual-howto">
+      ${visualCard('Small cage','<div class="visual-seq">3 → {1,2}</div>')}
+      ${visualCard('High cage','<div class="visual-seq">17 → {8,9}</div>')}
     </div></div>`,
 
-  magicsquare:`<div class="instructions-section"><h3>How to Play Magic Squares</h3><p>Every row, column, and main diagonal must equal the same magic total.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1</strong><div class="howto-rule">8 + 1 + _ = 15 → 6</div></div>
-      <div class="howto-step"><strong>Example 2</strong><p>If a column already totals 11 and the target is 15, the missing value is 4.</p><div class="howto-rule">11 + _ = 15 → 4</div></div>
+  diagonal:`<div class="instructions-section"><h3>How to Play Diagonal Sudoku</h3><p>Normal Sudoku rules apply, and both main diagonals also contain 1–9 exactly once.</p>
+    <div class="visual-howto">
+      ${visualCard('Extra rule','<div class="visual-seq">↘ 1–9 once &nbsp;&nbsp; ↙ 1–9 once</div>')}
+      ${visualCard('Diagonal elimination','<div class="visual-seq">If 7 is already on the diagonal, no other diagonal cell can be 7.</div>')}
     </div></div>`,
 
-  missingnumber:`<div class="instructions-section"><h3>How to Play Missing Number</h3><p>Identify the rule followed by the sequence, then fill in the missing value.</p>
-    <div class="howto-example-grid">
-      <div class="howto-step"><strong>Example 1 — Add the same amount</strong><div class="howto-rule">2, 4, 6, ?, 10 → 8</div></div>
-      <div class="howto-step"><strong>Example 2 — Multiply</strong><div class="howto-rule">3, 6, 12, ?, 48 → 24</div></div>
-      <div class="howto-step"><strong>Example 3 — Squares</strong><div class="howto-rule">1, 4, 9, ?, 25 → 16</div></div>
+  irregular:`<div class="instructions-section"><h3>How to Play Irregular Sudoku</h3><p>The outlined irregular shapes replace the normal 3×3 boxes.</p>
+    <div class="visual-howto">
+      ${visualCard('Region rule','<div class="visual-seq">Each outlined region must contain 1–9 once.</div>')}
+      ${visualCard('Use all three checks','<div class="visual-seq">Row + Column + Region</div>')}
+    </div></div>`,
+
+  mini:`<div class="instructions-section"><h3>How to Play Mini Sudoku</h3><p>Same idea as Sudoku, but on a smaller grid.</p>
+    <div class="visual-howto">
+      ${visualCard('4×4 example',mini+'<div class="visual-arrow">→ 3</div>')}
+      ${visualCard('Check three places','<div class="visual-seq">Row + Column + Small Box</div>')}
+    </div></div>`,
+
+  kenken:`<div class="instructions-section"><h3>How to Play KenKen / Calcudoku</h3><p>Use each number once per row and column, while satisfying cage math.</p>
+    <div class="visual-howto">
+      ${visualCard('Multiply cage',ken)}
+      ${visualCard('Subtract cage','<div class="visual-seq">1− → |3−2|</div>')}
+      ${visualCard('Divide cage','<div class="visual-seq">2÷ → 4÷2</div>')}
+    </div></div>`,
+
+  hidato:`<div class="instructions-section"><h3>How to Play Hidato</h3><p>Consecutive numbers must touch horizontally, vertically, or diagonally.</p>
+    <div class="visual-howto">
+      ${visualCard('Consecutive path',hidato)}
+      ${visualCard('Forced middle','<div class="visual-seq">20 → ? → 22 ⇒ 21</div>')}
+    </div></div>`,
+
+  takuzu:`<div class="instructions-section"><h3>How to Play Takuzu</h3><p>Use equal numbers of 0s and 1s, never allow three identical digits in a row, and keep completed rows/columns unique.</p>
+    <div class="visual-howto">
+      ${visualCard('No three alike',tak)}
+      ${visualCard('Sandwich rule','<div class="visual-seq">1 _ 1 → 1 0 1</div>')}
+    </div></div>`,
+
+  magicsquare:`<div class="instructions-section"><h3>How to Play Magic Squares</h3><p>Every row, column, and main diagonal must equal the same total.</p>
+    <div class="visual-howto">
+      ${visualCard('Find the missing value',magic+'<div class="visual-arrow">8 + 1 + ? = 15 → 6</div>')}
+      ${visualCard('Column example','<div class="visual-seq">11 + ? = 15 → 4</div>')}
+    </div></div>`,
+
+  missingnumber:`<div class="instructions-section"><h3>How to Play Missing Number</h3><p>Find the rule in the sequence and calculate the missing value.</p>
+    <div class="visual-howto">
+      ${visualCard('Add pattern',missing)}
+      ${visualCard('Multiply pattern','<div class="visual-seq">3, 6, 12, ?, 48 → 24</div>')}
+      ${visualCard('Square pattern','<div class="visual-seq">1, 4, 9, ?, 25 → 16</div>')}
     </div></div>`
  };
  return map[type]||'';
@@ -2793,7 +2875,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=10.5',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=10.6',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
