@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v12.4 — Tested Mixed Book Fix</title>
+<title>Offline Puzzle Studio v12.5 — Tested Mixed Book Fix</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -441,8 +441,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v12.4</span></h1><div class="build-version">Exact build: v12.4 • Mandala Generator</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v12.4</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v12.5</span></h1><div class="build-version">Exact build: v12.5 • Mandala UI + Author Removal</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v12.5</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -713,7 +713,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='12.4';
+const PUZZLE_STUDIO_VERSION='12.5';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]};
@@ -1512,13 +1512,25 @@ function makeMissingNumber(diff){
 /* ---------- RENDERING ---------- */
 
 const PUZZLE_OPTIONS=[
- ['sudoku','Sudoku'],['maze','Maze'],['kakuro','Kakuro'],['slither','Slitherlink'],
- ['wordsearch','Word Search'],['numbersearch','Number Search'],['cryptogram','Cryptogram'],
- ['nonogram','Nonogram'],['killer','Killer Sudoku'],['diagonal','Diagonal Sudoku'],
- ['irregular','Irregular Sudoku'],['mini','Mini Sudoku'],['kenken','KenKen / Calcudoku'],
- ['hidato','Hidato'],['takuzu','Takuzu / Binary'],['magicsquare','Magic Squares'],
- ['missingnumber','Missing Number']
-,['mandala','Mandala Coloring Page']];
+ ['sudoku','Sudoku'],
+ ['maze','Maze'],
+ ['kakuro','Kakuro'],
+ ['slither','Slitherlink'],
+ ['wordsearch','Word Search'],
+ ['numbersearch','Number Search'],
+ ['cryptogram','Cryptogram'],
+ ['nonogram','Nonogram / Picross'],
+ ['killer','Killer Sudoku'],
+ ['diagonal','Diagonal Sudoku'],
+ ['irregular','Irregular Sudoku'],
+ ['mini','Mini Sudoku'],
+ ['kenken','KenKen / Calcudoku'],
+ ['hidato','Hidato'],
+ ['takuzu','Takuzu / Binary'],
+ ['magicsquare','Magic Square'],
+ ['missingnumber','Missing Number'],
+ ['mandala','Mandala Coloring Page']
+];
 let mixRows=[{type:'sudoku',difficulty:'Easy',count:10,puzzlesPerPage:1,solutionsPerPage:2},{type:'wordsearch',difficulty:'Medium',count:10,puzzlesPerPage:1,solutionsPerPage:1}];
 
 function mixedLayoutFor(type){
@@ -3210,7 +3222,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=12.4',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=12.5',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
@@ -3223,7 +3235,7 @@ async function updateOfflineStatus(){
   }
   try{
     await navigator.serviceWorker.ready;
-    const cache=await caches.open('puzzle-studio-v12-4');
+    const cache=await caches.open('puzzle-studio-v12-5');
     const cached=await cache.match('./index.html');
     el.textContent=cached
       ? 'Offline ready — this version is cached on this device.'
@@ -3238,5 +3250,6 @@ window.addEventListener('load',()=>{
 });
 window.addEventListener('online',()=>setTimeout(updateOfflineStatus,500));
 </script>
+<input id="author" type="hidden" value="">
 </body>
 </html>
