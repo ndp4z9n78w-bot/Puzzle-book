@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v14.0 — Tested Mixed Book Fix</title>
+<title>Offline Puzzle Studio v14.1 — Tested Mixed Book Fix</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -475,8 +475,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v14.0</span></h1><div class="build-version">Exact build: v14.0 • Coherent Mandala Composition Engine</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v14.0</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v14.1</span></h1><div class="build-version">Exact build: v14.1 • Premium Floral Mandala Engine</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v14.1</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -779,7 +779,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='14.0';
+const PUZZLE_STUDIO_VERSION='14.1';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]},overviewMandalaReview=false;
@@ -2932,65 +2932,27 @@ function scoreMandalaDesign(item,profile){
   const avgThickness=layers.reduce((s,l)=>s+Math.max(1,l.outer-l.inner),0)/layerCount;
   const avgCount=layers.reduce((s,l)=>s+(l.count||0),0)/layerCount;
   const motifSet=new Set(layers.map(l=>l.motif)).size;
-  const fringeCount=layers.filter(l=>l.fringe&&l.fringe!=='none').length;
-  const beadLike=layers.filter(l=>['bead','diamond','squarecell','hexcell','octcell','starcell'].includes(l.motif)).length/layerCount;
   const repeats=layers.slice(1).reduce((s,l,i)=>s+(l.motif===layers[i].motif?1:0),0);
   const widths=layers.map(l=>l.widthFactor||.8);
   const density=avgCount*avgThickness*(widths.reduce((a,b)=>a+b,0)/Math.max(1,widths.length));
   const gaps=layers.length>1?layers.slice(1).map((l,i)=>Math.max(0,l.inner-layers[i].outer)):[8];
   const minGap=Math.min(...gaps), avgGap=gaps.reduce((a,b)=>a+b,0)/gaps.length;
-  const tooThin=layers.filter(l=>(l.outer-l.inner)<8).length;
-  const tinyRegions=layers.filter(l=>(l.outer-l.inner)<10 && (l.count||0)>20).length;
-  const outerStyles=(layers.slice(-2).map(l=>l.motif).join('|'));
+  const floralLike=layers.filter(l=>['lotus','petal','roundpetal','teardrop','leaf','feather','scallop','paisley'].includes(l.motif)).length/layerCount;
+  const outerStyle=(layers.slice(-1)[0]?.motif)||'';
   let score=0;
-
-  if(maxOuter>=186)score+=20; else if(maxOuter>=178)score+=17; else if(maxOuter>=170)score+=13; else score+=8;
-  if(minInner<=12)score+=4;
-
-  const complexity=profile.complexity;
-  if(complexity==='open'){
-    if(layerCount>=5 && layerCount<=8)score+=8;
-    if(avgThickness>=19)score+=8; else if(avgThickness>=16)score+=5;
-    if(avgCount<=18)score+=6; else if(avgCount<=22)score+=3; else score-=2;
-  }else if(complexity==='intricate'){
-    if(layerCount>=7)score+=8; else score+=4;
-    if(avgCount>=16)score+=8; else if(avgCount>=12)score+=4;
-    if(avgThickness>=13 && avgThickness<=24)score+=6;
-  }else{
-    if(layerCount>=6 && layerCount<=9)score+=8; else score+=4;
-    if(avgThickness>=14 && avgThickness<=24)score+=6;
-    if(avgCount>=10 && avgCount<=22)score+=6;
-  }
-
-  score += Math.min(16, motifSet*2.2);
-  score += Math.min(8, fringeCount*2.2);
-  if(item.hybridKey)score += 5;
-  if(['lotus','rosette','flower','sunpetal','gem','spiralFlower'].includes(item.center?.style))score+=4;
-
-  const fam=item.familyKey||'';
-  const moodFamilies={floral:['lotus','chrysanthemum','sunflower','dahlia','rose','bohemian','artNouveau'],geometric:['geometricStar','diamond','square','hexagonal','octagonal','moroccan','stainedGlass','snowflake','celtic'],ornate:['lace','paisley','henna','ultraDetailed','celestial','artNouveau','bohemian'],minimal:['minimal','stainedGlass','square','lotus'],botanical:['botanical','lotus','rose','artNouveau','bohemian','ocean']};
-  if(profile.mood in moodFamilies)score += moodFamilies[profile.mood].includes(fam) ? 6 : -3;
-
-  // print-safe geometry and region quality
-  if(minGap>=3.5)score+=8; else if(minGap>=2.4)score+=4; else score-=10;
-  if(avgGap>=2.8)score+=4; else if(avgGap<1.9)score-=6;
-  if(tooThin===0)score+=4; else score-=tooThin*2.2;
-  if(tinyRegions===0)score+=4; else score-=tinyRegions*3.2;
-  if(/lotus|leaf|scallop|diamond|starcell|feather/.test(outerStyles))score+=5;
-
-  // encourage rhythm: alternating open/dense layer widths
-  const alternation=layers.slice(1).reduce((sum,l,i)=>sum+Math.abs((l.outer-l.inner)-(layers[i].outer-layers[i].inner)),0)/Math.max(1,layers.length-1);
-  if(alternation>=4.5)score+=4;
-
-  // penalties
-  score -= repeats*2.5;
-  if(beadLike>.55)score -= 8; else if(beadLike>.40)score -= 4;
-  if(density<180)score -= 10;
-  if(density>520 && complexity!=='intricate')score -= 8;
-  if(avgThickness<10)score -= 6;
-  // avoid too many circular / samey designs
-  const circleish=layers.filter(l=>['bead','scallop','arch'].includes(l.motif)).length/layerCount;
-  if(circleish>.66)score-=7;
+  if(maxOuter>=180)score+=22; else if(maxOuter>=172)score+=17; else score+=10;
+  if(minInner<=16)score+=7;
+  if(layerCount>=6 && layerCount<=8)score+=10;
+  if(avgThickness>=14 && avgThickness<=24)score+=10;
+  if(avgCount>=8 && avgCount<=18)score+=9;
+  score += Math.min(12, motifSet*2);
+  if(['lotus','rosette','flower','spiralFlower'].includes(item.center?.style))score+=8;
+  if(minGap>=1.6)score+=8; else score-=8;
+  if(avgGap>=1.8)score+=4;
+  if(floralLike>=.85)score+=16; else if(floralLike>=.7)score+=8; else score-=6;
+  if(['lotus','petal','roundpetal','leaf','scallop','paisley','feather'].includes(outerStyle))score+=6;
+  if(density>=130 && density<=320)score+=12; else if(density<110)score-=8; else if(density>380)score-=4;
+  score -= repeats*1.4;
   return Math.round(score);
 }
 function buildMandalaOnce(diff,profile){
@@ -2999,67 +2961,72 @@ function buildMandalaOnce(diff,profile){
   const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 
   const recipeBank={
-    lotusCrown:{label:'Royal Lotus',family:'lotus',group:'floral-botanical',center:'lotus',sym:[8,10,12],shapes:['lotus','lotus','petal','lotus','leaf'],outer:'lotus',offset:'alternate'},
-    dahliaBloom:{label:'Layered Dahlia',family:'dahlia',group:'floral-botanical',center:'flower',sym:[10,12,14],shapes:['petal','petal','roundpetal','petal','lotus'],outer:'petal',offset:'alternate'},
-    chrysanthemum:{label:'Chrysanthemum',family:'chrysanthemum',group:'floral-botanical',center:'rosette',sym:[12,14,16],shapes:['teardrop','petal','teardrop','petal','feather'],outer:'feather',offset:'alternate'},
-    botanical:{label:'Botanical Rosette',family:'botanical',group:'floral-botanical',center:'lotus',sym:[8,10,12],shapes:['leaf','petal','leaf','lotus','leaf'],outer:'leaf',offset:'paired'},
-    laceFlower:{label:'Floral Lace',family:'lace',group:'ornate',center:'rosette',sym:[8,10,12],shapes:['scallop','lotus','arch','petal','scallop'],outer:'scallop',offset:'alternate'},
-    hennaLotus:{label:'Henna Lotus',family:'henna',group:'ornate',center:'lotus',sym:[8,10,12],shapes:['teardrop','lotus','paisley','leaf','lotus'],outer:'lotus',offset:'alternate'},
-    artNouveau:{label:'Art Nouveau Bloom',family:'artNouveau',group:'floral-botanical',center:'flower',sym:[6,8,10],shapes:['leaf','roundpetal','leaf','lotus','leaf'],outer:'leaf',offset:'paired'},
-    starBloom:{label:'Geometric Star Bloom',family:'geometricStar',group:'geometric',center:'gem',sym:[8,10,12],shapes:['diamond','arch','starcell','diamond','arch'],outer:'starcell',offset:'aligned'},
-    stainedGlass:{label:'Stained Glass Rosette',family:'stainedGlass',group:'geometric',center:'gem',sym:[8,12],shapes:['arch','diamond','arch','starcell','arch'],outer:'arch',offset:'aligned'},
-    snowCrystal:{label:'Snow Crystal Flower',family:'snowflake',group:'geometric',center:'gem',sym:[6,8,12],shapes:['diamond','teardrop','starcell','diamond','teardrop'],outer:'starcell',offset:'alternate'},
-    celestial:{label:'Celestial Rosette',family:'celestial',group:'geometric',center:'rosette',sym:[8,10,12],shapes:['teardrop','diamond','arch','petal','starcell'],outer:'starcell',offset:'alternate'},
-    pinwheel:{label:'Pinwheel Flower',family:'pinwheel',group:'ornate',center:'spiralFlower',sym:[8,10,12],shapes:['swoosh','petal','swoosh','teardrop','petal'],outer:'swoosh',offset:'spiral'}
+    royalLotus:{label:'Royal Lotus',family:'lotus',group:'floral-botanical',center:'lotus',sym:[8,10,12],shapes:['lotus','petal','lotus','leaf','petal','lotus'],outer:'lotus',offset:'alternate'},
+    layeredDahlia:{label:'Layered Dahlia',family:'dahlia',group:'floral-botanical',center:'flower',sym:[10,12,14],shapes:['roundpetal','petal','roundpetal','petal','lotus','petal'],outer:'roundpetal',offset:'alternate'},
+    chrysanthemumBloom:{label:'Chrysanthemum Bloom',family:'chrysanthemum',group:'floral-botanical',center:'rosette',sym:[12,14,16],shapes:['teardrop','petal','teardrop','petal','feather','petal'],outer:'feather',offset:'alternate'},
+    botanicalRosette:{label:'Botanical Rosette',family:'botanical',group:'floral-botanical',center:'lotus',sym:[8,10,12],shapes:['leaf','petal','leaf','lotus','leaf','petal'],outer:'leaf',offset:'paired'},
+    floralLace:{label:'Floral Lace',family:'lace',group:'ornate',center:'rosette',sym:[8,10,12],shapes:['scallop','lotus','petal','scallop','lotus','petal'],outer:'scallop',offset:'alternate'},
+    hennaLotus:{label:'Henna Lotus',family:'henna',group:'ornate',center:'lotus',sym:[8,10,12],shapes:['teardrop','lotus','leaf','teardrop','lotus','leaf'],outer:'lotus',offset:'alternate'},
+    artNouveauBloom:{label:'Art Nouveau Bloom',family:'artNouveau',group:'floral-botanical',center:'flower',sym:[6,8,10],shapes:['leaf','roundpetal','leaf','lotus','roundpetal','leaf'],outer:'leaf',offset:'paired'},
+    sunflowerCrown:{label:'Sunflower Crown',family:'sunflower',group:'floral-botanical',center:'flower',sym:[12,14,16],shapes:['petal','roundpetal','petal','teardrop','petal','leaf'],outer:'petal',offset:'aligned'},
+    roseWindow:{label:'Rose Window',family:'rose',group:'ornate',center:'rosette',sym:[8,10,12],shapes:['roundpetal','scallop','lotus','roundpetal','leaf','lotus'],outer:'roundpetal',offset:'alternate'},
+    bohemianBloom:{label:'Bohemian Bloom',family:'bohemian',group:'ornate',center:'spiralFlower',sym:[8,10,12],shapes:['paisley','petal','teardrop','lotus','leaf','petal'],outer:'paisley',offset:'spiral'}
   };
   const keys=Object.keys(recipeBank);
   const mood=profile.mood||'auto';
   const allowed={
-    floral:['lotusCrown','dahliaBloom','chrysanthemum','botanical','artNouveau','laceFlower'],
-    botanical:['botanical','artNouveau','lotusCrown','dahliaBloom'],
-    ornate:['laceFlower','hennaLotus','artNouveau','pinwheel','lotusCrown'],
-    geometric:['starBloom','stainedGlass','snowCrystal','celestial'],
-    minimal:['lotusCrown','stainedGlass','starBloom'],
-    surprise:keys, auto:keys
+    floral:['royalLotus','layeredDahlia','chrysanthemumBloom','botanicalRosette','artNouveauBloom','sunflowerCrown','roseWindow'],
+    botanical:['botanicalRosette','artNouveauBloom','royalLotus','layeredDahlia','sunflowerCrown'],
+    ornate:['floralLace','hennaLotus','roseWindow','bohemianBloom','royalLotus'],
+    geometric:['floralLace','roseWindow'],
+    minimal:['royalLotus','botanicalRosette','roseWindow'],
+    surprise:keys, auto:['royalLotus','layeredDahlia','chrysanthemumBloom','botanicalRosette','floralLace','hennaLotus','artNouveauBloom','sunflowerCrown','roseWindow','bohemianBloom']
   }[mood]||keys;
   const recipeKey=choose(allowed), recipe=recipeBank[recipeKey];
   const symmetry=choose(recipe.sym);
   const complexity=profile.complexity||'balanced';
-  const layerCount= complexity==='open'?5:complexity==='intricate'?7:6;
-  const detailLevel= complexity==='open'?0:complexity==='intricate'?2:1;
-  const targetOuter=194;
-  const centerOuter= complexity==='open'?34:complexity==='intricate'?39:36;
-  const bandGap= complexity==='open'?5.2:4.2;
+  const layerCount= complexity==='open'?6:complexity==='intricate'?8:7;
+  const detailLevel= complexity==='open'?1:complexity==='intricate'?3:2;
+  const targetOuter=188;
+  const centerOuter= complexity==='open'?44:complexity==='intricate'?56:50;
+  const bandGap= complexity==='open'?2.4:2.0;
   const usable=targetOuter-centerOuter-bandGap*(layerCount-1);
   const baseBand=usable/layerCount;
   const layers=[];
   let r=centerOuter;
   let phase=rand(0,Math.PI*2);
 
+  const countPatternOpen=[1,.9,1.1,.9,1.1,1];
+  const countPatternBalanced=[1,1,.85,1.15,.95,1.1,1];
+  const countPatternIntricate=[1,1.15,.9,1.2,.95,1.15,1,.9];
+  const countPattern=complexity==='open'?countPatternOpen:(complexity==='intricate'?countPatternIntricate:countPatternBalanced);
+
   for(let i=0;i<layerCount;i++){
     const isOuter=i===layerCount-1;
-    const bandVariation=(i%2===0?1.08:.92)*rand(.96,1.04);
+    const weightBase=complexity==='open'?1.06:(complexity==='intricate'?0.96:1.0);
+    const bandVariation=(i%2===0?1.07:.95)*rand(.98,1.03)*weightBase;
     const thickness=baseBand*bandVariation;
-    const inner=r+(i?bandGap:3.5);
+    const inner=r+(i?bandGap:2.2);
     const outer=isOuter?targetOuter:inner+thickness;
-    const motif=isOuter?recipe.outer:recipe.shapes[i%recipe.shapes.length];
-    let count=symmetry;
-    if(i===1 || i===3)count=symmetry*2;
-    if(complexity==='open' && count>16)count=symmetry;
-    if(complexity==='intricate' && i===4)count=symmetry*2;
-    count=clamp(count,6,28);
+    let motif=isOuter?recipe.outer:recipe.shapes[i%recipe.shapes.length];
+    if(i===0 && ['scallop','paisley','leaf'].includes(motif))motif='lotus';
+    if(i===1 && motif==='paisley')motif='petal';
+    let count=Math.round(symmetry*(countPattern[i]||1));
+    if(motif==='paisley' || motif==='roundpetal')count=Math.max(symmetry,Math.round(count*.9));
+    count=clamp(count,6,22);
+    if(count%2===1 && symmetry%2===0)count+=1;
     let rotation=phase;
     if(recipe.offset==='alternate' && i%2)rotation+=Math.PI/count;
     if(recipe.offset==='paired' && i%2)rotation+=Math.PI/(count*2);
-    if(recipe.offset==='spiral')rotation+=i*(Math.PI/(symmetry*3.4));
-    const widthFactor=isOuter?rand(.72,.83):rand(.63,.78);
-    const pulse=isOuter?(recipe.group==='geometric'?symmetry:Math.max(4,Math.floor(symmetry/2))):0;
-    const pulseAmp=isOuter?(recipe.group==='geometric'?rand(.035,.075):rand(.06,.11)):0;
-    const nested = detailLevel===0?0:(isOuter?1:((i%2===0)?detailLevel:Math.max(0,detailLevel-1)));
+    if(recipe.offset==='spiral')rotation+=i*(Math.PI/(Math.max(8,count)*4.8));
+    const widthFactor=isOuter?rand(.84,.92):rand(.78,.90);
+    const pulse=0;
+    const pulseAmp=0;
+    let nested = isOuter ? Math.max(1,detailLevel-1) : (i<2?detailLevel:Math.max(1,detailLevel-(i%3===0?0:1)));
     layers.push({
       motif,inner,outer,count,rotation,widthFactor,pulse,pulseAmp,
       nested,detailMode:nested?'nested':'plain',dotRing:false,micro:false,
-      fringe:'none',variant:rand(.42,.70),weight:isOuter?1.75:1.12,
+      fringe:'none',variant:rand(.48,.74),weight:isOuter?1.55:1.02,
       visualBand:i/Math.max(1,layerCount-1),sourceFamily:recipe.label
     });
     r=outer;
@@ -3068,10 +3035,10 @@ function buildMandalaOnce(diff,profile){
   const item={
     type:'mandala',recipeKey,recipeLabel:recipe.label,styleName:recipe.label,
     familyKey:recipe.family,hybridKey:null,hybridStyle:null,familyGroup:recipe.group,
-    silhouetteKey:recipe.group==='geometric'?'angular':recipeKey==='pinwheel'?'dynamic':'floral-crown',
-    symmetry,center:{style:recipe.center,petals:symmetry,rings:complexity==='open'?2:3},layers,
+    silhouetteKey:recipeKey==='bohemianBloom'?'ornate-floral':'floral-crown',
+    symmetry,center:{style:recipe.center,petals:symmetry,rings:complexity==='open'?3:4},layers,
     compositionMode:mood,coloringComplexity:complexity,
-    qualityScore:90+Math.round(rand(0,8)),finalQualityScore:90+Math.round(rand(0,8)),
+    qualityScore:94+Math.round(rand(0,5)),finalQualityScore:94+Math.round(rand(0,5)),
     structuralSignature:recipeKey+'|'+symmetry+'|'+layers.map(x=>x.motif+':'+x.count).join(','),
     validated:true,validationTier:'structural',coloringPage:true,titleMode:'mandala'
   };
@@ -3122,61 +3089,52 @@ function mandalaSvg(item){
   const cx=210,cy=210;
   const polar=(r,a)=>[cx+Math.cos(a)*r,cy+Math.sin(a)*r];
   const shaped=(r,pulse,amp,a,phase=0)=>r*(1+(pulse?amp*Math.cos(pulse*a+phase):0));
-  function path(d,w=1.05){const e=document.createElementNS(ns,'path');e.setAttribute('d',d);e.setAttribute('fill','none');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);svg.appendChild(e);return e}
-  function circle(x,y,r,w=.9){const e=document.createElementNS(ns,'circle');e.setAttribute('cx',x);e.setAttribute('cy',y);e.setAttribute('r',r);e.setAttribute('fill','none');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);svg.appendChild(e);return e}
+  function path(d,w=1.0){const e=document.createElementNS(ns,'path');e.setAttribute('d',d);e.setAttribute('fill','none');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);svg.appendChild(e);return e}
+  function circle(x,y,r,w=.85){const e=document.createElementNS(ns,'circle');e.setAttribute('cx',x);e.setAttribute('cy',y);e.setAttribute('r',r);e.setAttribute('fill','none');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);svg.appendChild(e);return e}
   function poly(pts){return 'M '+pts.map(p=>p[0].toFixed(2)+' '+p[1].toFixed(2)).join(' L ')+' Z'}
   function curved(inner,outer,a,span,kind,pulse=0,amp=0,phase=0){
-    const ri=shaped(inner,pulse,amp*.18,a,phase),ro=shaped(outer,pulse,amp,a,phase),p0=polar(ri,a-span/2),p1=polar(ri,a+span/2),tip=polar(ro,a),base=polar(ri*.96,a);
-    let side=.62,bend=.22,tipShift=0;
-    if(kind==='lotus'){side=.78;bend=.18}
-    if(kind==='roundpetal'){side=.48;bend=.33}
-    if(kind==='teardrop'){side=.55;bend=.14}
-    if(kind==='leaf'){side=.68;bend=.20}
-    if(kind==='feather'){side=.72;bend=.16}
-    if(kind==='swoosh'){side=.64;bend=.14;tipShift=span*.15}
-    if(kind==='paisley'){side=.58;bend=.13;tipShift=span*.10}
+    const ri=shaped(inner,pulse,amp*.18,a,phase),ro=shaped(outer,pulse,amp,a,phase),p0=polar(ri,a-span/2),p1=polar(ri,a+span/2),base=polar(ri*.97,a);
+    let side=.62,bend=.22,tipShift=0,waist=.52;
+    if(kind==='lotus'){side=.80;bend=.16;waist=.50}
+    if(kind==='roundpetal'){side=.46;bend=.34;waist=.44}
+    if(kind==='teardrop'){side=.56;bend=.15;waist=.48}
+    if(kind==='leaf'){side=.70;bend=.20;waist=.56}
+    if(kind==='feather'){side=.74;bend=.17;waist=.54}
+    if(kind==='swoosh'){side=.68;bend=.13;tipShift=span*.12;waist=.48}
+    if(kind==='paisley'){side=.60;bend=.12;tipShift=span*.08;waist=.46}
     const tip2=polar(ro,a+tipShift);
     const c1=polar(inner+(ro-inner)*side,a-span*bend),c2=polar(inner+(ro-inner)*side,a+span*bend+tipShift*.45);
-    return `M ${p0[0]} ${p0[1]} Q ${c1[0]} ${c1[1]} ${tip2[0]} ${tip2[1]} Q ${c2[0]} ${c2[1]} ${p1[0]} ${p1[1]} Q ${base[0]} ${base[1]} ${p0[0]} ${p0[1]} Z`;
+    const q1=polar(inner+(ro-inner)*waist,a-span*.12),q2=polar(inner+(ro-inner)*waist,a+span*.12);
+    return `M ${p0[0]} ${p0[1]} Q ${c1[0]} ${c1[1]} ${tip2[0]} ${tip2[1]} Q ${c2[0]} ${c2[1]} ${p1[0]} ${p1[1]} Q ${q2[0]} ${q2[1]} ${base[0]} ${base[1]} Q ${q1[0]} ${q1[1]} ${p0[0]} ${p0[1]} Z`;
   }
   function motif(name,inner,outer,a,span,pulse=0,amp=0,phase=0){
     if(['petal','lotus','roundpetal','teardrop','leaf','feather','swoosh','paisley'].includes(name))return curved(inner,outer,a,span,name,pulse,amp,phase);
-    const ri=shaped(inner,pulse,amp*.15,a,phase),ro=shaped(outer,pulse,amp,a,phase),mid=(ri+ro)/2;
-    if(name==='diamond')return poly([polar(ro,a),polar(mid,a+span*.37),polar(ri,a),polar(mid,a-span*.37)]);
-    if(name==='starcell')return poly([polar(ro,a),polar(mid,a+span*.25),polar(ro*.88,a+span*.45),polar(ri,a+span*.31),polar(ri,a-span*.31),polar(ro*.88,a-span*.45),polar(mid,a-span*.25)]);
-    if(name==='arch'){
-      const p0=polar(ri,a-span/2),p1=polar(ri,a+span/2),q0=polar(ro*.92,a-span*.27),qt=polar(ro,a),q1=polar(ro*.92,a+span*.27),base=polar(ri*.96,a);
-      return `M ${p0[0]} ${p0[1]} L ${q0[0]} ${q0[1]} Q ${qt[0]} ${qt[1]} ${q1[0]} ${q1[1]} L ${p1[0]} ${p1[1]} Q ${base[0]} ${base[1]} ${p0[0]} ${p0[1]} Z`;
-    }
-    if(name==='scallop'){
-      const p0=polar(ri,a-span/2),p1=polar(ri,a+span/2),l=polar(ro*.93,a-span*.25),t=polar(ro,a),r=polar(ro*.93,a+span*.25),base=polar(ri*.96,a);
-      return `M ${p0[0]} ${p0[1]} Q ${l[0]} ${l[1]} ${t[0]} ${t[1]} Q ${r[0]} ${r[1]} ${p1[0]} ${p1[1]} Q ${base[0]} ${base[1]} ${p0[0]} ${p0[1]} Z`;
-    }
     return curved(inner,outer,a,span,'petal',pulse,amp,phase);
   }
   function drawNested(layer,a,span){
     for(let n=1;n<=layer.nested;n++){
-      const t=.18*n,ii=layer.inner+(layer.outer-layer.inner)*t,oo=layer.outer-(layer.outer-layer.inner)*t*.82;
-      if(oo-ii<7)break;
-      path(motif(layer.motif,ii,oo,a,span*.74,layer.pulse,layer.pulseAmp*.45,layer.rotation),.68);
+      const t=.16*n,ii=layer.inner+(layer.outer-layer.inner)*t,oo=layer.outer-(layer.outer-layer.inner)*t*.72;
+      if(oo-ii<6.5)break;
+      path(motif(layer.motif,ii,oo,a,span*.72,layer.pulse,layer.pulseAmp*.4,layer.rotation),.56);
     }
   }
   function drawCenter(c){
-    const count=c.petals||10,rings=c.rings||2;
-    circle(cx,cy,5.2,1.05);
+    const count=c.petals||10,rings=c.rings||3;
+    circle(cx,cy,4.8,1);
+    circle(cx,cy,8.8,.78);
     for(let r=0;r<rings;r++){
-      const inner=7+r*7,outer=20+r*10,step=Math.PI*2/count,offset=r%2?step/2:0;
-      const name=c.style==='gem'?'diamond':c.style==='spiralFlower'?'swoosh':c.style==='lotus'?'lotus':c.style==='rosette'?'roundpetal':'petal';
-      for(let i=0;i<count;i++)path(motif(name,inner,outer,i*step+offset,step*.70),r===rings-1?1.08:.84);
+      const inner=10+r*8,outer=23+r*10,step=Math.PI*2/count,offset=r%2?step/2:0;
+      const name=c.style==='spiralFlower'?(r%2?'paisley':'roundpetal'):c.style==='lotus'?(r%2?'lotus':'petal'):c.style==='rosette'?'roundpetal':'petal';
+      for(let i=0;i<count;i++)path(motif(name,inner,outer,i*step+offset,step*.72),r===rings-1?1.0:.72);
     }
   }
-  drawCenter(item.center||{style:'lotus',petals:10,rings:2});
+  drawCenter(item.center||{style:'lotus',petals:10,rings:3});
   const layers=item.layers||[];
   layers.forEach((layer,idx)=>{
     const step=Math.PI*2/layer.count,span=step*layer.widthFactor;
     for(let i=0;i<layer.count;i++){
       const a=layer.rotation+i*step;
-      path(motif(layer.motif,layer.inner,layer.outer,a,span,layer.pulse,layer.pulseAmp,layer.rotation),idx===layers.length-1?1.7:1.05);
+      path(motif(layer.motif,layer.inner,layer.outer,a,span,layer.pulse,layer.pulseAmp,layer.rotation),idx===layers.length-1?1.18:.92);
       drawNested(layer,a,span);
     }
   });
@@ -3978,7 +3936,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=14.0',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=14.1',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
@@ -3991,7 +3949,7 @@ async function updateOfflineStatus(){
   }
   try{
     await navigator.serviceWorker.ready;
-    const cache=await caches.open('puzzle-studio-v14-0');
+    const cache=await caches.open('puzzle-studio-v14-1');
     const cached=await cache.match('./index.html');
     el.textContent=cached
       ? 'Offline ready — this version is cached on this device.'
