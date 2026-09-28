@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v19.3 — Clean Density Mandalas</title>
+<title>Offline Puzzle Studio v19.4 — Silhouette Architecture Mandalas</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -480,8 +480,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v19.3</span></h1><div class="build-version">Exact build: v19.3 • Clean Density Pass • Structured Variety + Hard Quality Gate</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v19.3</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v19.4</span></h1><div class="build-version">Exact build: v19.4 • Silhouette Architecture • Shape Families + Recipe Fingerprints + Balanced Variety</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v19.4</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -681,6 +681,29 @@ details summary{cursor:pointer;font-weight:700}
 <option value="minimal">Minimal</option>
 <option value="botanical">Botanical</option>
 <option value="surprise">Surprise Me</option>
+</select>
+
+<label>Mandala outer silhouette</label>
+<select id="mandalaSilhouette">
+<option value="auto" selected>Maximum Variety</option>
+<option value="round">Round / Floral</option>
+<option value="diamond">Diamond</option>
+<option value="square">Square</option>
+<option value="roundedSquare">Rounded Square</option>
+<option value="cross">Cross</option>
+<option value="clover4">Four-Lobed Clover</option>
+<option value="hexagon">Hexagon</option>
+<option value="octagon">Octagon</option>
+<option value="star5">5-Point Star</option>
+<option value="star6">6-Point / Snowflake</option>
+<option value="star8">8-Point Star</option>
+<option value="star12">12-Point Star</option>
+<option value="compass">Compass Rose</option>
+<option value="scalloped">Scalloped Medallion</option>
+<option value="lotus">Lotus Blossom</option>
+<option value="sunflower">Sunflower</option>
+<option value="cathedral">Cathedral Window</option>
+<option value="burst4">Four-Point Floral Burst</option>
 </select>
 
 <label>Mandala coloring complexity</label>
@@ -2820,13 +2843,9 @@ function mandalaFamilyGroup(key){
   return 'mixed';
 }
 function mandalaSilhouetteKey(item){
-  const fam=item.familyKey||'';
-  if(['geometricStar','snowflake','celestial'].includes(fam))return 'starburst';
-  if(['diamond','square','hexagonal','octagonal','moroccan','stainedGlass','celtic'].includes(fam))return 'angular';
-  if(['spiral','pinwheel','flame','butterfly'].includes(fam))return 'dynamic';
-  if(['paisley','henna','artNouveau','rose','botanical','ocean','feather','bohemian'].includes(fam))return 'organic';
-  return 'round-floral';
+  return item.silhouette || item.silhouetteKey || 'round';
 }
+
 function mandalaFeatureVector(item){
   const layers=item.layers||[];
   const motifSet=[...new Set(layers.map(l=>l.motif))];
@@ -2980,13 +2999,25 @@ function buildMandalaOnce(diff,profile){
     roundedBloom:{label:'Rounded Bloom',family:'rose',group:'floral-botanical',sym:[8,10,12],seq:['round','clover','round','bead','clover','round']},
     leafCrown:{label:'Leaf Crown',family:'botanical',group:'floral-botanical',sym:[8,10,12],seq:['leaf','teardrop','leaf','bead','leaf','crown']},
     pinwheelFloral:{label:'Pinwheel Floral',family:'pinwheel',group:'ornate',sym:[8,10,12],seq:['swoop','leaf','swoop','teardrop','swoop','scallop']},
+    stainedGlass:{label:'Stained Glass',family:'stainedGlass',group:'geometric',sym:[8,10,12],seq:['diamond','arch','kite','round','diamond','arch']},
+    wovenRibbon:{label:'Woven Ribbon',family:'celtic',group:'geometric',sym:[8,10,12],seq:['loop','diamond','arch','loop','kite','arch']},
+    snowflakeCrown:{label:'Snowflake Crown',family:'snowflake',group:'geometric',sym:[6,8,12],seq:['kite','diamond','lotus','kite','diamond','scallop']},
+    cathedralRose:{label:'Cathedral Rose',family:'stainedGlass',group:'geometric',sym:[8,10,12],seq:['arch','round','diamond','arch','round','scallop']},
+    laceDoily:{label:'Lace Doily',family:'lace',group:'ornate',sym:[10,12,14],seq:['loop','scallop','round','loop','clover','scallop']},
+    overlappingPetals:{label:'Overlapping Petals',family:'chrysanthemum',group:'floral-botanical',sym:[8,10,12],seq:['round','round','clover','round','lotus','round']},
     oceanShell:{label:'Ocean Shell',family:'ocean',group:'floral-botanical',sym:[8,10,12],seq:['fan','scallop','shell','bead','fan','shell']}
   };
   let keys=Object.keys(recipes), mood=profile.mood||'auto';
   if(mood==='botanical')keys=['botanicalRosette','royalLotus','layeredDahlia','sunflowerCrown','scallopedGarden','roundedBloom','leafCrown','oceanShell'];
   if(mood==='floral')keys=['royalLotus','layeredDahlia','botanicalRosette','sunflowerCrown','roseWindow','cloverMedallion','scallopedGarden','roundedBloom','leafCrown'];
-  if(mood==='ornate')keys=['floralLace','hennaLotus','roseWindow','starBloom','paisleyWheel','diamondLace','pinwheelFloral'];
+  if(mood==='ornate')keys=['floralLace','hennaLotus','roseWindow','starBloom','paisleyWheel','diamondLace','pinwheelFloral','laceDoily','wovenRibbon'];
+  if(mood==='geometric')keys=['diamondLace','starBloom','stainedGlass','wovenRibbon','snowflakeCrown','cathedralRose'];
+  if(mood==='minimal')keys=['royalLotus','roundedBloom','diamondLace','starBloom'];
+  if(mood==='surprise')keys=Object.keys(recipes);
   const recipeKey=choose(keys), r=recipes[recipeKey], symmetry=choose(r.sym);
+  const silhouettePool=['round','diamond','square','roundedSquare','cross','clover4','hexagon','octagon','star5','star6','star8','star12','compass','scalloped','lotus','sunflower','cathedral','burst4'];
+  let silhouette=profile.silhouette&&profile.silhouette!=='auto'?profile.silhouette:choose(silhouettePool);
+  // Keep silhouette independent from motif recipe: a floral recipe can form a square, diamond, cross, star, etc.
   const complexity=profile.complexity||'balanced';
   const layerCount=complexity==='open'?5:complexity==='intricate'?7:6;
   const inner=complexity==='open'?30:26, outer=complexity==='intricate'?158:154;
@@ -3001,13 +3032,14 @@ function buildMandalaOnce(diff,profile){
       weight:1,visualBand:i/Math.max(1,layerCount-1)});
   }
   return {type:'mandala',difficulty:diff,recipeKey,recipeLabel:r.label,styleName:r.label,familyKey:r.family,familyGroup:r.group,
-    silhouetteKey:r.seq[layerCount-1],symmetry,center:{style:r.family,petals:symmetry,rings:2},layers,
+    silhouette,silhouetteKey:silhouette,symmetry,center:{style:r.family,petals:symmetry,rings:2},layers,
     compositionMode:mood,coloringComplexity:complexity,qualityScore:98,finalQualityScore:98,
-    structuralSignature:recipeKey+'|'+symmetry+'|'+layers.map(x=>x.motif+':'+x.count).join(','),validated:true,validationTier:'structural',coloringPage:true,titleMode:'mandala'};
+    structuralSignature:[silhouette,recipeKey,symmetry,r.family,layers.map(x=>x.motif+':'+x.count).join(',')].join('|'),validated:true,validationTier:'structural',coloringPage:true,titleMode:'mandala'};
 }
 function makeMandala(diff,priorMandalas=[]){
   const profile={
     mood:mandalaControlValue('mandalaMood','auto'),
+    silhouette:mandalaControlValue('mandalaSilhouette','auto'),
     complexity:mandalaControlValue('mandalaComplexity','auto'),
     quality:mandalaControlValue('mandalaQuality','strong'),
     diversity:!!mandalaControlValue('mandalaDiversity',true),
@@ -3023,7 +3055,9 @@ function makeMandala(diff,priorMandalas=[]){
     const recent=prior.slice(-12);
     const sameRecipe=prior.filter(x=>x.recipeKey===cand.recipeKey).length;
     const sameSym=prior.filter(x=>x.symmetry===cand.symmetry).length;
-    if(profile.bookBalance){score-=sameRecipe*2.4;score-=Math.max(0,sameSym-2)*.8}
+    const sameSilhouette=prior.filter(x=>mandalaSilhouetteKey(x)===mandalaSilhouetteKey(cand)).length;
+    const sameRecipeSilhouette=prior.filter(x=>x.recipeKey===cand.recipeKey&&mandalaSilhouetteKey(x)===mandalaSilhouetteKey(cand)).length;
+    if(profile.bookBalance){score-=sameRecipe*2.4;score-=Math.max(0,sameSym-2)*.8;score-=sameSilhouette*3.6;score-=sameRecipeSilhouette*7.5}
     if(profile.diversity&&recent.length){
       const sim=Math.max(...recent.map(x=>mandalaSimilarityScore(cand,x)));
       cand.maxRecentSimilarity=sim;
@@ -3054,7 +3088,30 @@ function mandalaSvg(item){
   const hard=(item.difficulty==='Hard'||item.coloringComplexity==='intricate');
   const medium=(item.difficulty==='Medium'||item.coloringComplexity==='balanced');
   const detailLevel=hard?2:medium?1:0;
-  const pt=(r,a)=>[cx+Math.cos(a)*r,cy+Math.sin(a)*r], f=p=>p[0].toFixed(2)+' '+p[1].toFixed(2);
+  const silhouette=item.silhouette||item.silhouetteKey||'round';
+  const polygonScale=(a,n,rot=0)=>{const sector=TAU/n;let x=((a-rot)%sector+sector)%sector-sector/2;return Math.cos(Math.PI/n)/Math.cos(x)};
+  const silhouetteScale=(a)=>{
+    const c=Math.cos(a),ss=Math.sin(a),ac=Math.abs(c),as=Math.abs(ss);
+    if(silhouette==='diamond')return 1/Math.max(.001,ac+as);
+    if(silhouette==='square')return .70710678/Math.max(ac,as);
+    if(silhouette==='roundedSquare')return .58+.42*(.70710678/Math.max(ac,as));
+    if(silhouette==='cross')return .68+.32*Math.pow(Math.abs(Math.cos(2*a)),4);
+    if(silhouette==='clover4')return .80+.20*Math.cos(4*a);
+    if(silhouette==='hexagon')return polygonScale(a,6,Math.PI/6);
+    if(silhouette==='octagon')return polygonScale(a,8,Math.PI/8);
+    if(silhouette==='star5')return .69+.31*(.5+.5*Math.cos(5*a-Math.PI/2));
+    if(silhouette==='star6')return .70+.30*(.5+.5*Math.cos(6*a));
+    if(silhouette==='star8')return .72+.28*(.5+.5*Math.cos(8*a));
+    if(silhouette==='star12')return .76+.24*(.5+.5*Math.cos(12*a));
+    if(silhouette==='compass')return .68+.32*Math.pow(Math.abs(Math.cos(2*a)),7);
+    if(silhouette==='scalloped')return .88+.12*Math.cos(12*a);
+    if(silhouette==='lotus')return .82+.18*(.5+.5*Math.cos(8*a-Math.PI/2));
+    if(silhouette==='sunflower')return .88+.12*Math.cos(16*a);
+    if(silhouette==='cathedral')return .78+.22*Math.pow(Math.abs(Math.sin(2*a)),1.5);
+    if(silhouette==='burst4')return .72+.28*(.5+.5*Math.cos(4*a));
+    return 1;
+  };
+  const pt=(r,a)=>{const k=silhouetteScale(a);return[cx+Math.cos(a)*r*k,cy+Math.sin(a)*r*k]}, f=p=>p[0].toFixed(2)+' '+p[1].toFixed(2);
   const path=(d,w=.78,fill='white')=>{const e=document.createElementNS(ns,'path');e.setAttribute('d',d);e.setAttribute('fill',fill);e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e);return e};
   const circle=(r,w=.75)=>{const e=document.createElementNS(ns,'circle');e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('r',r);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e)};
   const petal=(ri,ro,a,span,round=.38)=>{const L=pt(ri,a-span/2),R=pt(ri,a+span/2),T=pt(ro,a),c1=pt(ri+(ro-ri)*round,a-span*.42),c2=pt(ro-(ro-ri)*.18,a-span*.16),c3=pt(ro-(ro-ri)*.18,a+span*.16),c4=pt(ri+(ro-ri)*round,a+span*.42);return `M ${f(L)} C ${f(c1)} ${f(c2)} ${f(T)} C ${f(c3)} ${f(c4)} ${f(R)} Q ${f(pt(ri+1,a))} ${f(L)} Z`};
@@ -3071,7 +3128,7 @@ function mandalaSvg(item){
   function beads(n,r,size=3.2,rot=0){for(let i=0;i<n;i++){const a=rot+i*TAU/n,p=pt(r,a),e=document.createElementNS(ns,'circle');e.setAttribute('cx',p[0]);e.setAttribute('cy',p[1]);e.setAttribute('r',size);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width','.62');e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e)}}
   function center(n=12,style='flower'){circle(5,.85);const s=TAU/n;if(style==='star'){ring(n,6,29,'lotus',0,.68,false);ring(n,25,46,'kite',s/2,.66,false)}else if(style==='clover'){ring(Math.max(6,Math.round(n/2)),6,31,'clover',0,.90,true);ring(n,25,47,'round',s/2,.70,false)}else{ring(n,6,30,'round',0,.82,false);ring(n,24,47,'lotus',s/2,.70,false)}}
   const key=item.recipeKey||'royalLotus',baseN=Math.max(8,Math.min(16,item.symmetry||10)),n=hard?Math.max(12,baseN):baseN,st=TAU/n;
-  // v19.3: every hard recipe uses contiguous ornamental zones. No floating fringe pieces and no detail layer crosses a neighboring band.
+  // v19.4: contiguous ornamental zones are warped through an independent whole-page silhouette field.
   const recipes={
     royalLotus:[['lotus',42,68,0,.74,1],['round',64,91,st/2,.88,1],['lotus',87,116,0,.74,1],['leaf',112,142,st/2,.76,1],['lotus',138,166,0,.76,1],['scallop',162,188,st/2,.90,0]],
     layeredDahlia:[['round',42,65,0,.90,1],['round',61,87,st/2,.92,1],['petal',83,110,0,.78,1],['round',106,134,st/2,.92,1],['petal',130,160,0,.80,1],['round',156,188,st/2,.92,0]],
@@ -3087,6 +3144,12 @@ function mandalaSvg(item){
     roundedBloom:[['round',42,67,0,.92,1],['clover',63,90,st/2,.90,1],['round',86,114,0,.92,1],['clover',110,139,st/2,.90,1],['round',135,164,0,.92,1],['clover',160,188,st/2,.90,0]],
     leafCrown:[['leaf',42,67,0,.74,1],['teardrop',63,89,st/2,.70,1],['leaf',85,112,0,.74,1],['teardrop',108,137,st/2,.70,1],['leaf',133,162,0,.76,1],['lotus',158,188,st/2,.78,0]],
     pinwheelFloral:[['leaf',42,68,0,.72,1],['lotus',64,91,st/2,.72,1],['leaf',87,115,0,.72,1],['teardrop',111,139,st/2,.70,1],['leaf',135,164,0,.74,1],['scallop',160,188,st/2,.88,0]],
+    stainedGlass:[['diamond',42,66,0,.66,1],['arch',62,89,st/2,.82,1],['kite',85,112,0,.64,1],['round',108,137,st/2,.88,1],['diamond',133,162,0,.66,1],['arch',158,188,st/2,.84,0]],
+    wovenRibbon:[['loop',42,68,0,.84,1],['diamond',64,91,st/2,.64,1],['arch',87,115,0,.84,1],['loop',111,140,st/2,.84,1],['kite',136,165,0,.64,1],['arch',161,188,st/2,.86,0]],
+    snowflakeCrown:[['kite',42,66,0,.62,1],['diamond',62,89,st/2,.62,1],['lotus',85,112,0,.70,1],['kite',108,137,st/2,.62,1],['diamond',133,162,0,.62,1],['scallop',158,188,st/2,.88,0]],
+    cathedralRose:[['arch',42,68,0,.84,1],['round',64,91,st/2,.88,1],['diamond',87,115,0,.64,1],['arch',111,140,st/2,.84,1],['round',136,165,0,.88,1],['scallop',161,188,st/2,.90,0]],
+    laceDoily:[['loop',42,67,0,.84,1],['scallop',63,89,st/2,.90,1],['round',85,112,0,.90,1],['loop',108,137,st/2,.84,1],['clover',133,162,0,.88,1],['scallop',158,188,st/2,.92,0]],
+    overlappingPetals:[['round',42,67,0,.92,1],['round',63,90,st/2,.92,1],['clover',86,114,0,.90,1],['round',110,139,st/2,.92,1],['lotus',135,164,0,.76,1],['round',160,188,st/2,.92,0]],
     oceanShell:[['fan',42,67,0,.88,1],['scallop',63,89,st/2,.92,1],['fan',85,112,0,.88,1],['scallop',108,137,st/2,.92,1],['fan',133,162,0,.88,1],['shell',158,188,st/2,.92,0]],
     starBloom:[['kite',42,65,0,.62,1],['lotus',61,87,st/2,.70,1],['diamond',83,109,0,.62,1],['lotus',105,134,st/2,.70,1],['diamond',130,160,0,.64,1],['scallop',156,188,st/2,.88,0]]
   };
@@ -3898,7 +3961,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=19.3',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=19.4',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
