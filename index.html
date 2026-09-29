@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v20.8 — Atelier Mandala Rebuild</title>
+<title>Offline Puzzle Studio v20.9 — Continuous Ornament Engine</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -546,8 +546,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v20.8</span></h1><div class="build-version">Exact build: v20.8 • Atelier Mandala Rebuild • Closed Layered Ornament</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v20.8</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v20.9</span></h1><div class="build-version">Exact build: v20.9 • Continuous Ornament Engine • Shared-Boundary Floral Architecture</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v20.9</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -3235,44 +3235,78 @@ function mandalaSvg(item){
     oceanShell:[['fan',42,67,0,.88,1],['scallop',63,89,st/2,.92,1],['fan',85,112,0,.88,1],['scallop',108,137,st/2,.92,1],['fan',133,162,0,.88,1],['shell',158,188,st/2,.92,0]],
     starBloom:[['kite',42,65,0,.62,1],['lotus',61,87,st/2,.70,1],['diamond',83,109,0,.62,1],['lotus',105,134,st/2,.70,1],['diamond',130,160,0,.64,1],['scallop',156,188,st/2,.88,0]]
   };
-  // v20.8: atelier engine — dense, coherent, closed ornamental compositions.
-  // Hard pages deliberately use overlapping radial bands rather than independent floating objects.
+  // v20.9: continuous ornament engine. Hard mandalas are built as shared-boundary
+  // ornamental architecture: every major layer touches the layer before it and no
+  // independent crown/shield pieces are permitted.
   if(hard){
-    const family=(seed + motifVariant*3 + centerVariant*5 + phaseVariant*7)%10;
+    const family=(seed + motifVariant*3 + centerVariant*5 + phaseVariant*7)%8;
     const cfg=[
-      {n:12,c:'round', bands:[['lotus',24,57,.76],['round',49,82,.92],['lotus',73,108,.76],['leaf',99,135,.74],['lotus',126,164,.78],['scallop',154,194,.94]]},
-      {n:14,c:'clover',bands:[['round',23,54,.90],['petal',47,78,.76],['round',70,104,.92],['petal',96,131,.76],['round',122,160,.92],['clover',151,194,.94]]},
-      {n:10,c:'flower',bands:[['leaf',24,58,.72],['lotus',50,85,.74],['paisley',77,113,.72],['leaf',104,140,.74],['lotus',131,168,.76],['leaf',158,194,.80]]},
-      {n:16,c:'flower',bands:[['round',23,51,.86],['scallop',45,75,.90],['loop',68,101,.82],['clover',94,129,.88],['scallop',121,160,.92],['loop',151,194,.84]]},
-      {n:8,c:'clover',bands:[['clover',24,60,.94],['lotus',51,88,.74],['round',78,119,.94],['leaf',109,148,.76],['clover',138,178,.94],['lotus',168,196,.76]]},
-      {n:16,c:'flower',bands:[['petal',23,54,.70],['round',47,78,.86],['petal',70,105,.70],['lotus',97,134,.70],['petal',126,164,.72],['scallop',155,195,.90]]},
-      {n:12,c:'star',bands:[['lotus',23,54,.68],['diamond',47,79,.62],['arch',71,106,.82],['round',98,135,.88],['diamond',127,164,.64],['scallop',155,195,.90]]},
-      {n:12,c:'flower',bands:[['leaf',23,57,.72],['round',49,83,.88],['leaf',75,111,.72],['lotus',103,140,.74],['leaf',132,169,.74],['scallop',160,195,.90]]},
-      {n:10,c:'flower',bands:[['paisley',24,59,.72],['lotus',51,86,.72],['paisley',78,115,.72],['round',107,143,.88],['paisley',135,171,.74],['lotus',162,195,.76]]},
-      {n:12,c:'star',bands:[['round',23,53,.86],['kite',46,78,.60],['round',70,105,.88],['diamond',97,133,.62],['loop',125,163,.84],['scallop',154,195,.90]]}
+      {n:8, center:'flower', edge:'lotus', twist:0.00, radii:[7,35,64,96,130,164,194]},
+      {n:10,center:'clover', edge:'round', twist:0.50, radii:[7,33,60,90,122,158,194]},
+      {n:12,center:'flower', edge:'leaf', twist:0.00, radii:[7,31,57,86,117,153,194]},
+      {n:9, center:'star', edge:'lotus', twist:0.50, radii:[7,36,66,98,132,165,194]},
+      {n:8, center:'clover', edge:'round', twist:0.00, radii:[7,34,63,94,128,162,194]},
+      {n:11,center:'flower', edge:'scallop',twist:0.50,radii:[7,31,58,88,120,156,194]},
+      {n:10,center:'star', edge:'leaf', twist:0.00, radii:[7,34,62,92,124,159,194]},
+      {n:12,center:'clover', edge:'lotus',twist:0.50,radii:[7,30,56,84,115,151,194]}
     ][family];
-    const N=cfg.n, step=TAU/N, phase=((seed%31)/31)*step;
-    center(N,cfg.c);
-    cfg.bands.forEach((b,i)=>{
-      const count=(i===1||i===3)?N*2:N;
-      const rot=phase+(i%2?step/2:0);
-      ring(count,b[1],b[2],b[0],rot,b[3],true);
-      // A deliberate seam between bands makes the composition read as one woven drawing.
-      if(i<cfg.bands.length-1 && (i===1||i===3)) beads(N, b[2]-1.5, 1.25, phase+step/2);
-    });
-    // Interior botanical engraving is always anchored inside a parent petal.
-    const detailN=N;
-    for(let i=0;i<detailN;i++){
-      const a=phase+i*step;
-      const A=pt(136,a),B=pt(158,a);
-      const ln=document.createElementNS(ns,'path');
-      ln.setAttribute('d',`M ${f(A)} Q ${f(pt(147,a-step*.035))} ${f(B)}`);
-      ln.setAttribute('fill','none');ln.setAttribute('stroke','#111');ln.setAttribute('stroke-width','.34');ln.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(ln);
-      for(let j=1;j<=3;j++){
-        const r=136+(22*j/4),m=pt(r,a),q1=pt(Math.min(158,r+7),a-step*.12),q2=pt(Math.min(158,r+7),a+step*.12);
-        path(`M ${f(m)} Q ${f(pt(r+3,a-step*.035))} ${f(q1)}`,.28,'none');
-        path(`M ${f(m)} Q ${f(pt(r+3,a+step*.035))} ${f(q2)}`,.28,'none');
+    const N=cfg.n, step=TAU/N, phase=((seed%37)/37)*step;
+    const polar=(r,a)=>pt(r,a);
+    const closedCell=(ri,ro,a0,a1,bulge=.10,innerInset=.035)=>{
+      const am=(a0+a1)/2, L0=polar(ri,a0+step*innerInset), R0=polar(ri,a1-step*innerInset);
+      const L1=polar(ro,a0+step*.025), R1=polar(ro,a1-step*.025), T=polar(ro*(1+bulge),am);
+      return `M ${f(L0)} C ${f(polar((ri+ro)*.54,a0+step*.01))} ${f(L1)} ${f(T)} C ${f(R1)} ${f(polar((ri+ro)*.54,a1-step*.01))} ${f(R0)} Q ${f(polar(ri,am))} ${f(L0)} Z`;
+    };
+    const innerPetal=(ri,ro,a,span,kind)=>{
+      const ii=ri+(ro-ri)*.17, oo=ro-(ro-ri)*.14;
+      if(oo<=ii+6)return;
+      path(shape(kind,ii,oo,a,span*.48,0),.42,'none');
+    };
+    const seam=(r,rot=0)=>{
+      const pts=[]; for(let i=0;i<=N*2;i++){const a=rot+i*TAU/(N*2);pts.push(polar(r*(1+.012*Math.cos(N*a-phase*N)),a));}
+      path('M '+pts.map(f).join(' L ')+' Z',.48,'none');
+    };
+    center(N,cfg.center);
+    const kinds=[
+      ['lotus','round','leaf','lotus','round'],
+      ['round','lotus','scallop','leaf','round'],
+      ['leaf','round','lotus','leaf','scallop'],
+      ['lotus','leaf','round','lotus','scallop'],
+      ['round','scallop','lotus','round','leaf'],
+      ['scallop','lotus','round','leaf','lotus'],
+      ['leaf','lotus','round','scallop','leaf'],
+      ['lotus','round','scallop','lotus','leaf']
+    ][family];
+    for(let band=1;band<cfg.radii.length-1;band++){
+      const ri=cfg.radii[band], ro=cfg.radii[band+1];
+      const rot=phase+((band+cfg.twist)%2?step/2:0);
+      const kind=kinds[(band-1)%kinds.length];
+      for(let i=0;i<N;i++){
+        const am=rot+i*step, a0=am-step*.50, a1=am+step*.50;
+        const bulge=(band===cfg.radii.length-2?.055:.018)+((i+family)%2)*.008;
+        path(closedCell(ri,ro,a0,a1,bulge),band>=4?.72:.62,'white');
+        innerPetal(ri,ro,am,step,kind);
+        if(band>=2 && band<=4){
+          const A=polar(ri+(ro-ri)*.28,am), B=polar(ro-(ro-ri)*.20,am);
+          path(`M ${f(A)} Q ${f(polar((ri+ro)/2,am+(i%2?1:-1)*step*.035))} ${f(B)}`,.31,'none');
+        }
       }
+      seam(ro,rot);
+    }
+    // Outer crown grows directly from the last shared seam; it is never detached.
+    const crownRi=cfg.radii[cfg.radii.length-2], crownRo=cfg.radii[cfg.radii.length-1];
+    const crownRot=phase+((cfg.radii.length-2+cfg.twist)%2?step/2:0);
+    for(let i=0;i<N;i++){
+      const a=crownRot+i*step;
+      path(shape(cfg.edge,crownRi-1,crownRo,a,step*.90,i),.82,'white');
+      path(shape(cfg.edge,crownRi+8,crownRo-9,a,step*.48,i),.38,'none');
+    }
+    // Anchored lace details: endpoints terminate on existing shared seams.
+    const laceR=cfg.radii[3];
+    for(let i=0;i<N;i++){
+      const a=phase+i*step;
+      const L=polar(laceR,a-step*.27), M=polar(laceR+10,a), R=polar(laceR,a+step*.27);
+      path(`M ${f(L)} Q ${f(M)} ${f(R)}`,.34,'none');
     }
     const wrap=document.createElement('div');wrap.className='mandala-wrap';wrap.appendChild(svg);return wrap;
   }
