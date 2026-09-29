@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v20.0 — Puzzle Accuracy + Layout Engine</title>
+<title>Offline Puzzle Studio v20.1 — Multi-Page + Solver Repair</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -478,7 +478,7 @@ details summary{cursor:pointer;font-weight:700}
 }
 
 
-/* v20.0 accuracy + layout engine */
+/* v20.1 multi-page + solver repair */
 .frame-artdeco::before,.frame-corner::before,.frame-botanical::before,.frame-stars::before,.frame-puzzle::before{content:"";position:absolute;pointer-events:none;z-index:0;inset:calc(var(--frameInset,.22in) + 8px)}
 .frame-artdeco::before{border:1px solid #111;clip-path:polygon(0 8%,8% 8%,8% 0,92% 0,92% 8%,100% 8%,100% 92%,92% 92%,92% 100%,8% 100%,8% 92%,0 92%)}
 .frame-corner::before{background:linear-gradient(45deg,transparent 44%,#111 45%,#111 48%,transparent 49%) top left/42px 42px no-repeat,linear-gradient(-45deg,transparent 44%,#111 45%,#111 48%,transparent 49%) top right/42px 42px no-repeat,linear-gradient(135deg,transparent 44%,#111 45%,#111 48%,transparent 49%) bottom left/42px 42px no-repeat,linear-gradient(-135deg,transparent 44%,#111 45%,#111 48%,transparent 49%) bottom right/42px 42px no-repeat}
@@ -504,11 +504,31 @@ details summary{cursor:pointer;font-weight:700}
 .answer-xref{text-align:center;font-size:10px;color:#444;margin-top:5px;font-weight:600}
 .missing-dense .missing-sequence{font-size:18px!important;line-height:1.25!important;gap:4px!important}
 
+
+/* v20.1 true cell-fit rules */
+.puzzle-grid-page.four .puzzle-card .sudoku td,.puzzle-grid-page.four .puzzle-card .generic-grid td{width:.20in!important;height:.20in!important;font-size:9px!important}
+.puzzle-grid-page.two .puzzle-card .sudoku td,.puzzle-grid-page.two .puzzle-card .generic-grid td{width:.28in!important;height:.28in!important;font-size:11px!important}
+.puzzle-grid-page.four .puzzle-card .word-grid td{width:.135in!important;height:.135in!important;font-size:6.5px!important;padding:0!important}
+.puzzle-grid-page.two .puzzle-card .word-grid td{width:.19in!important;height:.19in!important;font-size:8px!important;padding:0!important}
+.puzzle-grid-page.four .puzzle-card .kakuro td{width:.18in!important;height:.18in!important;font-size:7px!important;padding:0!important}
+.puzzle-grid-page.two .puzzle-card .kakuro td{width:.27in!important;height:.27in!important;font-size:9px!important;padding:0!important}
+.puzzle-grid-page.four .puzzle-card .crypto-box{font-size:10px!important;line-height:1.35!important;max-width:95%!important}
+.puzzle-grid-page.two .puzzle-card .crypto-box{font-size:13px!important;line-height:1.45!important;max-width:95%!important}
+.puzzle-card .search-grid-wrap,.solution-mini .search-grid-wrap{max-width:100%!important;overflow:hidden!important}
+.puzzle-card .word-list,.solution-mini .word-list{font-size:7px!important;line-height:1.15!important;gap:2px!important}
+.solution-grid.four .word-grid td{width:.13in!important;height:.13in!important;font-size:6px!important;padding:0!important}
+.solution-grid.two .word-grid td{width:.19in!important;height:.19in!important;font-size:8px!important;padding:0!important}
+.solution-grid.four .kakuro td,.solution-grid.four .kenken-grid td{width:.18in!important;height:.18in!important;font-size:7px!important;padding:0!important}
+.solution-grid.two .kakuro td,.solution-grid.two .kenken-grid td{width:.27in!important;height:.27in!important;font-size:9px!important;padding:0!important}
+.solution-grid.four .crypto-box{font-size:10px!important;line-height:1.3!important}.solution-grid.two .crypto-box{font-size:13px!important;line-height:1.4!important}
+.missing-mark{font-weight:800!important;text-decoration:underline!important;text-underline-offset:3px}
+.kenken-grid td{position:relative}
+
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v20.0</span></h1><div class="build-version">Exact build: v20.0 • Puzzle Accuracy + Layout Engine • Slitherlink Repair • Answer Page Cross-References</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v20.0</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v20.1</span></h1><div class="build-version">Exact build: v20.1 • 4-Up Fit Repair • Slitherlink Deep QC • Kakuro/KenKen/Cryptogram Density • Missing Number Plus</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v20.1</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -1640,7 +1660,7 @@ function makeHidato(diff){
  let ct=hidatoCountSolutions(item,2);
  item.validated=ct===1;
  item.validationTier=ct===1?'unique':'structural';
- if(!item.validated){item.validated=true;item.validationTier='structural'}
+ if(!item.validated){item.validationTier='failed'}
  return item;
 }
 
@@ -1694,7 +1714,7 @@ function makeMagicSquare(diff){
 /* ---------- MISSING NUMBER ---------- */
 function makeMissingNumber(diff){
  let maxKind=varietyLevel()==='standard'?4:varietyLevel()==='high'?7:10;
- let kind=Math.floor(Math.random()*maxKind),seq=[],ans,pos;
+ let kind=Math.floor(Math.random()*maxKind),seq=[];
  if(kind===0){let a=1+Math.floor(Math.random()*20),d=1+Math.floor(Math.random()*9);seq=Array.from({length:7},(_,i)=>a+i*d)}
  else if(kind===1){let a=1+Math.floor(Math.random()*5),m=2+Math.floor(Math.random()*3);seq=Array.from({length:6},(_,i)=>a*Math.pow(m,i))}
  else if(kind===2){let a=1+Math.floor(Math.random()*10),d=1+Math.floor(Math.random()*5);seq=[a,a+d];for(let i=2;i<7;i++)seq.push(seq[i-1]+seq[i-2])}
@@ -1705,8 +1725,10 @@ function makeMissingNumber(diff){
  else if(kind===7){let a=1+Math.floor(Math.random()*5);seq=Array.from({length:7},(_,i)=>a+Math.pow(2,i))}
  else if(kind===8){let a=10+Math.floor(Math.random()*20);seq=Array.from({length:7},(_,i)=>a+(i%2?3:-2)*i)}
  else {let a=1+Math.floor(Math.random()*5),b=2+Math.floor(Math.random()*5);seq=[a,b];for(let i=2;i<7;i++)seq.push(seq[i-1]+seq[i-2]+(i%2))}
- pos=1+Math.floor(Math.random()*(seq.length-2));ans=seq[pos];let puzzle=seq.slice();puzzle[pos]=null;
- return {type:'missingnumber',puzzle,solution:seq,answer:ans,missingIndex:pos,patternKind:kind,validated:true,validationTier:'structural'}
+ let missingCount=(diff==='Hard'&&Math.random()<.72)||(diff==='Medium'&&Math.random()<.38)?2:1;
+ let choices=shuffle([...Array(seq.length-2).keys()].map(i=>i+1)),missingIndices=choices.slice(0,missingCount).sort((a,b)=>a-b);
+ let puzzle=seq.slice();missingIndices.forEach(i=>puzzle[i]=null);
+ return {type:'missingnumber',puzzle,solution:seq,answer:missingIndices.map(i=>seq[i]),missingIndex:missingIndices[0],missingIndices,patternKind:kind,validated:true,validationTier:'structural'}
 }
 
 /* ---------- RENDERING ---------- */
@@ -1819,7 +1841,7 @@ function setPageSide(s,pageNum){
  s.classList.add(pageNum%2===0?'page-left':'page-right');
 }
 function supportsMultiPerPage(type){
- return !['maze','kakuro','nonogram','cryptogram','mandala'].includes(type)
+ return !['maze','nonogram','mandala'].includes(type)
 }
 function addBlankPage(root,pageNum){
  let s=document.createElement('div');s.className='sheet '+pageClass()+($('pageFrame').checked?' frame-enabled':'');
@@ -2265,8 +2287,8 @@ function solutionCapacity(type){
    else requested=2;
  }
  // v20 layout engine: safe capacities are handled by fixed grid cells.
- if(['maze','kakuro','slither','cryptogram','nonogram','killer','irregular','kenken'].includes(type))return 1;
- if(['wordsearch','numbersearch','sudoku','diagonal','mini','hidato','takuzu'].includes(type))return Math.min(4,requested);
+ if(['maze','nonogram','killer','irregular'].includes(type))return 1;
+ if(['kakuro','slither','cryptogram','kenken','wordsearch','numbersearch','sudoku','diagonal','mini','hidato','takuzu'].includes(type))return Math.min(4,requested);
  return Math.min(4,requested);
 }
 function solutionPageBatches(items){
@@ -2573,7 +2595,7 @@ function instructionHtml(type){
   </div>`,
 
   kakuro:`<div class="instructions-section">
-    <p><b>Goal:</b> Fill white cells with digits 1–9. Each horizontal or vertical run must add to its clue, and no digit can repeat within one run.</p>
+    <p><b>Goal:</b> Fill white cells with digits 1–9. Each horizontal or vertical run must add to its clue, and no digit can repeat within one run. <b>A = Across</b> and <b>D = Down</b>.</p>
     ${cards(
       card('Across clue A 4',pic('<div class="visual-seq">[ 1 ][ 3 ] = 4</div>')),
       card('Down clue D 17',pic('<div class="visual-seq">[ 8 ]<br>[ 9 ]<br>= 17</div>')),
@@ -2749,6 +2771,11 @@ function mazeSvg(item,answer){
      if(r===n-1||g[r+1][c]===1)line(x,y+cell,x+cell,y+cell);
      if(c===n-1||g[r][c+1]===1)line(x+cell,y,x+cell,y+cell);
    }
+ }
+
+ // Light diagonal hatching marks blocked cells without obscuring wall boundaries.
+ for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(g[r][c]===1){
+   const x=pad+c*cell,y=pad+r*cell,m=cell*.22;line(x+m,y+cell-m,x+cell-m,y+m,.55);
  }
 
  // Solution path only on answer.
@@ -3218,7 +3245,7 @@ function missingNumberBlock(item,answer){
  vals.forEach((v,i)=>{
    let span=document.createElement('span');
    if(v==null){span.className='missing-mark';span.textContent='?'}
-   else {span.textContent=v;if(answer&&i===item.missingIndex)span.className='missing-mark'};
+   else {span.textContent=v;if(answer&&(item.missingIndices||[item.missingIndex]).includes(i)){span.className='missing-mark';span.style.fontWeight='800';span.style.textDecoration='underline'}};
    d.appendChild(span);
    if(i<vals.length-1){
      let comma=document.createElement('span');comma.textContent=',';d.appendChild(comma);
@@ -3289,9 +3316,14 @@ function killerTable(item,answer){
  return t
 }
 function kenkenTable(item,answer){
- let t=genericTable(answer?item.solution:Array.from({length:item.n},()=>Array(item.n).fill('')));
- let map={};item.cages.forEach(cg=>cg.cells.forEach(([r,c])=>map[`${r},${c}`]=cg));
- [...t.rows].forEach((tr,r)=>[...tr.cells].forEach((td,c)=>{let cg=map[`${r},${c}`];if(cg&&cg.cells[0][0]===r&&cg.cells[0][1]===c){let s=document.createElement('span');s.className='cage';s.textContent=`${cg.target}${cg.op}`;td.appendChild(s)}td.style.borderStyle='dotted'}));return t
+ let t=genericTable(answer?item.solution:Array.from({length:item.n},()=>Array(item.n).fill('')));t.classList.add('kenken-grid');
+ let cageId={};item.cages.forEach((cg,id)=>cg.cells.forEach(([r,c])=>cageId[`${r},${c}`]=id));
+ [...t.rows].forEach((tr,r)=>[...tr.cells].forEach((td,c)=>{let id=cageId[`${r},${c}`],cg=item.cages[id];
+   if(cg&&cg.cells[0][0]===r&&cg.cells[0][1]===c){let x=document.createElement('span');x.className='cage';x.textContent=`${cg.target}${cg.op}`;td.appendChild(x)}
+   const same=(rr,cc)=>rr>=0&&rr<item.n&&cc>=0&&cc<item.n&&cageId[`${rr},${cc}`]===id;
+   td.style.borderTop=same(r-1,c)?'1px solid #aaa':'4px solid #111';td.style.borderBottom=same(r+1,c)?'1px solid #aaa':'4px solid #111';
+   td.style.borderLeft=same(r,c-1)?'1px solid #aaa':'4px solid #111';td.style.borderRight=same(r,c+1)?'1px solid #aaa':'4px solid #111';
+ }));return t
 }
 
 function describeSheet(sheet,index){
@@ -3500,7 +3532,7 @@ function render(){
        if(item.type==='takuzu')box.appendChild(genericTable(item.solution,{small:true,zeroVisible:true}));
        if(item.type==='magicsquare')box.appendChild(genericTable(item.solution));
        if(item.type==='missingnumber'){
-         let d=document.createElement('div');d.className='sequence';d.textContent=item.solution.join('   ');box.appendChild(d)
+         box.appendChild(missingNumberBlock(item,true))
        }
        grid.appendChild(box);
      }
@@ -3741,6 +3773,8 @@ function puzzleFingerprint(item){
    if(item.type==='nonogram')return item.type+':'+JSON.stringify(item.rows)+'|'+JSON.stringify(item.cols);
    if(item.type==='killer')return item.type+':'+JSON.stringify(item.cages);
    if(item.type==='kenken')return item.type+':'+JSON.stringify(item.cages);
+   if(item.type==='hidato')return item.type+':'+JSON.stringify(item.puzzle);
+   if(item.type==='magicsquare')return item.type+':'+JSON.stringify(item.puzzle);
    if(item.type==='missingnumber')return item.type+':'+JSON.stringify(item.puzzle);
    if(item.type==='mandala')return item.type+':'+JSON.stringify([item.blueprintKey,item.bandTemplates,item.compositionMode,item.coloringComplexity,item.difficulty]);
    return item.type+':'+JSON.stringify(item);
@@ -4035,7 +4069,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=20.0',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=20.1',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
