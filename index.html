@@ -569,11 +569,42 @@ details summary{cursor:pointer;font-weight:700}
 .visual-card{text-align:center!important}
 .visual-card h4,.visual-note,.visual-seq,.visual-arrow{text-align:center!important;margin-left:auto!important;margin-right:auto!important}
 
+
+/* v22.1 rebuilt How-To pages: concise rules + large worked visuals */
+.sheet>h2{margin-top:.24in;text-align:center}
+.howto-page{width:6.55in;max-width:calc(100% - .7in);margin:.06in auto 0;text-align:center;font-family:Arial,Helvetica,sans-serif}
+.howto-goal{font-size:15px;line-height:1.42;max-width:6.1in;margin:.12in auto .16in!important;text-align:center!important}
+.howto-steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.12in;margin:.08in auto .18in;max-width:6.25in}
+.howto-step{border:1.4px solid #222;border-radius:12px;min-height:.82in;padding:.09in .08in;display:flex;align-items:center;justify-content:center;gap:.07in;background:#fff}
+.howto-step>span{display:flex;align-items:center;justify-content:center;flex:0 0 .28in;width:.28in;height:.28in;border:2px solid #111;border-radius:50%;font-size:12px;font-weight:800}
+.howto-step p{font-size:11px;line-height:1.25;margin:0!important;text-align:left!important}
+.howto-example-grid{display:grid;grid-template-columns:1fr 1fr;gap:.14in;max-width:6.2in;margin:0 auto}
+.howto-example{border:1.5px solid #222;border-radius:14px;min-height:1.65in;padding:.11in .12in;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:#fff;break-inside:avoid}
+.howto-example:first-child:nth-last-child(3){grid-column:1 / span 2;min-height:1.8in}
+.howto-example h4{font-size:13px;line-height:1.15;margin:.01in 0 .08in!important;text-align:center!important}
+.howto-example-body{min-height:.68in;display:flex;align-items:center;justify-content:center;width:100%;text-align:center;font-size:16px}
+.howto-caption{font-size:10.5px;line-height:1.25;margin:.07in 0 0!important;max-width:2.7in;text-align:center!important}
+.howto-example:first-child:nth-last-child(3) .howto-caption{max-width:5.6in}
+.howto-line{font-size:18px;line-height:1.45;letter-spacing:.02em;text-align:center;white-space:normal}
+.howto-chip{display:inline-block;border:1.4px solid #111;border-radius:999px;padding:.05in .11in;margin:.02in .03in;font-size:11px;font-weight:700;letter-spacing:.02em}
+.howto-mini-grid{border-collapse:collapse;margin:auto}
+.howto-mini-grid td{width:.36in;height:.36in;border:1.5px solid #111;text-align:center;vertical-align:middle;font-size:15px;padding:0}
+.howto-mini-grid td.focus{background:#eee;font-weight:800;outline:2px solid #111;outline-offset:-2px}
+.howto-svg{width:1.65in;height:1.25in;display:block;margin:auto}
+.kakuro-demo{display:grid;grid-template-columns:.7in .58in .58in;align-items:stretch;justify-content:center}
+.kakuro-demo-cell{position:relative;width:.7in;height:.7in;background:#111;color:#fff;border:1px solid #111}
+.kakuro-demo-cell:after{content:"";position:absolute;inset:0;background:linear-gradient(45deg,transparent 49%,#fff 50%,transparent 51%);pointer-events:none}
+.kd-down,.kd-across{position:absolute;font-size:9px;font-weight:700;z-index:1}.kd-down{top:5px;right:4px}.kd-across{bottom:5px;left:4px}
+.kakuro-white{width:.58in;height:.7in;border:1.4px solid #111;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700}
+.howto-search-demo{position:relative;display:inline-block}.howto-search-demo .howto-mini-grid td{width:.32in;height:.32in;border-color:#aaa;font-size:14px}
+.howto-search-ring{position:absolute;left:.09in;right:.09in;top:.075in;height:.22in;border:3px solid #111;border-radius:999px;pointer-events:none}
+.howto-pixel{border-collapse:collapse}.howto-pixel td{width:.28in;height:.28in;border:1px solid #111}.howto-pixel td.on{background:#111}
+@media print{.howto-page,.howto-example,.howto-step{break-inside:avoid}.howto-goal{font-size:14px}.howto-example h4{font-size:12px}}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v22.0</span></h1><div class="build-version">Exact build: v22.0 • Quality Control Rebuild • Layout + Validation + Kid Mazes</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v22.0</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v22.1</span></h1><div class="build-version">Exact build: v22.1 • How-To Visual Rebuild • Clear Rules + Worked Examples</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v22.1</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -2605,158 +2636,170 @@ function visualCard(title,body,note=''){
 }
 
 function instructionHtml(type){
- const pic=(body)=>`<div class="howto-picture">${body}</div>`;
- const card=(title,body,note='')=>`<div class="visual-card"><h4>${title}</h4>${body}${note?`<div class="visual-note">${note}</div>`:''}</div>`;
- const cards=(...x)=>`<div class="visual-howto">${x.join('')}</div>`;
-
- const sudokuGrid=`<table class="visual-grid"><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>4</td><td class="hi">?</td><td>6</td></tr><tr><td>7</td><td>8</td><td>9</td></tr></table>`;
- const wordGrid=`<table class="visual-grid"><tr><td>C</td><td>A</td><td>T</td><td>S</td></tr><tr><td>Q</td><td>R</td><td>O</td><td>M</td></tr><tr><td>L</td><td>I</td><td>O</td><td>N</td></tr><tr><td>B</td><td>E</td><td>E</td><td>S</td></tr></table>`;
- const kenGrid=`<table class="visual-grid"><tr><td>1</td><td class="hi">2</td><td>3</td></tr><tr><td class="hi">3</td><td>1</td><td>2</td></tr><tr><td>2</td><td>3</td><td>1</td></tr></table>`;
- const hidGrid=`<table class="visual-grid"><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>6</td><td>5</td><td>4</td></tr><tr><td>7</td><td>8</td><td>9</td></tr></table>`;
- const takGrid=`<table class="visual-grid"><tr><td>0</td><td>0</td><td class="hi">1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>1</td><td>0</td></tr></table>`;
-
- const map={
-  sudoku:`<div class="instructions-section">
-    <p><b>Goal:</b> Fill every empty square with 1–9. Each row, column, and 3×3 box must contain every digit exactly once.</p>
-    ${cards(
-      card('Row example',pic('<div class="visual-seq">1 2 3 4 5 6 7 <u>?</u> 9<br>Only 8 is missing → <b>8</b></div>')),
-      card('Box example',pic(sudokuGrid+'<div class="visual-arrow">The center is 5</div>')),
-      card('Candidate example',pic('<div class="visual-seq">Possible: {2,6}<br>Row already has 6 → place <b>2</b></div>'))
-    )}
-  </div>`,
-
-  kakuro:`<div class="instructions-section">
-    <p><b>Goal:</b> Fill white cells with digits 1–9. Each horizontal or vertical run must add to its clue, and no digit can repeat within one run. <b>A = Across</b> and <b>D = Down</b>.</p>
-    ${cards(
-      card('Across clue A 4',pic('<div class="visual-seq">[ 1 ][ 3 ] = 4</div>')),
-      card('Down clue D 17',pic('<div class="visual-seq">8 + 9 = 17</div>')),
-      card('No repeats',pic('<div class="visual-seq">3 + 3 = 6 (repeat: no) | 1 + 5 = 6 (valid)</div>'))
-    )}
-  </div>`,
-
-  slither:`<div class="instructions-section">
-    <p><b>Goal:</b> Draw one continuous closed loop along the dots. A clue tells exactly how many of that cell’s four sides belong to the loop. The loop may not branch or cross itself.</p>
-    ${cards(
-      card('Clue 0',pic('<div class="visual-seq">0 → use none of the four sides</div>')),
-      card('Clue 2',pic('<div class="visual-seq">2 → exactly two surrounding sides</div>')),
-      card('Clue 3',pic('<svg width="120" height="100" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg"><rect x="30" y="20" width="60" height="60" fill="none" stroke="#aaa"/><line x1="30" y1="20" x2="90" y2="20" stroke="#111" stroke-width="6"/><line x1="90" y1="20" x2="90" y2="80" stroke="#111" stroke-width="6"/><line x1="30" y1="80" x2="90" y2="80" stroke="#111" stroke-width="6"/><text x="60" y="58" text-anchor="middle" font-size="28">3</text></svg>'))
-    )}
-  </div>`,
-
-  wordsearch:`<div class="instructions-section">
-    <p><b>Goal:</b> Find every listed word in the letter grid. Words appear in one straight line and may run left-to-right, right-to-left, up, down, or diagonally.</p>
-    ${cards(
-      card('Example grid',pic(wordGrid)),
-      card('Horizontal',pic('<div class="visual-seq">C → A → T → S</div>')),
-      card('Backward / diagonal',pic('<div class="visual-seq">Words can also be read backward or diagonally.</div>'))
-    )}
-  </div>`,
-
-  numbersearch:`<div class="instructions-section">
-    <p><b>Goal:</b> Find each listed number sequence exactly as written. This is a visual search puzzle, not an arithmetic sequence puzzle.</p>
-    ${cards(
-      card('Target 4281',pic('<div class="visual-seq">4 → 2 → 8 → 1</div>')),
-      card('Straight line only',pic('<div class="visual-seq">horizontal • vertical • diagonal</div>')),
-      card('Backward direction',pic('<div class="visual-seq">You may trace the target in reverse direction through the grid if the digits match.</div>'))
-    )}
-  </div>`,
-
-  cryptogram:`<div class="instructions-section">
-    <p><b>Goal:</b> Decode the sentence. Each cipher letter always represents the same real letter throughout the entire puzzle.</p>
-    ${cards(
-      card('Starting hints',pic('<div class="visual-seq">X = T &nbsp;&nbsp; Q = H</div>')),
-      card('Apply a hint',pic('<div class="visual-seq">XQ → TH</div>')),
-      card('Repeated pattern',pic('<div class="visual-seq">ABBA has the same 1-2-2-1 letter pattern in the decoded word.</div>'))
-    )}
-  </div>`,
-
-  nonogram:`<div class="instructions-section">
-    <p><b>Goal:</b> Shade cells using the row and column clues. Each number gives the length of one continuous filled group. Separate different groups with at least one blank square.</p>
-    ${cards(
-      card('One group',pic('<div class="visual-seq">3 → ■ ■ ■</div>')),
-      card('Two groups',pic('<div class="visual-seq">2 1 → ■ ■ □ ■</div>')),
-      card('Exact fit',pic('<div class="visual-seq">5 in a 5-cell row → ■ ■ ■ ■ ■</div>'))
-    )}
-  </div>`,
-
-  killer:`<div class="instructions-section">
-    <p><b>Goal:</b> Follow normal Sudoku rules. In addition, each bold cage must add to its small total, and digits may not repeat inside that cage.</p>
-    ${cards(
-      card('2-cell cage = 3',pic('<div class="visual-seq">1 + 2 = 3</div>')),
-      card('2-cell cage = 17',pic('<div class="visual-seq">8 + 9 = 17</div>')),
-      card('Use both rules',pic('<div class="visual-seq">A cage can fit mathematically but still be blocked by its Sudoku row/column.</div>'))
-    )}
-  </div>`,
-
-  diagonal:`<div class="instructions-section">
-    <p><b>Goal:</b> Solve a normal Sudoku, but both corner-to-corner diagonals must also contain 1–9 exactly once.</p>
-    ${cards(
-      card('Normal Sudoku rules',pic('<div class="visual-seq">Rows + Columns + 3×3 Boxes</div>')),
-      card('Extra diagonal rule',pic('<div class="visual-seq">↘ 1–9 once &nbsp;&nbsp; ↙ 1–9 once</div>'))
-    )}
-  </div>`,
-
-  irregular:`<div class="instructions-section">
-    <p><b>Goal:</b> Fill 1–9 once in every row, column, and bold irregular region. The irregular regions replace the standard 3×3 Sudoku boxes.</p>
-    ${cards(
-      card('Three checks',pic('<div class="visual-seq">ROW + COLUMN + IRREGULAR REGION</div>')),
-      card('Region example',pic('<div class="visual-seq">If an outlined region is missing only 7, its last empty cell must be 7.</div>'))
-    )}
-  </div>`,
-
-  mini:`<div class="instructions-section">
-    <p><b>Goal:</b> Mini Sudoku follows Sudoku rules on a smaller grid. Use each allowed number once per row, column, and small box.</p>
-    ${cards(
-      card('4×4 row',pic('<div class="visual-seq">1 2 <u>?</u> 4 → 3</div>')),
-      card('Same three checks',pic('<div class="visual-seq">Row + Column + Small Box</div>'))
-    )}
-  </div>`,
-
-  kenken:`<div class="instructions-section">
-    <p><b>Goal:</b> Fill the grid with 1 through the grid size. Each number appears once in each row and column. The cells in each bold cage must make the target using the shown operation.</p>
-    ${cards(
-      card('Row / column rule',pic(kenGrid)),
-      card('Multiply cage',pic('<div class="visual-seq">6× → 2 × 3</div>')),
-      card('Subtract and divide',pic('<div class="visual-seq">1− → |3−2|<br>2÷ → 4÷2</div>'))
-    )}
-  </div>`,
-
-  hidato:`<div class="instructions-section">
-    <p><b>Goal:</b> Complete the number path from 1 to the highest number. Consecutive numbers must touch horizontally, vertically, or diagonally.</p>
-    ${cards(
-      card('Complete path',pic(hidGrid)),
-      card('Missing number',pic('<div class="visual-seq">12 → <u>?</u> → 14<br>Place 13</div>')),
-      card('Diagonal counts',pic('<div class="visual-seq">20 ↘ 21 ↗ 22</div>'))
-    )}
-  </div>`,
-
-  takuzu:`<div class="instructions-section">
-    <p><b>Goal:</b> Fill every cell with 0 or 1. Each row and column has equal numbers of 0s and 1s, no three identical digits may touch in a row, and no two completed rows or columns may be identical.</p>
-    ${cards(
-      card('No three alike',pic('<div class="visual-seq">0 0 <u>?</u> → 0 0 1</div>')),
-      card('Between equals',pic('<div class="visual-seq">1 <u>?</u> 1 → 1 0 1</div>')),
-      card('Balanced row',pic(takGrid))
-    )}
-  </div>`,
-
-  magicsquare:`<div class="instructions-section">
-    <p><b>Goal:</b> Fill missing values so every row, column, and main diagonal equals the same magic total.</p>
-    ${cards(
-      card('Magic total 15',pic('<div class="visual-seq">8 + 1 + <u>?</u> = 15<br>Place 6</div>')),
-      card('Column example',pic('<div class="visual-seq">11 + <u>?</u> = 15 → 4</div>'))
-    )}
-  </div>`,
-
-  missingnumber:`<div class="instructions-section">
-    <p><b>Goal:</b> Determine the rule followed by the number sequence, then replace the underlined question mark with the missing value.</p>
-    ${cards(
-      card('Add 2',pic('<div class="visual-seq">2, 4, 6, <u>?</u>, 10<br>Answer: 8</div>')),
-      card('Double',pic('<div class="visual-seq">3, 6, 12, <u>?</u>, 48<br>Answer: 24</div>')),
-      card('Square numbers',pic('<div class="visual-seq">1, 4, 9, <u>?</u>, 25<br>Answer: 16</div>'))
-    )}
-  </div>`
- };
- return map[type]||'';
+  const esc=s=>String(s??'').replace(/[&<>]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch]));
+  const miniGrid=(rows,highlight=[])=>{
+    const hi=new Set(highlight.map(x=>x.join(',')));
+    return `<table class="howto-mini-grid">${rows.map((row,r)=>`<tr>${row.map((v,c)=>`<td class="${hi.has(r+','+c)?'focus':''}">${esc(v)}</td>`).join('')}</tr>`).join('')}</table>`;
+  };
+  const steps=a=>`<div class="howto-steps">${a.map((x,i)=>`<div class="howto-step"><span>${i+1}</span><p>${x}</p></div>`).join('')}</div>`;
+  const example=(title,body,caption='')=>`<div class="howto-example"><h4>${title}</h4><div class="howto-example-body">${body}</div>${caption?`<p class="howto-caption">${caption}</p>`:''}</div>`;
+  const page=(goal,ruleList,examples)=>`<div class="howto-page"><p class="howto-goal"><strong>Goal:</strong> ${goal}</p>${steps(ruleList)}<div class="howto-example-grid">${examples.join('')}</div></div>`;
+  const line=(text)=>`<div class="howto-line">${text}</div>`;
+  const chip=(text)=>`<span class="howto-chip">${text}</span>`;
+  const clueCell=(a,d)=>`<div class="kakuro-demo-cell"><span class="kd-down">D ${d}</span><span class="kd-across">A ${a}</span></div>`;
+  const slitherSvg=(n,active)=>`<svg class="howto-svg" viewBox="0 0 180 150" xmlns="http://www.w3.org/2000/svg" aria-label="Slitherlink clue example"><g fill="#111">${[[35,35],[145,35],[35,115],[145,115]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="4"/>`).join('')}</g><rect x="35" y="35" width="110" height="80" fill="none" stroke="#aaa" stroke-width="2"/><text x="90" y="84" text-anchor="middle" font-size="34" font-family="Arial">${n}</text>${active.includes('t')?'<line x1="35" y1="35" x2="145" y2="35" stroke="#111" stroke-width="7" stroke-linecap="round"/>':''}${active.includes('r')?'<line x1="145" y1="35" x2="145" y2="115" stroke="#111" stroke-width="7" stroke-linecap="round"/>':''}${active.includes('b')?'<line x1="35" y1="115" x2="145" y2="115" stroke="#111" stroke-width="7" stroke-linecap="round"/>':''}${active.includes('l')?'<line x1="35" y1="35" x2="35" y2="115" stroke="#111" stroke-width="7" stroke-linecap="round"/>':''}</svg>`;
+  const searchGrid=(isNumber=false)=>{
+    const rows=isNumber?[['4','2','8','1'],['9','5','3','0'],['7','1','6','4'],['2','8','0','9']]:[['C','A','T','S'],['Q','R','O','M'],['L','I','O','N'],['B','E','E','S']];
+    return `<div class="howto-search-demo">${miniGrid(rows)}<div class="howto-search-ring"></div></div>`;
+  };
+  const nonogramPic=`<table class="howto-pixel"><tr><td></td><td class="on"></td><td></td></tr><tr><td class="on"></td><td class="on"></td><td class="on"></td></tr><tr><td></td><td class="on"></td><td></td></tr></table>`;
+  const map={
+    sudoku:()=>page('Fill every empty cell so each row, column, and 3×3 box contains 1–9 exactly once.',[
+      'Check the row: a digit cannot repeat.',
+      'Check the column: a digit cannot repeat.',
+      'Check the 3×3 box before placing the number.'
+    ],[
+      example('Row example',line('1  2  3  4  5  6  7  <b>?</b>  9'), 'Only 8 is missing, so ? = 8.'),
+      example('3×3 box example',miniGrid([[1,2,3],[4,'?',6],[7,8,9]],[[1,1]]),'The center must be 5.'),
+      example('Final check',line(`${chip('ROW')} ${chip('COLUMN')} ${chip('BOX')}`),'A placement must satisfy all three.')
+    ]),
+    kakuro:()=>page('Fill the white cells with digits 1–9 so every run adds to its clue. Digits cannot repeat inside one run.',[
+      'A means Across; D means Down.',
+      'Add the digits in a run to match its clue.',
+      'Do not repeat a digit in the same run.'
+    ],[
+      example('Read the clue',`<div class="kakuro-demo">${clueCell(4,17)}<div class="kakuro-white">1</div><div class="kakuro-white">3</div></div>`,'A 4 means the white cells to the right total 4.'),
+      example('Valid sum',line('1 + 5 = 6  ✓'),'Different digits may be used.'),
+      example('Invalid repeat',line('3 + 3 = 6  ✗'),'The total is right, but the repeated 3 is not allowed.')
+    ]),
+    slither:()=>page('Draw one continuous closed loop along the dots. Each clue tells how many sides around that cell belong to the loop.',[
+      'Use exactly the number of sides shown by each clue.',
+      'The loop may not branch or cross itself.',
+      'Finish with one single closed loop.'
+    ],[
+      example('Clue 0',slitherSvg(0,''),'No sides around this cell are used.'),
+      example('Clue 2',slitherSvg(2,'tr'),'Exactly two sides are used.'),
+      example('Clue 3',slitherSvg(3,'trb'),'Exactly three sides are used.')
+    ]),
+    wordsearch:()=>page('Find every listed word hidden in the letter grid.',[
+      'A word always follows one straight line.',
+      'Words may run horizontally, vertically, or diagonally.',
+      'Words may be read forward or backward.'
+    ],[
+      example('Find CATS',searchGrid(false),'The outline covers the entire word.'),
+      example('Directions',line('→   ←   ↓   ↑   ↘   ↙   ↗   ↖'),'Any straight direction is allowed.'),
+      example('Match the whole word',line('C  A  T  S  ✓'),'Every letter must match in order.')
+    ]),
+    numbersearch:()=>page('Find each listed number sequence exactly as written in the digit grid.',[
+      'Trace the digits in one straight line.',
+      'Use horizontal, vertical, or diagonal directions.',
+      'The digits must match the target in order.'
+    ],[
+      example('Find 4281',searchGrid(true),'The outline covers the entire sequence.'),
+      example('Directions',line('→   ←   ↓   ↑   ↘   ↙   ↗   ↖'),'Use one straight direction.'),
+      example('Exact match',line('4  2  8  1  ✓'),'Do not skip or reorder digits.')
+    ]),
+    cryptogram:()=>page('Decode the quotation by replacing each cipher letter with its matching real letter.',[
+      'A cipher letter always stands for the same real letter.',
+      'Use the provided hints first.',
+      'Use word patterns and repeated letters to finish the message.'
+    ],[
+      example('Starting hint',line('X = T &nbsp;&nbsp;&nbsp; Q = H'),'Apply the same substitution everywhere.'),
+      example('Apply it',line('XQ → TH'),'Two cipher letters become TH.'),
+      example('Pattern clue',line('ABBA → 1-2-2-1'),'Repeated letters keep the same pattern.')
+    ]),
+    nonogram:()=>page('Shade cells to reveal a picture. Row and column clues describe groups of filled cells.',[
+      'Each number is the length of one filled group.',
+      'Different groups must have at least one blank cell between them.',
+      'Use both row and column clues together.'
+    ],[
+      example('One group',line('3  →  ■ ■ ■'),'Three filled cells touch.'),
+      example('Two groups',line('2 1  →  ■ ■ □ ■'),'A blank separates the groups.'),
+      example('Finished mini picture',nonogramPic,'Rows and columns agree on the same pattern.')
+    ]),
+    killer:()=>page('Solve a normal Sudoku while also making every outlined cage add to its small total.',[
+      'Normal Sudoku row, column, and 3×3 box rules still apply.',
+      'Digits in a cage must add to the cage total.',
+      'Do not repeat a digit inside one cage.'
+    ],[
+      example('Cage total 3',line('1 + 2 = 3  ✓'),'A two-cell cage totaling 3 can use 1 and 2.'),
+      example('Cage total 17',line('8 + 9 = 17  ✓'),'The digits still must fit Sudoku rules.'),
+      example('Use both rule sets',line(`${chip('SUDOKU')} + ${chip('CAGE SUM')}`),'A number must satisfy both.')
+    ]),
+    diagonal:()=>page('Solve a normal Sudoku, with one extra rule: both long diagonals must also contain 1–9 exactly once.',[
+      'Follow all normal Sudoku rules.',
+      'Check the diagonal from top-left to bottom-right.',
+      'Check the diagonal from top-right to bottom-left.'
+    ],[
+      example('Extra lines',line('↘  1–9 once &nbsp;&nbsp;&nbsp; ↙  1–9 once'),'Both full diagonals are special groups.'),
+      example('Normal groups',line(`${chip('ROW')} ${chip('COLUMN')} ${chip('BOX')}`),'These rules still apply.'),
+      example('Diagonal check',line(`${chip('↘ DIAGONAL')} ${chip('↙ DIAGONAL')}`),'A repeated digit on either diagonal is not allowed.')
+    ]),
+    irregular:()=>page('Fill 1–9 once in every row, column, and bold irregular region.',[
+      'Rows must contain 1–9 once.',
+      'Columns must contain 1–9 once.',
+      'Each bold irregular region also contains 1–9 once.'
+    ],[
+      example('What changes?',line(`${chip('NO 3×3 BOXES')} → ${chip('IRREGULAR REGIONS')}`),'The outlined shapes replace standard Sudoku boxes.'),
+      example('Region example',line('1 2 3 4 5 6 7 8 ?'),'If 9 is missing, the last cell is 9.'),
+      example('Three checks',line(`${chip('ROW')} ${chip('COLUMN')} ${chip('REGION')}`),'Every placement must satisfy all three.')
+    ]),
+    mini:()=>page('Solve Sudoku on a smaller grid using the allowed numbers for that puzzle size.',[
+      'Use each allowed number once per row.',
+      'Use each allowed number once per column.',
+      'Use each allowed number once per small box.'
+    ],[
+      example('4×4 example',line('1  2  <b>?</b>  4'),'The missing number is 3.'),
+      example('Same Sudoku logic',line(`${chip('ROW')} ${chip('COLUMN')} ${chip('BOX')}`),'Only the grid size is smaller.'),
+      example('Allowed digits',line('4×4 uses 1, 2, 3, 4'),'Use the range shown by the puzzle.')
+    ]),
+    kenken:()=>page('Fill the grid with 1 through the grid size. Each row and column uses each number once, and every cage must satisfy its target and operation.',[
+      'Do not repeat a number in a row or column.',
+      'Use the cage operation to reach its target.',
+      'For subtraction and division, use the order that makes the target.'
+    ],[
+      example('Multiply cage',line('6× → 2 × 3'),'The cage values multiply to 6.'),
+      example('Subtract cage',line('1− → |3 − 2| = 1'),'Difference matters, not order.'),
+      example('Divide cage',line('2÷ → 4 ÷ 2 = 2'),'Use values that divide to the target.')
+    ]),
+    hidato:()=>page('Complete the number path from 1 to the highest number.',[
+      'Consecutive numbers must touch.',
+      'Touching may be horizontal, vertical, or diagonal.',
+      'Use the given numbers as anchors for the path.'
+    ],[
+      example('Touching path',miniGrid([[1,2,3],[6,5,4],[7,8,9]],[[0,0],[0,1],[0,2],[1,2]]),'1 → 2 → 3 → 4 follows touching cells.'),
+      example('Missing value',line('12 → ? → 14'),'The missing number is 13.'),
+      example('Diagonal counts',line('20 ↘ 21 ↗ 22'),'Diagonal touching is allowed.')
+    ]),
+    takuzu:()=>page('Fill every cell with 0 or 1 while following all Binary puzzle rules.',[
+      'Never place three identical digits in a row.',
+      'Each row and column must contain equal numbers of 0s and 1s.',
+      'No two completed rows or columns may be identical.'
+    ],[
+      example('No three alike',line('0  0  ?  →  0  0  1'),'The third cell must be 1.'),
+      example('Between equals',line('1  ?  1  →  1  0  1'),'The center must be the opposite digit.'),
+      example('Balance',line('0  1  0  1'),'Equal 0s and 1s in a 4-cell row.')
+    ]),
+    magicsquare:()=>page('Fill the missing values so every row, column, and main diagonal has the same total.',[
+      'Find the magic total.',
+      'Use that same total for every row and column.',
+      'Check both main diagonals too.'
+    ],[
+      example('Row example',line('8 + 1 + ? = 15'),'The missing value is 6.'),
+      example('Column example',line('11 + ? = 15'),'The missing value is 4.'),
+      example('Final check',line(`${chip('ROWS')} ${chip('COLUMNS')} ${chip('DIAGONALS')}`),'Every direction must reach the same total.')
+    ]),
+    missingnumber:()=>page('Find the pattern in the sequence, then replace the question mark with the missing value.',[
+      'Compare how the numbers change.',
+      'Test the same rule across the whole sequence.',
+      'Use that rule to fill the missing value.'
+    ],[
+      example('Add 2',line('2, 4, 6, ?, 10'),'Answer: 8.'),
+      example('Double',line('3, 6, 12, ?, 48'),'Answer: 24.'),
+      example('Square numbers',line('1, 4, 9, ?, 25'),'Answer: 16.')
+    ])
+  };
+  return map[type]?map[type]():'';
 }
 
 function instructionBookHtml(items){
