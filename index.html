@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v20.2 — Size + Logic Repair</title>
+<title>Offline Puzzle Studio v20.4 — Expert Mandala Upgrade</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -546,8 +546,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v20.2</span></h1><div class="build-version">Exact build: v20.2 • Readable 4-Up • Slitherlink Rebuild • Hidato Turns • Binary Hard Fix • PDF How-To Repair</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v20.2</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v20.4</span></h1><div class="build-version">Exact build: v20.4 • Ornamental Illustration Mandalas • Expert Micro-Detail • Floral Hierarchy</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v20.4</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -785,7 +785,7 @@ details summary{cursor:pointer;font-weight:700}
 <option value="auto" selected>Automatic by difficulty</option>
 <option value="open">Bold &amp; Open</option>
 <option value="balanced">Balanced</option>
-<option value="intricate">Intricate</option>
+<option value="intricate">Expert Artist / Intricate</option>
 </select>
 
 <label>Mandala quality filter</label>
@@ -3090,16 +3090,16 @@ function buildMandalaOnce(diff,profile){
   let silhouette=profile.silhouette&&profile.silhouette!=='auto'?profile.silhouette:choose(silhouettePool);
   // Keep silhouette independent from motif recipe: a floral recipe can form a square, diamond, cross, star, etc.
   const complexity=profile.complexity||'balanced';
-  const layerCount=complexity==='open'?5:complexity==='intricate'?7:6;
-  const inner=complexity==='open'?30:26, outer=complexity==='intricate'?158:154;
+  const layerCount=complexity==='open'?5:complexity==='intricate'?9:6;
+  const inner=complexity==='open'?30:complexity==='intricate'?20:26, outer=complexity==='intricate'?162:154;
   const step=(outer-inner)/layerCount, phase=rand(0,Math.PI*2);
   const layers=[];
   for(let i=0;i<layerCount;i++){
     let count=symmetry;
     if(i===1 && symmetry<=12)count=symmetry*2;
-    if(i===3 && complexity==='intricate' && symmetry<=10)count=symmetry*2;
+    if(complexity==='intricate' && (i===1||i===3||i===5) && symmetry<=12)count=symmetry*2;
     layers.push({motif:r.seq[i%r.seq.length],inner:inner+i*step-2,outer:inner+(i+1)*step+4,count,
-      rotation:phase+(i%2?Math.PI/count:0),widthFactor:complexity==='open'?.82:.9,nested:(complexity==='intricate'&&i%2===0)?1:0,
+      rotation:phase+(i%2?Math.PI/count:0),widthFactor:complexity==='open'?.82:complexity==='intricate'?.94:.9,nested:complexity==='intricate'?1:(i%2===0?1:0),
       weight:1,visualBand:i/Math.max(1,layerCount-1)});
   }
   const designSeed=Math.floor(rand(1,2147483000));
@@ -3123,10 +3123,11 @@ function makeMandala(diff,priorMandalas=[]){
   if(profile.complexity==='auto')profile.complexity=diff==='Easy'?'open':diff==='Hard'?'intricate':'balanced';
   const prior=(priorMandalas||[]).filter(x=>x&&x.type==='mandala');
   let best=null,bestScore=-1e9;
-  const attempts=profile.quality==='extreme'?72:profile.quality==='elite'?40:profile.quality==='strong'?24:12;
+  const attempts=diff==='Hard'?Math.max(72,profile.quality==='extreme'?96:profile.quality==='elite'?84:72):(profile.quality==='extreme'?72:profile.quality==='elite'?40:profile.quality==='strong'?24:12);
   for(let i=0;i<attempts;i++){
     const cand=buildMandalaOnce(diff,profile);
-    let score=cand.qualityScore;
+    if(diff==='Hard'){cand.expertArtist=true;cand.expertDetailTarget='dense-nested';cand.minimumExpertLayers=9;}
+    let score=cand.qualityScore+(diff==='Hard'?12:0);
     const recent=prior.slice(-12);
     const sameRecipe=prior.filter(x=>x.recipeKey===cand.recipeKey).length;
     const sameSym=prior.filter(x=>x.symmetry===cand.symmetry).length;
@@ -3238,10 +3239,29 @@ function mandalaSvg(item){
   if(centerVariant===1)centerStyle='clover'; else if(centerVariant===2)centerStyle='star'; else if(centerVariant===3)centerStyle='flower';
   center(n,centerStyle);
   const bands=recipes[key]||recipes.royalLotus;
-  bands.forEach((b,i)=>{let count=n;const denseBand=(seed+i+motifVariant)%5===0;if(hard&&denseBand&&n<=10)count=n*2;const kind=varyMotif(b[0],i);const phase=b[3]+((phaseVariant+i)%3-1)*(TAU/count)*.10;const width=Math.max(.58,Math.min(.94,b[4]+(((seed>>(i%8))&1)?-.035:.025)));ring(count,b[1],b[2],kind,phase,width,!!b[5]);});
-  // Controlled micro-detail occupies dedicated seams only; it never floats outside the silhouette.
-  if(hard){if(seed%2)beads(n,76,2.25,st/3);if(seed%3)beads(n*2,123,1.9,st/5);if(seed%5<3)beads(n,169,2.35,st/2);}
-  else if(medium&&seed%3){beads(n,121,2.45,st/2);}
+  bands.forEach((b,i)=>{let count=n;const denseBand=(seed+i+motifVariant)%5===0;if(hard&&((i%2===1)||denseBand)&&n<=12)count=n*2;const kind=varyMotif(b[0],i);const phase=b[3]+((phaseVariant+i)%3-1)*(TAU/count)*.10;const width=Math.max(.58,Math.min(.96,b[4]+(((seed>>(i%8))&1)?-.025:.035)));ring(count,b[1],b[2],kind,phase,width,hard?true:!!b[5]);if(hard&&i<bands.length-1){const seam=(b[2]+bands[i+1][1])*.5;if(i%2===0)beads(Math.min(32,count),seam,1.55,phase+TAU/count/2);}});
+  // v20.4 Expert Artist pass: illustration hierarchy + interior ornament instead of density-only repetition.
+  function stroke(d,w=.48){return path(d,w,'none')}
+  function flowerAt(r,a,scale=1,petals=5){const c=pt(r,a),rr=3.1*scale;for(let j=0;j<petals;j++){const q=a+j*TAU/petals,cc=[c[0]+Math.cos(q)*rr*1.25,c[1]+Math.sin(q)*rr*1.25];const e=document.createElementNS(ns,'ellipse');e.setAttribute('cx',cc[0]);e.setAttribute('cy',cc[1]);e.setAttribute('rx',rr*.72);e.setAttribute('ry',rr*1.18);e.setAttribute('transform',`rotate(${q*180/Math.PI+90} ${cc[0]} ${cc[1]})`);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width','.48');e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e)}const dot=document.createElementNS(ns,'circle');dot.setAttribute('cx',c[0]);dot.setAttribute('cy',c[1]);dot.setAttribute('r',rr*.58);dot.setAttribute('fill','white');dot.setAttribute('stroke','#111');dot.setAttribute('stroke-width','.5');svg.appendChild(dot)}
+  function veinFan(r1,r2,a,span,branches=5){const A=pt(r1,a),B=pt(r2,a);stroke(`M ${f(A)} Q ${f(pt((r1+r2)*.52,a+span*.04))} ${f(B)}`,.48);for(let j=1;j<=branches;j++){const t=j/(branches+1),r=r1+(r2-r1)*t,mid=pt(r,a);const l=pt(Math.min(r2-2,r+8),a-span*(.20-.09*t)),rr=pt(Math.min(r2-2,r+8),a+span*(.20-.09*t));stroke(`M ${f(mid)} Q ${f(pt(r+4,a-span*.08))} ${f(l)}`,.38);stroke(`M ${f(mid)} Q ${f(pt(r+4,a+span*.08))} ${f(rr)}`,.38)}}
+  function curl(r,a,dir=1,len=15){const p0=pt(r,a),p1=pt(r+len*.55,a+dir*.10),p2=pt(r+len,a+dir*.20),p3=pt(r+len*.65,a+dir*.33);stroke(`M ${f(p0)} C ${f(p1)} ${f(p2)} ${f(p3)} C ${f(pt(r+len*.35,a+dir*.39))} ${f(pt(r+len*.28,a+dir*.22))} ${f(pt(r+len*.48,a+dir*.19))}`,.5)}
+  function hatchBand(r1,r2,count,rot=0){for(let i=0;i<count;i++){const a=rot+i*TAU/count;const A=pt(r1,a-TAU/count*.08),B=pt(r2,a+TAU/count*.06);stroke(`M ${f(A)} L ${f(B)}`,.32)}}
+  if(hard){
+    // Fine central crown and three jewelry seams.
+    ring(Math.min(24,n*2),31,49,(seed%2?'lotus':'leaf'),st/4,.56,true);
+    beads(Math.min(36,n*2),76,1.45,st/3); beads(Math.min(40,n*2),123,1.35,st/5); beads(Math.min(36,n*2),169,1.55,st/2);
+    // Interior veins create the hand-illustrated hierarchy visible in expert coloring books.
+    const detailN=Math.min(16,Math.max(8,n));
+    for(let i=0;i<detailN;i++){const a=st*.15+i*TAU/detailN;veinFan(91,113,a,TAU/detailN*.72,4);veinFan(140,163,a+TAU/detailN*.5,TAU/detailN*.68,5)}
+    // Small flowers and curls occupy negative space without becoming disconnected random strokes.
+    const flowerN=Math.min(12,Math.max(6,Math.round(n*.75)));
+    for(let i=0;i<flowerN;i++){const a=st*.35+i*TAU/flowerN;flowerAt(146,a,.72+(i%2)*.08,5+(i%2));curl(174,a+TAU/flowerN*.22,i%2?1:-1,12)}
+    // Delicate hatching is restricted to structured annuli so the page stays colorable.
+    hatchBand(54,63,Math.min(32,n*2),st*.18); hatchBand(116,126,Math.min(36,n*2),st*.42);
+    // Outer botanical crown: large leaves with nested leaves rather than another generic ring.
+    const crownN=Math.min(14,Math.max(8,n));
+    for(let i=0;i<crownN;i++){const a=i*TAU/crownN+st*.12;path(leaf(166,194,a,TAU/crownN*.78,i%2?.08:-.08),.78);path(leaf(174,189,a,TAU/crownN*.40,i%2?.05:-.05),.40,'none');veinFan(174,188,a,TAU/crownN*.34,3)}
+  } else if(medium&&seed%3){beads(n,121,2.45,st/2);}
   const wrap=document.createElement('div');wrap.className='mandala-wrap';wrap.appendChild(svg);return wrap;
 }
 
