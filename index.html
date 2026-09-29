@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v20.5 — Expert Mandala Upgrade</title>
+<title>Offline Puzzle Studio v20.6 — Expert Artist Mandala Rebuild</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -546,8 +546,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v20.5</span></h1><div class="build-version">Exact build: v20.5 • Expert Botanical Mandalas • Layered Petals + Fine Ornament</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v20.5</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v20.6</span></h1><div class="build-version">Exact build: v20.6 • Expert Artist Mandalas • Compound Botanical Filigree</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v20.6</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -3235,6 +3235,78 @@ function mandalaSvg(item){
     oceanShell:[['fan',42,67,0,.88,1],['scallop',63,89,st/2,.92,1],['fan',85,112,0,.88,1],['scallop',108,137,st/2,.92,1],['fan',133,162,0,.88,1],['shell',158,188,st/2,.92,0]],
     starBloom:[['kite',42,65,0,.62,1],['lotus',61,87,st/2,.70,1],['diamond',83,109,0,.62,1],['lotus',105,134,st/2,.70,1],['diamond',130,160,0,.64,1],['scallop',156,188,st/2,.88,0]]
   };
+  // v20.6: Hard is a separate expert-artist renderer. It uses compound botanical motifs,
+  // nested ornament and connected filigree instead of repeating simple tiles in rings.
+  if(hard){
+    const ink=(d,w=.62,fill='white')=>path(d,w,fill);
+    const line=(d,w=.40)=>path(d,w,'none');
+    const expertN=[8,10,12][(seed+motifVariant)%3], step=TAU/expertN;
+    const phase=((seed%17)/17)*step;
+    const P=(r,a)=>pt(r,a);
+    const F=f;
+    const compoundPetal=(ri,ro,a,span,variant=0)=>{
+      const L=P(ri,a-span*.43),R=P(ri,a+span*.43),T=P(ro,a);
+      const C1=P(ri+(ro-ri)*.48,a-span*(variant%2?.62:.54));
+      const C2=P(ro-(ro-ri)*.13,a-span*.22),C3=P(ro-(ro-ri)*.13,a+span*.22);
+      const C4=P(ri+(ro-ri)*.48,a+span*(variant%2?.62:.54));
+      ink(`M ${F(L)} C ${F(C1)} ${F(C2)} ${F(T)} C ${F(C3)} ${F(C4)} ${F(R)} Q ${F(P(ri+2,a))} ${F(L)} Z`,.78);
+      const i1=ri+(ro-ri)*.22,i2=ro-(ro-ri)*.18;
+      ink(petal(i1,i2,a,span*.54,.30),.43,'none');
+      const A=P(i1+2,a),B=P(i2-2,a); line(`M ${F(A)} Q ${F(P((i1+i2)*.53,a+(variant%2?.025:-.025)))} ${F(B)}`,.38);
+      for(let q=1;q<=4;q++){
+        const t=q/5,r=i1+(i2-i1)*t,m=P(r,a),rr=Math.min(i2-2,r+8);
+        line(`M ${F(m)} Q ${F(P(r+4,a-span*.11))} ${F(P(rr,a-span*(.23-.07*t)))}`,.30);
+        line(`M ${F(m)} Q ${F(P(r+4,a+span*.11))} ${F(P(rr,a+span*(.23-.07*t)))}`,.30);
+      }
+      if(variant%3===0){
+        const d1=P(ri+(ro-ri)*.42,a-span*.29),d2=P(ri+(ro-ri)*.42,a+span*.29);
+        const c1=document.createElementNS(ns,'circle');c1.setAttribute('cx',d1[0]);c1.setAttribute('cy',d1[1]);c1.setAttribute('r','1.45');c1.setAttribute('fill','white');c1.setAttribute('stroke','#111');c1.setAttribute('stroke-width','.38');svg.appendChild(c1);
+        const c2=c1.cloneNode();c2.setAttribute('cx',d2[0]);c2.setAttribute('cy',d2[1]);svg.appendChild(c2);
+      }
+    };
+    const paisleyLeaf=(ri,ro,a,span,flip=1)=>{
+      const L=P(ri,a-span*.34), R=P(ri,a+span*.30), T=P(ro,a-flip*span*.10);
+      ink(`M ${F(L)} C ${F(P(ro*.80,a-span*.50))} ${F(P(ro*.98,a-span*.30))} ${F(T)} C ${F(P(ro*.88,a+span*.08))} ${F(P((ri+ro)*.64,a+span*.36))} ${F(R)} C ${F(P((ri+ro)*.50,a+span*.12))} ${F(P((ri+ro)*.48,a-span*.10))} ${F(L)} Z`,.68);
+      const q0=P(ri+7,a),q1=P(ro-8,a-flip*span*.08);line(`M ${F(q0)} Q ${F(P((ri+ro)*.60,a+flip*span*.06))} ${F(q1)}`,.36);
+      for(let k=1;k<=3;k++){const t=k/4,r=ri+7+(ro-ri-16)*t,m=P(r,a);line(`M ${F(m)} Q ${F(P(r+5,a+flip*span*.08))} ${F(P(Math.min(ro-8,r+9),a+flip*span*(.19-.03*k)))}`,.29)}
+    };
+    const miniFlower=(r,a,scale=1)=>{
+      const c=P(r,a), petals=5+(seed%2), rr=2.6*scale;
+      for(let j=0;j<petals;j++){const q=a+j*TAU/petals,cc=[c[0]+Math.cos(q)*rr*1.35,c[1]+Math.sin(q)*rr*1.35];const e=document.createElementNS(ns,'ellipse');e.setAttribute('cx',cc[0]);e.setAttribute('cy',cc[1]);e.setAttribute('rx',rr*.62);e.setAttribute('ry',rr*1.18);e.setAttribute('transform',`rotate(${q*180/Math.PI+90} ${cc[0]} ${cc[1]})`);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width','.36');svg.appendChild(e)}
+      const d=document.createElementNS(ns,'circle');d.setAttribute('cx',c[0]);d.setAttribute('cy',c[1]);d.setAttribute('r',rr*.48);d.setAttribute('fill','white');d.setAttribute('stroke','#111');d.setAttribute('stroke-width','.38');svg.appendChild(d);
+    };
+    const beadArc=(r,a0,a1,count,size=1.25)=>{for(let j=0;j<count;j++){const a=a0+(a1-a0)*(j/(count-1)),q=P(r,a),e=document.createElementNS(ns,'circle');e.setAttribute('cx',q[0]);e.setAttribute('cy',q[1]);e.setAttribute('r',size);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width','.34');svg.appendChild(e)}};
+    // Dense rosette core: several interleaved crowns, no plain circular band.
+    circle(4.2,.72);
+    ring(expertN,5,29,'round',phase,.88,true);
+    ring(expertN,22,47,'lotus',phase+step/2,.78,true);
+    ring(expertN*2,40,62,'petal',phase+step/4,.58,true);
+    // Three large overlapping botanical tiers. Every large petal contains its own drawing.
+    for(let i=0;i<expertN;i++)compoundPetal(52,104,phase+i*step,step*.91,(i+seed)%4);
+    for(let i=0;i<expertN;i++)paisleyLeaf(86,137,phase+step/2+i*step,step*.82,i%2?1:-1);
+    for(let i=0;i<expertN;i++)compoundPetal(116,171,phase+i*step,step*.94,(i+seed+1)%5);
+    // Floral clusters sit in the valleys between the large crown petals.
+    for(let i=0;i<expertN;i++){
+      const a=phase+step/2+i*step;
+      miniFlower(151,a,.82);
+      const left=P(158,a-step*.18),right=P(158,a+step*.18),tip=P(178,a);
+      line(`M ${F(left)} Q ${F(P(169,a-step*.13))} ${F(tip)} Q ${F(P(169,a+step*.13))} ${F(right)}`,.40);
+      beadArc(181,a-step*.20,a+step*.20,5,1.05);
+    }
+    // Outer crown alternates grand lotus leaves and curved paisley foliage, creating a floral silhouette.
+    for(let i=0;i<expertN;i++){
+      const a=phase+i*step;
+      compoundPetal(157,198,a,step*.80,(i+2)%4);
+      paisleyLeaf(162,191,a+step/2,step*.54,i%2?1:-1);
+    }
+    // Fine connected lace between crowns. These are anchored between neighboring petals, not loose strokes.
+    for(let i=0;i<expertN;i++){
+      const a=phase+step/2+i*step,L=P(107,a-step*.18),M=P(115,a),R=P(107,a+step*.18);
+      line(`M ${F(L)} Q ${F(M)} ${F(R)}`,.34);
+      beadArc(112,a-step*.15,a+step*.15,4,.95);
+    }
+    const wrap=document.createElement('div');wrap.className='mandala-wrap';wrap.appendChild(svg);return wrap;
+  }
   let centerStyle=['diamondLace','starBloom'].includes(key)?'star':['cloverMedallion','roundedBloom','oceanShell'].includes(key)?'clover':'flower';
   if(centerVariant===1)centerStyle='clover'; else if(centerVariant===2)centerStyle='star'; else if(centerVariant===3)centerStyle='flower';
   center(n,centerStyle);
