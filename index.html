@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v21.2 — How-To PDF Fix</title>
+<title>Offline Puzzle Studio v22.0 — Quality Control Rebuild</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -542,11 +542,38 @@ details summary{cursor:pointer;font-weight:700}
 .missing-mark{font-weight:800!important;text-decoration:none!important}
 .kenken-grid td{position:relative}
 
+
+/* v22.0 quality-control layout */
+.frame-softcurve::after{border-radius:30px 8px 30px 8px!important;border-width:2px!important}
+.frame-softcurve::before{content:"";position:absolute;pointer-events:none;inset:calc(var(--frameInset,.25in) + 9px);border:1px solid #777;border-radius:8px 30px 8px 30px}
+.frame-ornatecurve::after{border-radius:34px!important;border-style:double!important;border-width:4px!important}
+.frame-ornatecurve::before{content:"";position:absolute;pointer-events:none;inset:calc(var(--frameInset,.25in) + 12px);border:1px solid #777;border-radius:50px 14px 50px 14px}
+.frame-scallop::after{border-radius:18px!important;border:3px double #111!important}
+.frame-scallop::before{content:"";position:absolute;pointer-events:none;inset:calc(var(--frameInset,.25in) + 10px);border:1px dashed #888;border-radius:28px}
+/* reserve label space and use more of each quadrant */
+.solution-grid.four .solution-mini{justify-content:flex-start!important;padding-top:.03in!important}
+.solution-grid.four .solution-label{flex:0 0 .22in!important;line-height:.18in!important;margin:0 0 .03in!important;font-size:11px!important;overflow:visible!important}
+.solution-grid.four .solution-mini .sudoku td{width:.245in!important;height:.245in!important;font-size:10.5px!important;text-align:center!important;vertical-align:middle!important;padding:0!important}
+.solution-grid.two .solution-mini .sudoku td{width:.31in!important;height:.31in!important;font-size:12.5px!important;text-align:center!important;vertical-align:middle!important;padding:0!important}
+/* Kakuro clue typography must scale independently from answer digits */
+.puzzle-grid-page.two .kakuro .clue span,.solution-grid.two .kakuro .clue span{font-size:6.5px!important;line-height:1!important;white-space:nowrap!important}
+.puzzle-grid-page.four .kakuro .clue span,.solution-grid.four .kakuro .clue span{font-size:5px!important;line-height:1!important;white-space:nowrap!important}
+.puzzle-grid-page.two .kakuro .down,.solution-grid.two .kakuro .down{top:2px!important;right:2px!important}
+.puzzle-grid-page.two .kakuro .across,.solution-grid.two .kakuro .across{bottom:2px!important;left:2px!important}
+.puzzle-grid-page.four .kakuro .down,.solution-grid.four .kakuro .down{top:1px!important;right:1px!important}
+.puzzle-grid-page.four .kakuro .across,.solution-grid.four .kakuro .across{bottom:1px!important;left:1px!important}
+/* How-To: centered, predictable PDF geometry */
+.instructions-section{text-align:center!important}
+.instructions-section>p{max-width:6.4in;margin:.12in auto .22in!important;text-align:center!important}
+.visual-howto{align-items:stretch!important}
+.visual-card{text-align:center!important}
+.visual-card h4,.visual-note,.visual-seq,.visual-arrow{text-align:center!important;margin-left:auto!important;margin-right:auto!important}
+
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v21.2</span></h1><div class="build-version">Exact build: v21.2 • How-To PDF Fix • Single-Pass Instruction Rendering</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v21.2</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v22.0</span></h1><div class="build-version">Exact build: v22.0 • Quality Control Rebuild • Layout + Validation + Kid Mazes</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v22.0</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -634,16 +661,6 @@ details summary{cursor:pointer;font-weight:700}
 <input id="subtitle" type="hidden" value="">
 <details open>
 <summary>Book Setup</summary>
-<label>Book preset</label>
-<div class="preset-grid">
-<button type="button" class="secondary presetBtn" data-preset="sudoku100">100 Sudoku</button>
-<button type="button" class="secondary presetBtn" data-preset="mixedlogic">Mixed Logic</button>
-<button type="button" class="secondary presetBtn" data-preset="kids">Kids Puzzle Book</button>
-<button type="button" class="secondary presetBtn" data-preset="largeprint">Large Print</button>
-<button type="button" class="secondary presetBtn" data-preset="wordsearch">Themed Word Search</button>
-<button type="button" class="secondary presetBtn" data-preset="clean">Clean Minimal</button>
-</div>
-
 <label><input id="largePrint" type="checkbox" style="width:auto"> Large-print mode</label>
 
 <label>KDP preflight profile</label>
@@ -654,6 +671,7 @@ details summary{cursor:pointer;font-weight:700}
 <option value="8.5x11">8.5 × 11</option>
 </select>
 
+<div class="small" style="margin-top:12px;font-weight:800">FRAME DESIGN</div>
 <label>Frame template</label>
 <select id="frameTemplate">
 <option value="simple" selected>Simple</option>
@@ -666,6 +684,9 @@ details summary{cursor:pointer;font-weight:700}
 <option value="botanical">Botanical</option>
 <option value="stars">Stars / Sparkle</option>
 <option value="puzzle">Puzzle Corner</option>
+<option value="softcurve">Soft Curves</option>
+<option value="ornatecurve">Ornate Curves</option>
+<option value="scallop">Scalloped Double Frame</option>
 </select>
 
 <label>Page title font size</label>
@@ -683,6 +704,7 @@ details summary{cursor:pointer;font-weight:700}
 <option value="relaxed">Relaxed</option>
 </select>
 
+<div class="small" style="margin-top:12px;font-weight:800">PUZZLE & SOLUTION LAYOUT</div>
 <label>Puzzles per page</label>
 <select id="puzzlesPerPage">
 <option value="1" selected>1 puzzle</option>
@@ -693,6 +715,14 @@ details summary{cursor:pointer;font-weight:700}
 <option value="10">10 puzzles (Missing Number)</option>
 </select>
 
+<label>Solutions per page</label>
+<select id="solutionsPerPage">
+<option value="smart" selected>Smart by puzzle type</option>
+<option value="1">1 per page</option>
+<option value="2">2 per page</option>
+<option value="4">4 per page</option>
+</select>
+
 <label><input id="mirrorPageNumbers" type="checkbox" checked style="width:auto"> Mirror page numbers on left/right pages</label>
 <label><input id="startSectionsRight" type="checkbox" checked style="width:auto"> Start section dividers on right-hand pages</label>
 <label><input id="balanceSections" type="checkbox" checked style="width:auto"> Smart section balancing</label>
@@ -701,7 +731,8 @@ details summary{cursor:pointer;font-weight:700}
 <label>Frame inset</label>
 <select id="frameInset">
 <option value="0.18">0.18 in</option>
-<option value="0.22" selected>0.22 in</option>
+<option value="0.22">0.22 in</option>
+<option value="0.25" selected>0.25 in</option>
 <option value="0.28">0.28 in</option>
 <option value="0.35">0.35 in</option>
 </select>
@@ -721,13 +752,6 @@ details summary{cursor:pointer;font-weight:700}
 <label>Starting page number</label>
 <input id="startPageNumber" type="number" min="1" value="1">
 
-<label>Solutions per page</label>
-<select id="solutionsPerPage">
-<option value="smart" selected>Smart by puzzle type</option>
-<option value="1">1 per page</option>
-<option value="2">2 per page</option>
-<option value="4">4 per page</option>
-</select>
 
 <label><input id="notesPage" type="checkbox" style="width:auto"> Add notes page at end</label>
 
@@ -1149,11 +1173,11 @@ function makeSlither(diff){
   const clues=fullSlitherClues(model,solution);
   // Remove clues only when the remaining puzzle is still uniquely solvable.
   // Keep this conservative on larger boards for responsive iPhone generation.
-  const targetKeep={Easy:.68,Medium:.56,Hard:.48}[diff]||.56;
+  const targetKeep={Easy:.88,Medium:.80,Hard:.72}[diff]||.80;
   const order=shuffle([...Array(R*C).keys()]);
   const minKeep=Math.ceil(R*C*targetKeep);
   let kept=R*C;
-  const maxTests=diff==='Easy'?Math.min(R*C,30):diff==='Medium'?Math.min(R*C,42):Math.min(R*C,55);
+  const maxTests=diff==='Easy'?Math.min(R*C,18):diff==='Medium'?Math.min(R*C,28):Math.min(R*C,40);
   let tests=0;
   for(const idx of order){
     if(kept<=minKeep||tests++>=maxTests)break;
@@ -1161,7 +1185,8 @@ function makeSlither(diff){
     clues[r][c]=null;
     if(slitherCountSolutions(model,clues,2)===1)kept--; else clues[r][c]=old;
   }
-  const unique=slitherCountSolutions(model,clues,2)===1;
+  let unique=slitherCountSolutions(model,clues,2)===1;
+  if(!unique){ const full=fullSlitherClues(model,solution); for(let r=0;r<R;r++)for(let c=0;c<C;c++)clues[r][c]=full[r][c]; unique=slitherCountSolutions(model,clues,2)===1; }
   return {type:'slither',R,C,clues,solution,validated:unique&&isSingleLoop(model,solution),validationTier:unique?'unique':'failed'};
 }
 
@@ -1754,7 +1779,7 @@ function renderMixRows(){
 function applyFrameClass(s){
  if($('pageFrame')?.checked){
    s.classList.add('frame-enabled');
-   s.style.setProperty('--frameInset',($('frameInset').value||'0.22')+'in');
+   s.style.setProperty('--frameInset',($('frameInset').value||'0.25')+'in');
    s.style.setProperty('--frameWidth',($('frameWidth').value||'2')+'px');
    s.style.setProperty('--frameRadius',($('frameRadius').value||'0')+'px');
  }
@@ -1993,13 +2018,16 @@ function textPdfCommands(sheet,pw,ph){
     acceptNode(node){
       if(!node.nodeValue||!node.nodeValue.trim())return NodeFilter.FILTER_REJECT;
       const p=node.parentElement;
-      if(!p||p.closest('svg')||p.closest('.pagenum')||p.closest('.page-edit-tools')||p.closest('.instructions-section')||!isVisibleEl(p))return NodeFilter.FILTER_REJECT;
+      if(!p||p.closest('svg')||p.closest('.pagenum')||p.closest('.page-edit-tools')||!isVisibleEl(p))return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;
     }
   });
   let node;
   while((node=walker.nextNode())){
-    const p=node.parentElement,pr=relativePdfRect(p,sr,pw,ph),cs=getComputedStyle(p);
+    const p=node.parentElement,cs=getComputedStyle(p);
+    const range=document.createRange(); range.selectNodeContents(node); const rr=range.getBoundingClientRect();
+    const sx2=pw/sr.width, sy2=ph/sr.height;
+    const pr={x:(rr.left-sr.left)*sx2,y:ph-(rr.bottom-sr.top)*sy2,w:rr.width*sx2,h:rr.height*sy2};
     if(pr.w<=0||pr.h<=0)continue;
     let size=Math.max(5,Math.min(30,(parseFloat(cs.fontSize)||12)*sx));
     let leading=size*1.2;
@@ -2148,14 +2176,15 @@ function pageNumberPdfCommand(sheet,pw,ph){
 function sheetVectorStream(sheet,pw,ph){
   let out='0 0 0 RG 0 0 0 rg\n';
   if($('pageFrame').checked && sheet.classList.contains('frame-enabled')){
-    const inset=(parseFloat($('frameInset').value)||.22)*72;
+    const inset=(parseFloat($('frameInset').value)||.25)*72;
     const lw=Math.max(.5,parseFloat($('frameWidth').value)||2);
     out+=pdfRect(inset,inset,pw-inset*2,ph-inset*2,false,true,lw);
   }
   out+=borderPdfCommands(sheet,pw,ph);
   out+=svgPdfCommands(sheet,pw,ph);
   out+=textPdfCommands(sheet,pw,ph);
-  out+=howToTextPdfCommands(sheet,pw,ph);
+  // v22: generic Range-based text renderer handles How-To text exactly once.
+  // out+=howToTextPdfCommands(sheet,pw,ph);
   out+=pageNumberPdfCommand(sheet,pw,ph);
   return out;
 }
@@ -2342,7 +2371,7 @@ async function createPdfDirect(){
     const {w,h}=pdfPhysicalPoints(),streams=[];
     for(let i=0;i<sheets.length;i++){
       progress.textContent=`Writing vector PDF page ${i+1} of ${sheets.length}…`;
-      await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
+      await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,(plan.length>=100&&i%5===0)?8:0)));
       streams.push(sheetVectorStream(sheets[i],w,h));
     }
     progress.textContent='Assembling vector PDF…';
@@ -2796,8 +2825,11 @@ function mazeSvg(item,answer){
    t.setAttribute('x',pad+(c+.5)*cell);t.setAttribute('y',pad+(r+.72)*cell);t.setAttribute('text-anchor',anchor||'middle');
    svg.appendChild(t);
  };
- label('S',item.start?.[0]??1,item.start?.[1]??0);
- label('F',item.finish?.[0]??n-2,item.finish?.[1]??n-1);
+ if(item.difficulty==='Easy' && item.path?.length>8){
+   const marks=[['★',.28],['◆',.55],['KEY',.78]];
+   for(const [txt,f] of marks){const q=item.path[Math.min(item.path.length-2,Math.max(1,Math.floor(item.path.length*f)))];label(txt,q[0],q[1]);}
+   label('START',item.start?.[0]??1,item.start?.[1]??0); label('CHEST',item.finish?.[0]??n-2,item.finish?.[1]??n-1);
+ }else{ label('S',item.start?.[0]??1,item.start?.[1]??0); label('F',item.finish?.[0]??n-2,item.finish?.[1]??n-1); }
  return svg;
 }
 
@@ -3378,10 +3410,10 @@ function searchBlock(item,answer){
    svg.setAttribute('viewBox',`0 0 ${n} ${n}`);svg.setAttribute('class','search-answer-overlay');
    for(let p of item.items){
      let x1=p.c+.5,y1=p.r+.5,x2=p.c+p.dc*(p.s.length-1)+.5,y2=p.r+p.dr*(p.s.length-1)+.5;
-     let mx=(x1+x2)/2,my=(y1+y2)/2,dist=Math.hypot(x2-x1,y2-y1)+.85,angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
+     let mx=(x1+x2)/2,my=(y1+y2)/2,dist=Math.hypot(x2-x1,y2-y1)+1.12,angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
      let rect=document.createElementNS(svg.namespaceURI,'rect');
-     rect.setAttribute('x',mx-dist/2);rect.setAttribute('y',my-.42);rect.setAttribute('width',dist);rect.setAttribute('height','.84');
-     rect.setAttribute('rx','.42');rect.setAttribute('fill','none');rect.setAttribute('stroke','#111');rect.setAttribute('stroke-width','.09');
+     rect.setAttribute('x',mx-dist/2);rect.setAttribute('y',my-.48);rect.setAttribute('width',dist);rect.setAttribute('height','.96');
+     rect.setAttribute('rx','.48');rect.setAttribute('fill','none');rect.setAttribute('stroke','#111');rect.setAttribute('stroke-width','.09');
      rect.setAttribute('transform',`rotate(${angle} ${mx} ${my})`);svg.appendChild(rect);
    }
    wrap.appendChild(svg)
@@ -3811,6 +3843,13 @@ async function build(){
        type==='missingnumber'?makeMissingNumber(diff):
        makeMandala(diff,recentMandalas);
 
+     // v22 QC gate: never knowingly add a failed generated puzzle. Retry the generator before layout/export.
+     if(!item || item.validated===false || item.validationTier==='failed'){
+       let qcTry=0;
+       while(qcTry++<8 && (!item || item.validated===false || item.validationTier==='failed')){
+         item= type==='sudoku'?makeSudoku(diff):type==='maze'?makeMaze(diff):type==='kakuro'?makeKakuro(diff):type==='slither'?makeSlither(diff):type==='wordsearch'?makeSearch('wordsearch',diff):type==='numbersearch'?makeSearch('numbersearch',diff):type==='cryptogram'?makeCryptogram(diff):type==='nonogram'?makeNonogram(diff):type==='killer'?makeKiller(diff):type==='diagonal'?makeDiagonal(diff):type==='irregular'?makeIrregular(diff):type==='mini'?makeMini(diff):type==='kenken'?makeKenKen(diff):type==='hidato'?makeHidato(diff):type==='takuzu'?makeTakuzu(diff):type==='magicsquare'?makeMagicSquare(diff):makeMissingNumber(diff);
+       }
+     }
      // v20: regenerate repeat-prone puzzle families before adding them to the book.
      if(['hidato','magicsquare','missingnumber'].includes(type)){
        let tries=0, fp=puzzleFingerprint(item);
