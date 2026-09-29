@@ -570,7 +570,7 @@ details summary{cursor:pointer;font-weight:700}
 .visual-card h4,.visual-note,.visual-seq,.visual-arrow{text-align:center!important;margin-left:auto!important;margin-right:auto!important}
 
 
-/* v22.1 rebuilt How-To pages: concise rules + large worked visuals */
+/* v22.2 rebuilt How-To pages: concise rules + large worked visuals */
 .sheet>h2{margin-top:.24in;text-align:center}
 .howto-page{width:6.55in;max-width:calc(100% - .7in);margin:.06in auto 0;text-align:center;font-family:Arial,Helvetica,sans-serif}
 .howto-goal{font-size:15px;line-height:1.42;max-width:6.1in;margin:.12in auto .16in!important;text-align:center!important}
@@ -603,8 +603,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v22.1</span></h1><div class="build-version">Exact build: v22.1 • How-To Visual Rebuild • Clear Rules + Worked Examples</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v22.1</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v22.2</span></h1><div class="build-version">Exact build: v22.2 • PDF Export Recovery • Guarded How-To Rendering</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v22.2</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -2080,50 +2080,39 @@ function textPdfCommands(sheet,pw,ph){
   return out;
 }
 function howToTextPdfCommands(sheet,pw,ph){
-  // v21.2: How-To pages contain inline <b>/<u>/<br> markup. The generic text-node
-  // exporter positions each inline text node from its parent box, which can stack
-  // multiple fragments on top of one another. Render instruction text once per
-  // visual block instead, while table cells remain individually positioned.
+  // v22.2: bounded, selector-driven How-To exporter. Never walks the whole
+  // How-To DOM tree, so a complex example cannot stall PDF page 1.
   const sr=sheet.getBoundingClientRect(),sx=pw/sr.width;
-  let out='';
-  const blocks=[...sheet.querySelectorAll('.instructions-section > p,.visual-card h4,.visual-seq,.visual-note,.howto-step,.howto-example')];
-  for(const el of blocks){
-    if(!isVisibleEl(el))continue;
-    // Do not render a container again when it owns more-specific text blocks.
-    if((el.classList.contains('howto-step')||el.classList.contains('howto-example')) && el.querySelector('h4,.visual-seq,.visual-note,table'))continue;
+  let out='', emitted=0;
+  const MAX_TEXT=180;
+  const addText=(el,forceBold=false)=>{
+    if(!el||!isVisibleEl(el)||emitted>=MAX_TEXT)return;
     const pr=relativePdfRect(el,sr,pw,ph),cs=getComputedStyle(el);
-    if(pr.w<=0||pr.h<=0)continue;
-    const size=Math.max(5,Math.min(24,(parseFloat(cs.fontSize)||12)*sx));
-    const leading=size*1.22;
-    const raw=(el.innerText||el.textContent||'').replace(/\u00a0/g,' ').trim();
-    if(!raw)continue;
-    let lines=[];
-    for(const part of raw.split(/\n+/)) lines.push(...wrapPdfText(part,Math.max(12,pr.w-4),size));
-    const bold=(parseInt(cs.fontWeight)||400)>=600||el.tagName==='H4';
-    const font=bold?'F2':'F1';
-    let y=pr.y+pr.h-size*.95;
+    if(pr.w<=0||pr.h<=0)return;
+    const raw=(el.innerText||el.textContent||'').replace(/\u00a0/g,' ').replace(/\s+/g,' ').trim();
+    if(!raw)return;
+    const size=Math.max(5,Math.min(22,(parseFloat(cs.fontSize)||12)*sx));
+    const lines=wrapPdfText(raw,Math.max(14,pr.w-4),size).slice(0,8);
+    const font=(forceBold||(parseInt(cs.fontWeight)||400)>=600)?'F2':'F1';
+    const leading=size*1.18;
+    let y=pr.y+pr.h-size*.92;
     for(const line of lines){
-      if(y<pr.y-2)break;
+      if(y<pr.y-2||emitted>=MAX_TEXT)break;
       let x=pr.x+2,tw=approxTextWidth(line,size);
-      if(cs.textAlign==='center')x=pr.x+(pr.w-tw)/2;
-      else if(cs.textAlign==='right')x=pr.x+pr.w-tw-2;
+      const align=cs.textAlign||'center';
+      if(align==='center')x=pr.x+(pr.w-tw)/2;
+      else if(align==='right')x=pr.x+pr.w-tw-2;
       out+=`BT /${font} ${pdfN(size)} Tf ${pdfN(x)} ${pdfN(y)} Td (${pdfEsc(line)}) Tj ET\n`;
-      y-=leading;
+      y-=leading; emitted++;
     }
-  }
-  // Mini-grid/table values are intentionally rendered cell-by-cell.
-  for(const el of sheet.querySelectorAll('.instructions-section td,.instructions-section th')){
-    if(!isVisibleEl(el))continue;
-    const pr=relativePdfRect(el,sr,pw,ph),cs=getComputedStyle(el);
-    const value=pdfAscii(el.textContent||'').trim(); if(!value||pr.w<=0||pr.h<=0)continue;
-    const size=Math.max(5,Math.min(18,(parseFloat(cs.fontSize)||12)*sx));
-    const x=pr.x+(pr.w-approxTextWidth(value,size))/2;
-    const y=pr.y+(pr.h-size*.75)/2;
-    out+=`BT /F1 ${pdfN(size)} Tf ${pdfN(x)} ${pdfN(y)} Td (${pdfEsc(value)}) Tj ET\n`;
-  }
+  };
+  // Render only leaf-level instructional blocks; never render their containers too.
+  addText(sheet.querySelector(':scope > h2'),true);
+  addText(sheet.querySelector('.howto-goal'));
+  for(const el of sheet.querySelectorAll('.howto-step p,.howto-example h4,.howto-caption,.howto-line,.howto-chip')) addText(el,el.matches('.howto-example h4,.howto-chip'));
+  for(const el of sheet.querySelectorAll('.howto-mini-grid td,.howto-pixel td,.kakuro-white,.kakuro-demo-cell span')) addText(el);
   return out;
 }
-
 function borderPdfCommands(sheet,pw,ph){
   const sr=sheet.getBoundingClientRect();let out='';
   const els=[...sheet.querySelectorAll('td,th,.howto-step,.howto-example,.crypto-box,.sequence,.missing-mark,.puzzle-card')].filter(el=>!el.closest('.page-edit-tools'));
@@ -2213,9 +2202,8 @@ function sheetVectorStream(sheet,pw,ph){
   }
   out+=borderPdfCommands(sheet,pw,ph);
   out+=svgPdfCommands(sheet,pw,ph);
-  out+=textPdfCommands(sheet,pw,ph);
-  // v22: generic Range-based text renderer handles How-To text exactly once.
-  // out+=howToTextPdfCommands(sheet,pw,ph);
+  const isHowTo=!!sheet.querySelector('.howto-page');
+  out+=isHowTo?howToTextPdfCommands(sheet,pw,ph):textPdfCommands(sheet,pw,ph);
   out+=pageNumberPdfCommand(sheet,pw,ph);
   return out;
 }
