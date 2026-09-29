@@ -603,8 +603,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v22.5</span></h1><div class="build-version">Exact build: v22.5 • PDF Layout Repair • Fixed Header + Label Geometry</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v22.2</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v22.6</span></h1><div class="build-version">Exact build: v22.6 • Instruction Page Redesign • Left-Aligned Worked Examples</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v22.6</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -2080,34 +2080,54 @@ function textPdfCommands(sheet,pw,ph){
   return out;
 }
 function howToTextPdfCommands(sheet,pw,ph){
-  // v22.5: fixed-coordinate How-To PDF layout. Browser DOM positions are not
-  // used for instructional text, preventing Safari Range/transform collisions.
+  // v22.6: editorial How-To renderer. Fixed coordinates, left-aligned copy,
+  // dedicated worked-example cards, and bounded mini-grid/vector examples.
   let out='';
   const title=pdfAscii((sheet.querySelector('h2')?.textContent||'How to Play').trim());
   const goal=pdfAscii((sheet.querySelector('.howto-goal')?.textContent||'').replace(/^Goal:\s*/i,'').trim());
-  const steps=[...sheet.querySelectorAll('.howto-step p')].slice(0,3).map(x=>pdfAscii(x.textContent.trim()));
-  const ex=[...sheet.querySelectorAll('.howto-example')].slice(0,3).map(e=>({
-    title:pdfAscii(e.querySelector('h4')?.textContent||''),
-    line:pdfAscii(e.querySelector('.howto-line')?.textContent||''),
-    cap:pdfAscii(e.querySelector('.howto-caption')?.textContent||'')
-  }));
-  const center=(txt,y,size=12,bold=false)=>{if(!txt)return; const x=(pw-approxTextWidth(txt,size))/2; out+=`BT /${bold?'F2':'F1'} ${pdfN(size)} Tf ${pdfN(x)} ${pdfN(y)} Td (${pdfEsc(txt)}) Tj ET\n`;};
-  const block=(txt,x,y,w,size=10,bold=false)=>{let lines=wrapPdfText(txt,w,size).slice(0,4); for(const line of lines){let xx=x+(w-approxTextWidth(line,size))/2;out+=`BT /${bold?'F2':'F1'} ${pdfN(size)} Tf ${pdfN(xx)} ${pdfN(y)} Td (${pdfEsc(line)}) Tj ET\n`;y-=size*1.28;} return y;};
-  center(title,ph-72,18,true);
-  block(goal,54,ph-104,pw-108,11,false);
-  const colW=(pw-108)/3;
-  for(let i=0;i<steps.length;i++){
-    center(String(i+1),ph-154,11,true);
-    block(steps[i],54+i*colW,ph-174,colW-10,9,false);
-  }
-  center('Worked examples',ph-235,13,true);
-  const positions=[[54,ph-275],[pw/2+8,ph-275],[54,ph-405]];
-  for(let i=0;i<ex.length;i++){
-    const [x,y]=positions[i],w=i===2?pw-108:pw/2-70;
-    block(ex[i].title,x,y,w,10,true);
-    let body=ex[i].line||ex[i].cap;
-    block(body,x,y-30,w,10,false);
-  }
+  const steps=[...sheet.querySelectorAll('.howto-step p')].slice(0,4).map(x=>pdfAscii(x.textContent.trim()));
+  const examples=[...sheet.querySelectorAll('.howto-example')].slice(0,4);
+  const put=(txt,x,y,size=10,bold=false)=>{txt=pdfAscii(txt);if(!txt)return;out+=`BT /${bold?'F2':'F1'} ${pdfN(size)} Tf ${pdfN(x)} ${pdfN(y)} Td (${pdfEsc(txt)}) Tj ET\n`;};
+  const wrap=(txt,x,y,w,size=9,bold=false,max=4)=>{let ls=wrapPdfText(pdfAscii(txt),w,size).slice(0,max);for(const l of ls){put(l,x,y,size,bold);y-=size*1.32;}return y;};
+  const box=(x,y,w,h)=>{out+=`0.75 w ${pdfRect(x,y,w,h,false,true)}`;};
+  const drawMiniGrid=(table,x,y,maxW=128,maxH=82)=>{
+    if(!table)return false; const rows=[...table.rows]; if(!rows.length)return false;
+    const cols=Math.max(...rows.map(r=>r.cells.length)); if(!cols)return false;
+    const cell=Math.min(maxW/cols,maxH/rows.length,22), gw=cell*cols, gh=cell*rows.length;
+    for(let r=0;r<rows.length;r++)for(let c=0;c<rows[r].cells.length;c++){
+      const xx=x+c*cell, yy=y-gh+(rows.length-1-r)*cell;
+      out+=`0.55 w ${pdfRect(xx,yy,cell,cell,false,true)}`;
+      const t=pdfAscii(rows[r].cells[c].textContent.trim()); if(t){const fs=Math.min(9,cell*.48);put(t,xx+(cell-approxTextWidth(t,fs))/2,yy+cell*.34,fs,false);}
+    }
+    return true;
+  };
+  // Title stays centered; everything below reads like a real instruction sheet.
+  put(title,(pw-approxTextWidth(title,18))/2,ph-64,18,true);
+  put('GOAL',48,ph-98,10,true); wrap(goal,48,ph-116,pw-96,10,false,3);
+  out+=pdfLine(48,ph-137,pw-48,ph-137,.65);
+  put('HOW IT WORKS',48,ph-160,11,true);
+  let ry=ph-181;
+  steps.forEach((st,i)=>{put(String(i+1)+'.',52,ry,10,true);ry=wrap(st,72,ry,pw-124,9.5,false,2)-7;});
+  put('WORKED EXAMPLES',48,ry-8,11,true); ry-=30;
+  const cardW=(pw-108)/2, cardH=116;
+  examples.slice(0,4).forEach((e,i)=>{
+    const col=i%2,row=Math.floor(i/2),x=48+col*(cardW+12),top=ry-row*(cardH+14),bottom=top-cardH;
+    box(x,bottom,cardW,cardH); const et=e.querySelector('h4')?.textContent||`Example ${i+1}`;
+    put(et,x+10,top-18,10,true);
+    const table=e.querySelector('table.howto-mini-grid,table.howto-pixel');
+    const line=(e.querySelector('.howto-line')?.textContent||'').trim();
+    const cap=(e.querySelector('.howto-caption')?.textContent||'').trim();
+    if(table){drawMiniGrid(table,x+12,top-34,cardW-24,58); if(cap)wrap(cap,x+10,bottom+18,cardW-20,8,false,2);}
+    else if(line){wrap(line,x+10,top-43,cardW-20,12,true,2); if(cap)wrap(cap,x+10,bottom+25,cardW-20,8,false,2);}
+    else { // SVG/search/Kakuro examples: use the actual example meaning as a clean diagram label + caption.
+      const body=(e.querySelector('.howto-example-body')?.textContent||'').replace(/\s+/g,' ').trim();
+      if(body)wrap(body,x+10,top-43,cardW-20,10,true,3);
+      if(cap)wrap(cap,x+10,bottom+25,cardW-20,8,false,2);
+    }
+  });
+  const rememberY=Math.max(56,ry-2*(cardH+14)-16);
+  put('REMEMBER',48,rememberY,10,true);
+  wrap('Use the puzzle rules together. If a move breaks even one rule, it cannot be the answer.',48,rememberY-18,pw-96,9,false,2);
   return out;
 }
 function borderPdfCommands(sheet,pw,ph){
