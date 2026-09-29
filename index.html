@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v20.1 — Multi-Page + Solver Repair</title>
+<title>Offline Puzzle Studio v20.2 — Size + Logic Repair</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -478,7 +478,7 @@ details summary{cursor:pointer;font-weight:700}
 }
 
 
-/* v20.1 multi-page + solver repair */
+/* v20.2 multi-page + solver repair */
 .frame-artdeco::before,.frame-corner::before,.frame-botanical::before,.frame-stars::before,.frame-puzzle::before{content:"";position:absolute;pointer-events:none;z-index:0;inset:calc(var(--frameInset,.22in) + 8px)}
 .frame-artdeco::before{border:1px solid #111;clip-path:polygon(0 8%,8% 8%,8% 0,92% 0,92% 8%,100% 8%,100% 92%,92% 92%,92% 100%,8% 100%,8% 92%,0 92%)}
 .frame-corner::before{background:linear-gradient(45deg,transparent 44%,#111 45%,#111 48%,transparent 49%) top left/42px 42px no-repeat,linear-gradient(-45deg,transparent 44%,#111 45%,#111 48%,transparent 49%) top right/42px 42px no-repeat,linear-gradient(135deg,transparent 44%,#111 45%,#111 48%,transparent 49%) bottom left/42px 42px no-repeat,linear-gradient(-135deg,transparent 44%,#111 45%,#111 48%,transparent 49%) bottom right/42px 42px no-repeat}
@@ -505,6 +505,25 @@ details summary{cursor:pointer;font-weight:700}
 .missing-dense .missing-sequence{font-size:18px!important;line-height:1.25!important;gap:4px!important}
 
 
+/* v20.2 readability + alignment repair */
+.puzzle-card{position:relative!important}
+.puzzle-grid-page.four .puzzle-card .sudoku td{width:.285in!important;height:.285in!important;font-size:11px!important}
+.puzzle-grid-page.four .puzzle-card .generic-grid td{width:.275in!important;height:.275in!important;font-size:11px!important}
+.puzzle-grid-page.four .puzzle-card.type-diagonal .generic-grid td{width:.295in!important;height:.295in!important;font-size:12px!important}
+.puzzle-grid-page.four .puzzle-card.type-mini .generic-grid td{width:.43in!important;height:.43in!important;font-size:15px!important}
+.puzzle-grid-page.four .puzzle-card.type-magicsquare .generic-grid td{width:.62in!important;height:.62in!important;font-size:18px!important}
+.puzzle-grid-page.four .puzzle-card .word-grid{font-family:Arial,sans-serif!important}
+.puzzle-grid-page.four .puzzle-card .word-grid td{width:.175in!important;height:.175in!important;font-size:8px!important}
+.puzzle-grid-page.four .puzzle-card .kakuro td{width:.255in!important;height:.255in!important;font-size:8.5px!important}
+.puzzle-grid-page.four .puzzle-card .kenken-grid td{width:.36in!important;height:.36in!important;font-size:12px!important}
+.puzzle-grid-page.four .puzzle-card.type-killer .generic-grid td{width:.28in!important;height:.28in!important;font-size:10px!important}
+.puzzle-grid-page.four .puzzle-card.type-nonogram .nonogram-grid td{width:.18in!important;height:.18in!important}
+.puzzle-grid-page.four .puzzle-card.type-nonogram .nonogram-top{grid-template-columns:repeat(var(--n,10),.18in)!important}
+.puzzle-card.type-maze .answer-xref{position:absolute!important;bottom:.06in!important;left:0!important;right:0!important;margin:0!important}
+.solution-grid.four .missing-sequence{font-family:Arial,sans-serif!important;font-size:15px!important;white-space:nowrap!important;gap:3px!important}
+.missing-sequence .missing-mark{border-bottom:2px solid #111!important;text-decoration:none!important;padding:0 5px!important}
+.solution-grid.four .solution-mini:has(.missing-sequence){justify-content:center!important}
+
 /* v20.1 true cell-fit rules */
 .puzzle-grid-page.four .puzzle-card .sudoku td,.puzzle-grid-page.four .puzzle-card .generic-grid td{width:.20in!important;height:.20in!important;font-size:9px!important}
 .puzzle-grid-page.two .puzzle-card .sudoku td,.puzzle-grid-page.two .puzzle-card .generic-grid td{width:.28in!important;height:.28in!important;font-size:11px!important}
@@ -521,14 +540,14 @@ details summary{cursor:pointer;font-weight:700}
 .solution-grid.four .kakuro td,.solution-grid.four .kenken-grid td{width:.18in!important;height:.18in!important;font-size:7px!important;padding:0!important}
 .solution-grid.two .kakuro td,.solution-grid.two .kenken-grid td{width:.27in!important;height:.27in!important;font-size:9px!important;padding:0!important}
 .solution-grid.four .crypto-box{font-size:10px!important;line-height:1.3!important}.solution-grid.two .crypto-box{font-size:13px!important;line-height:1.4!important}
-.missing-mark{font-weight:800!important;text-decoration:underline!important;text-underline-offset:3px}
+.missing-mark{font-weight:800!important;text-decoration:none!important}
 .kenken-grid td{position:relative}
 
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v20.1</span></h1><div class="build-version">Exact build: v20.1 • 4-Up Fit Repair • Slitherlink Deep QC • Kakuro/KenKen/Cryptogram Density • Missing Number Plus</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v20.1</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v20.2</span></h1><div class="build-version">Exact build: v20.2 • Readable 4-Up • Slitherlink Rebuild • Hidato Turns • Binary Hard Fix • PDF How-To Repair</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v20.2</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -1170,7 +1189,7 @@ function slitherCountSolutions(model,clues,limit=2){
 }
 
 function makeSlither(diff){
-  const R={Easy:5,Medium:6,Hard:7}[diff]||6, C=R;
+  const R={Easy:6,Medium:8,Hard:10}[diff]||8, C=R;
   const model=slitherEdgeModel(R,C);
   let solution=null, region=null;
   // v20: use the boundary of a connected region, rejecting holes/multiple loops.
@@ -1187,11 +1206,11 @@ function makeSlither(diff){
   const clues=fullSlitherClues(model,solution);
   // Remove clues only when the remaining puzzle is still uniquely solvable.
   // Keep this conservative on larger boards for responsive iPhone generation.
-  const targetKeep={Easy:.76,Medium:.66,Hard:.60}[diff]||.66;
+  const targetKeep={Easy:.68,Medium:.56,Hard:.48}[diff]||.56;
   const order=shuffle([...Array(R*C).keys()]);
   const minKeep=Math.ceil(R*C*targetKeep);
   let kept=R*C;
-  const maxTests=diff==='Easy'?R*C:diff==='Medium'?Math.min(R*C,24):Math.min(R*C,16);
+  const maxTests=diff==='Easy'?Math.min(R*C,30):diff==='Medium'?Math.min(R*C,42):Math.min(R*C,55);
   let tests=0;
   for(const idx of order){
     if(kept<=minKeep||tests++>=maxTests)break;
@@ -1627,41 +1646,34 @@ function makeKenKen(diff){
 
 /* ---------- HIDATO ---------- */
 function makeHidato(diff){
- let n=overrideSize({Easy:5,Medium:6,Hard:6}[diff],[5,6]);
- let base=Array.from({length:n},()=>Array(n).fill(0)),k=1;
- for(let r=0;r<n;r++){
-   let cs=[...Array(n).keys()];if(r%2)cs.reverse();
-   for(let c of cs)base[r][c]=k++;
+ const n=overrideSize({Easy:5,Medium:6,Hard:7}[diff],[5,6,7]);
+ const N=n*n, dirs=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+ function neighbors(r,c,used){return dirs.map(([dr,dc])=>[r+dr,c+dc]).filter(([rr,cc])=>rr>=0&&rr<n&&cc>=0&&cc<n&&!used[rr][cc])}
+ function buildPath(){
+  for(let attempt=0;attempt<35;attempt++){
+   let used=Array.from({length:n},()=>Array(n).fill(false)),path=[];
+   let r=Math.floor(Math.random()*n),c=Math.floor(Math.random()*n);used[r][c]=true;path.push([r,c]);
+   function dfs(rr,cc,k){
+    if(k===N)return true;
+    let moves=neighbors(rr,cc,used).map(p=>({p,deg:neighbors(p[0],p[1],used).length,noise:Math.random()}));
+    moves.sort((a,b)=>a.deg-b.deg || a.noise-b.noise);
+    for(const m of moves){let [nr,nc]=m.p;used[nr][nc]=true;path.push([nr,nc]);if(dfs(nr,nc,k+1))return true;path.pop();used[nr][nc]=false}
+    return false;
+   }
+   if(dfs(r,c,1)){
+    let turns=0;for(let i=2;i<path.length;i++){let a=path[i-2],b=path[i-1],d=path[i],v1=[Math.sign(b[0]-a[0]),Math.sign(b[1]-a[1])],v2=[Math.sign(d[0]-b[0]),Math.sign(d[1]-b[1])];if(v1[0]!==v2[0]||v1[1]!==v2[1])turns++}
+    if(turns>=Math.floor(N*.42))return path;
+   }
+  }
+  return null;
  }
- // Rotate/reflect/reverse to create many distinct valid Hamiltonian paths.
- let sol=clone(base);
- let rotations=Math.floor(Math.random()*4);
- for(let z=0;z<rotations;z++)sol=sol[0].map((_,c)=>sol.map(r=>r[c]).reverse());
- if(Math.random()<.5)sol=sol.map(r=>r.slice().reverse());
- if(Math.random()<.5)sol=sol.slice().reverse();
- if(Math.random()<.5){
-   let N=n*n;sol=sol.map(r=>r.map(v=>N+1-v));
- }
- let puzzle=clone(sol);
- let targetKeep={Easy:.62,Medium:.50,Hard:.40}[diff]||.5;
- let cells=shuffle([...Array(n*n).keys()]);
- // Always keep path endpoints.
- let firstPos=null,lastPos=null;
- for(let r=0;r<n;r++)for(let c=0;c<n;c++){if(sol[r][c]===1)firstPos=[r,c];if(sol[r][c]===n*n)lastPos=[r,c]}
- for(let idx of cells){
-   let r=Math.floor(idx/n),c=idx%n;
-   if((firstPos&&r===firstPos[0]&&c===firstPos[1])||(lastPos&&r===lastPos[0]&&c===lastPos[1]))continue;
-   let old=puzzle[r][c];puzzle[r][c]=0;
-   let probe={type:'hidato',n,puzzle,solution:sol};
-   if(hidatoCountSolutions(probe,2)!==1)puzzle[r][c]=old;
-   if(puzzle.flat().filter(Boolean).length/(n*n)<=targetKeep)break;
- }
- let item={type:'hidato',n,puzzle,solution:sol,validated:false,validationTier:'known-answer'};
- let ct=hidatoCountSolutions(item,2);
- item.validated=ct===1;
- item.validationTier=ct===1?'unique':'structural';
- if(!item.validated){item.validationTier='failed'}
- return item;
+ let path=buildPath();
+ if(!path){path=[];for(let r=0;r<n;r++){let cs=[...Array(n).keys()];if(r%2)cs.reverse();for(let c of cs)path.push([r,c])}}
+ let sol=Array.from({length:n},()=>Array(n).fill(0));path.forEach(([r,c],i)=>sol[r][c]=i+1);
+ let puzzle=clone(sol),targetKeep={Easy:.50,Medium:.38,Hard:.30}[diff]||.38;
+ let cells=shuffle([...Array(N-2).keys()].map(i=>i+1));
+ for(let idx of cells){let [r,c]=path[idx],old=puzzle[r][c];puzzle[r][c]=0;let probe={type:'hidato',n,puzzle,solution:sol};if(hidatoCountSolutions(probe,2)!==1)puzzle[r][c]=old;if(puzzle.flat().filter(Boolean).length/N<=targetKeep)break}
+ let item={type:'hidato',n,puzzle,solution:sol,validated:false,validationTier:'known-answer'};let ct=hidatoCountSolutions(item,2);item.validated=ct===1;item.validationTier=ct===1?'unique':'structural';return item;
 }
 
 /* ---------- TAKUZU ---------- */
@@ -1674,23 +1686,25 @@ function validTakuzu(grid,r,c,n){
  return true
 }
 function makeTakuzu(diff){
- let n=overrideSize({Easy:6,Medium:8,Hard:10}[diff],[6,8,10]),g=Array.from({length:n},()=>Array(n).fill(null));
- function fill(pos=0){
-  if(pos===n*n){let rs=new Set(g.map(r=>r.join('')));if(rs.size<n)return false;let cs=new Set([...Array(n).keys()].map(c=>g.map(r=>r[c]).join('')));return cs.size===n}
-  let r=Math.floor(pos/n),c=pos%n;for(let v of shuffle([0,1])){g[r][c]=v;if(validTakuzu(g,r,c,n)&&fill(pos+1))return true;g[r][c]=null}return false
+ const n=overrideSize({Easy:6,Medium:8,Hard:10}[diff],[6,8,10]);
+ function validLine(a){let z=a.filter(x=>x===0).length,o=a.length-z;if(z!==n/2||o!==n/2)return false;for(let i=0;i<n-2;i++)if(a[i]===a[i+1]&&a[i]===a[i+2])return false;return true}
+ let rows=[];for(let mask=0;mask<(1<<n);mask++){let a=Array.from({length:n},(_,i)=>(mask>>(n-1-i))&1);if(validLine(a))rows.push(a)}
+ function makeSolution(){
+  for(let attempt=0;attempt<20;attempt++){
+   let chosen=[];let pool=shuffle(rows.slice());
+   function rec(r){
+    if(r===n){let cols=[...Array(n).keys()].map(c=>chosen.map(row=>row[c]));return cols.every(validLine)&&new Set(cols.map(x=>x.join(''))).size===n}
+    for(const row of pool){if(chosen.some(x=>x.join('')===row.join('')))continue;let ok=true;for(let c=0;c<n;c++){let col=chosen.map(x=>x[c]).concat(row[c]),z=col.filter(x=>x===0).length,o=col.length-z;if(z>n/2||o>n/2){ok=false;break}let L=col.length;if(L>=3&&col[L-1]===col[L-2]&&col[L-2]===col[L-3]){ok=false;break}}if(!ok)continue;chosen.push(row);if(rec(r+1))return true;chosen.pop()}
+    return false;
+   }
+   if(rec(0))return chosen.map(r=>r.slice());
+  }
+  return null;
  }
- fill();let sol=clone(g),puzzle=clone(g),targetKeep={Easy:.58,Medium:.48,Hard:.40}[diff];
- let removalOrder=[...Array(n*n).keys()];
- if(varietyLevel()==='standard')shuffle(removalOrder);
- else if(varietyLevel()==='high')removalOrder.sort(()=>Math.random()-.5);
- else removalOrder=shuffle(removalOrder).sort((a,b)=>((a%2)-(b%2))||Math.random()-.5);
- for(let idx of removalOrder){
-  let r=Math.floor(idx/n),c=idx%n,old=puzzle[r][c];puzzle[r][c]=null;
-  let item={type:'takuzu',n,puzzle,solution:sol};if(takuzuCountSolutions(item,2)!==1)puzzle[r][c]=old;
-  let keep=puzzle.flat().filter(x=>x!==null).length/(n*n);if(keep<=targetKeep)break
- }
- let item={type:'takuzu',n,puzzle,solution:sol,validated:false,validationTier:'known-answer'};
- let ct=takuzuCountSolutions(item,2);item.validated=ct===1;item.validationTier=ct===1?'unique':'failed';return item
+ let sol=makeSolution();if(!sol)return {type:'takuzu',n,puzzle:Array.from({length:n},()=>Array(n).fill(null)),solution:null,validated:false,validationTier:'failed'};
+ let puzzle=clone(sol),targetKeep={Easy:.58,Medium:.48,Hard:.42}[diff],order=shuffle([...Array(n*n).keys()]);
+ for(let idx of order){let r=Math.floor(idx/n),c=idx%n,old=puzzle[r][c];puzzle[r][c]=null;let item={type:'takuzu',n,puzzle,solution:sol};if(takuzuCountSolutions(item,2)!==1)puzzle[r][c]=old;if(puzzle.flat().filter(x=>x!==null).length/(n*n)<=targetKeep)break}
+ let item={type:'takuzu',n,puzzle,solution:sol,validated:false,validationTier:'known-answer'},ct=takuzuCountSolutions(item,2);item.validated=ct===1;item.validationTier=ct===1?'unique':'failed';return item;
 }
 
 /* ---------- MAGIC SQUARE ---------- */
@@ -1841,14 +1855,14 @@ function setPageSide(s,pageNum){
  s.classList.add(pageNum%2===0?'page-left':'page-right');
 }
 function supportsMultiPerPage(type){
- return !['maze','nonogram','mandala'].includes(type)
+ return !['maze','mandala'].includes(type)
 }
 function addBlankPage(root,pageNum){
  let s=document.createElement('div');s.className='sheet '+pageClass()+($('pageFrame').checked?' frame-enabled':'');
  applyDesign(s);s.innerHTML='<div class="special-page"><p></p></div>';setPageSide(s,pageNum);root.appendChild(s);return pageNum+1
 }
 function renderPuzzleInto(container,item,index,title){
- container.dataset.itemIndex=String(index);
+ container.dataset.itemIndex=String(index);container.classList.add('type-'+item.type);
  let label={sudoku:'Sudoku',maze:'Maze',kakuro:'Kakuro',slither:'Slitherlink',wordsearch:'Word Search',numbersearch:'Number Search',cryptogram:'Cryptogram',nonogram:'Nonogram',killer:'Killer Sudoku',diagonal:'Diagonal Sudoku',irregular:'Irregular Sudoku',mini:'Mini Sudoku',kenken:'KenKen',hidato:'Hidato',takuzu:'Takuzu',magicsquare:'Magic Square',missingnumber:'Missing Number',mandala:'Mandala Coloring Page'}[item.type];
  let head=document.createElement('div');head.style.textAlign='center';head.style.fontWeight='700';head.style.marginBottom='6px';head.textContent=item.type==='mandala' ? `Mandala ${index+1}` : `Puzzle ${index+1} • ${label}`;container.appendChild(head);
  if(item.type==='sudoku')container.appendChild(sudokuTable(item.puzzle));
@@ -2287,7 +2301,7 @@ function solutionCapacity(type){
    else requested=2;
  }
  // v20 layout engine: safe capacities are handled by fixed grid cells.
- if(['maze','nonogram','killer','irregular'].includes(type))return 1;
+ if(['maze','irregular'].includes(type))return 1;
  if(['kakuro','slither','cryptogram','kenken','wordsearch','numbersearch','sudoku','diagonal','mini','hidato','takuzu'].includes(type))return Math.min(4,requested);
  return Math.min(4,requested);
 }
@@ -2598,8 +2612,8 @@ function instructionHtml(type){
     <p><b>Goal:</b> Fill white cells with digits 1–9. Each horizontal or vertical run must add to its clue, and no digit can repeat within one run. <b>A = Across</b> and <b>D = Down</b>.</p>
     ${cards(
       card('Across clue A 4',pic('<div class="visual-seq">[ 1 ][ 3 ] = 4</div>')),
-      card('Down clue D 17',pic('<div class="visual-seq">[ 8 ]<br>[ 9 ]<br>= 17</div>')),
-      card('No repeats',pic('<div class="visual-seq">6 = 3 + 3 ✗<br>6 = 1 + 5 ✓</div>'))
+      card('Down clue D 17',pic('<div class="visual-seq">8 + 9 = 17</div>')),
+      card('No repeats',pic('<div class="visual-seq">3 + 3 = 6 (repeat: no) | 1 + 5 = 6 (valid)</div>'))
     )}
   </div>`,
 
@@ -3245,7 +3259,7 @@ function missingNumberBlock(item,answer){
  vals.forEach((v,i)=>{
    let span=document.createElement('span');
    if(v==null){span.className='missing-mark';span.textContent='?'}
-   else {span.textContent=v;if(answer&&(item.missingIndices||[item.missingIndex]).includes(i)){span.className='missing-mark';span.style.fontWeight='800';span.style.textDecoration='underline'}};
+   else {span.textContent=v;if(answer&&(item.missingIndices||[item.missingIndex]).includes(i)){span.className='missing-mark';span.style.fontWeight='800';span.style.textDecoration='none'}};
    d.appendChild(span);
    if(i<vals.length-1){
      let comma=document.createElement('span');comma.textContent=',';d.appendChild(comma);
