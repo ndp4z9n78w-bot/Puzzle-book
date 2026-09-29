@@ -603,8 +603,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v22.6</span></h1><div class="build-version">Exact build: v22.6 • Instruction Page Redesign • Left-Aligned Worked Examples</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v22.6</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v22.7</span></h1><div class="build-version">Exact build: v22.7 • Sudoku How-To Showcase • Professional Visual Lesson</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v22.7</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -2080,13 +2080,56 @@ function textPdfCommands(sheet,pw,ph){
   return out;
 }
 function howToTextPdfCommands(sheet,pw,ph){
-  // v22.6: editorial How-To renderer. Fixed coordinates, left-aligned copy,
+  // v22.7: editorial How-To renderer. Fixed coordinates, left-aligned copy,
   // dedicated worked-example cards, and bounded mini-grid/vector examples.
   let out='';
   const title=pdfAscii((sheet.querySelector('h2')?.textContent||'How to Play').trim());
   const goal=pdfAscii((sheet.querySelector('.howto-goal')?.textContent||'').replace(/^Goal:\s*/i,'').trim());
   const steps=[...sheet.querySelectorAll('.howto-step p')].slice(0,4).map(x=>pdfAscii(x.textContent.trim()));
   const examples=[...sheet.querySelectorAll('.howto-example')].slice(0,4);
+  // v22.7: Sudoku gets a purpose-built publication-quality instruction page.
+  if(/sudoku/i.test(title)){
+    const put=(txt,x,y,size=10,bold=false)=>{txt=pdfAscii(txt);if(!txt)return;out+=`BT /${bold?'F2':'F1'} ${pdfN(size)} Tf ${pdfN(x)} ${pdfN(y)} Td (${pdfEsc(txt)}) Tj ET\n`;};
+    const wrap=(txt,x,y,w,size=9,bold=false,max=5)=>{let ls=wrapPdfText(pdfAscii(txt),w,size).slice(0,max);for(const l of ls){put(l,x,y,size,bold);y-=size*1.28;}return y;};
+    const box=(x,y,w,h,lw=.8)=>{out+=`${pdfN(lw)} w ${pdfRect(x,y,w,h,false,true)}`;};
+    const center=(txt,cx,y,size=10,bold=false)=>put(txt,cx-approxTextWidth(pdfAscii(txt),size)/2,y,size,bold);
+    const grid=(x,y,w,mode='row',filled=false)=>{
+      const c=w/9,h=w;
+      for(let r=0;r<9;r++)for(let col=0;col<9;col++){
+        const xx=x+col*c, yy=y+(8-r)*c;
+        let hi=(mode==='row'&&r===3)||(mode==='col'&&col===4)||(mode==='box'&&r<3&&col<3);
+        if(hi) out+=`0.90 g ${pdfRect(xx,yy,c,c,true,false)} 0 g\n`;
+        out+=`${((r%3===0||col%3===0)?0.75:0.3)} w ${pdfRect(xx,yy,c,c,false,true)}`;
+      }
+      const givens=filled?
+        [[5,3,4,6,7,8,9,1,2],[6,7,2,1,9,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,9,7,6,1,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]]:
+        [[5,'','','','','','','',3],['','','','',1,'',7,'',''],[6,'','','','','','','',1],[1,2,3,4,5,6,7,8,9],['',9,'','','','','',8,''],['','','','','','','','',''],[4,'','','',8,'','','',2],['',6,'','','','','',5,''],['','','',8,'','','','','']];
+      for(let r=0;r<9;r++)for(let col=0;col<9;col++){let v=givens[r][col];if(v!==''){let fs=Math.max(5,c*.45);let t=String(v);put(t,x+col*c+(c-approxTextWidth(t,fs))/2,y+(8-r)*c+c*.34,fs,false);}}
+    };
+    // Framed masthead
+    box(26,ph-82,pw-52,54,1.1); center('HOW TO PLAY SUDOKU',pw/2,ph-62,24,true);
+    box(28,ph-146,pw-56,50,.7);
+    wrap('Sudoku is a logic puzzle. Fill the grid with the numbers 1 through 9 so each number appears exactly once in every row, every column, and every 3 x 3 box.',42,ph-116,pw-84,10,false,3);
+    const gap=10, panelW=(pw-76-2*gap)/3, panelY=ph-405, panelH=244;
+    const heads=[['1','Each Row','row','Each row must contain 1 through 9 exactly once.'],['2','Each Column','col','Each column must contain 1 through 9 exactly once.'],['3','Each 3 x 3 Box','box','Each 3 x 3 box must contain 1 through 9 exactly once.']];
+    heads.forEach((a,i)=>{let x=28+i*(panelW+gap);box(x,panelY,panelW,panelH,.7);put(a[0]+'.',x+10,panelY+panelH-24,13,true);put(a[1],x+28,panelY+panelH-24,12,true);wrap(a[3],x+10,panelY+panelH-45,panelW-20,8.5,false,3);grid(x+10,panelY+14,panelW-20,a[2],false);});
+    // Example + try it yourself
+    const lowerY=ph-555, leftW=(pw-66)*.57, rightW=(pw-66)-leftW-10;
+    box(28,lowerY,leftW,132,.7);center('EXAMPLE',28+leftW/2,lowerY+112,12,true);
+    wrap('The row already has 1 through 8. The only missing number is 9, so the empty cell must be 9.',40,lowerY+91,leftW*.48,9,false,5);
+    const rx=40+leftW*.50, rw=leftW*.45, cy=lowerY+55, cw=rw/9;
+    for(let i=0;i<9;i++){box(rx+i*cw,cy,cw,cw,.45);if(i<8)center(String(i+1),rx+i*cw+cw/2,cy+cw*.32,8,true);}
+    put('9',rx+8*cw+(cw-approxTextWidth('9',9))/2,cy+cw*.32,9,true);put('This cell must be 9.',rx,lowerY+25,8.5,true);
+    const rightX=38+leftW;
+    box(rightX,lowerY,rightW,132,.7);center('TRY IT YOURSELF',rightX+rightW/2,lowerY+112,12,true);wrap('Fill in the missing number in this row.',rightX+10,lowerY+89,rightW-20,9,false,2);
+    let tx=rightX+10, tw=rightW-20, tc=tw/9, ty=lowerY+47;for(let i=0;i<9;i++){box(tx+i*tc,ty,tc,tc,.45);if(i<8)center(String(i+1),tx+i*tc+tc/2,ty+tc*.30,8,true);} center('Answer: 9',rightX+rightW/2,lowerY+22,9,true);
+    // Bottom tips and full before/after example
+    const botY=38, botH=lowerY-botY-12; box(28,botY,pw-56,botH,.7);put('TIPS FOR SOLVING',40,botY+botH-22,12,true);
+    const tips=['Look for rows, columns, or boxes that are almost complete.','Use elimination: a number cannot repeat in its row, column, or box.','Start with the easiest forced placements, then recheck the grid.','A valid Sudoku has one completed solution.'];
+    let yy=botY+botH-43;tips.forEach(t=>{put('-',42,yy,9,true);yy=wrap(t,54,yy,205,8.5,false,2)-6;});
+    put('A COMPLETE SOLUTION EXAMPLE',300,botY+botH-22,10,true);grid(300,botY+20,92,'none',false);put('>',400,botY+58,18,true);grid(430,botY+20,92,'none',true);
+    return out;
+  }
   const put=(txt,x,y,size=10,bold=false)=>{txt=pdfAscii(txt);if(!txt)return;out+=`BT /${bold?'F2':'F1'} ${pdfN(size)} Tf ${pdfN(x)} ${pdfN(y)} Td (${pdfEsc(txt)}) Tj ET\n`;};
   const wrap=(txt,x,y,w,size=9,bold=false,max=4)=>{let ls=wrapPdfText(pdfAscii(txt),w,size).slice(0,max);for(const l of ls){put(l,x,y,size,bold);y-=size*1.32;}return y;};
   const box=(x,y,w,h)=>{out+=`0.75 w ${pdfRect(x,y,w,h,false,true)}`;};
@@ -2685,13 +2728,14 @@ function instructionHtml(type){
   const nonogramPic=`<table class="howto-pixel"><tr><td></td><td class="on"></td><td></td></tr><tr><td class="on"></td><td class="on"></td><td class="on"></td></tr><tr><td></td><td class="on"></td><td></td></tr></table>`;
   const map={
     sudoku:()=>page('Fill every empty cell so each row, column, and 3×3 box contains 1–9 exactly once.',[
-      'Check the row: a digit cannot repeat.',
-      'Check the column: a digit cannot repeat.',
-      'Check the 3×3 box before placing the number.'
+      'Each row must contain the numbers 1 through 9 exactly once.',
+      'Each column must contain the numbers 1 through 9 exactly once.',
+      'Each 3×3 box must contain the numbers 1 through 9 exactly once.'
     ],[
-      example('Row example',line('1  2  3  4  5  6  7  <b>?</b>  9'), 'Only 8 is missing, so ? = 8.'),
-      example('3×3 box example',miniGrid([[1,2,3],[4,'?',6],[7,8,9]],[[1,1]]),'The center must be 5.'),
-      example('Final check',line(`${chip('ROW')} ${chip('COLUMN')} ${chip('BOX')}`),'A placement must satisfy all three.')
+      example('Each Row',line('1  2  3  4  5  6  7  8  9'),'No digit repeats in a row.'),
+      example('Each Column',miniGrid([[1],[2],[3],[4],[5],[6],[7],[8],[9]]),'No digit repeats in a column.'),
+      example('Each 3×3 Box',miniGrid([[1,2,3],[4,5,6],[7,8,9]]),'Every 3×3 box also contains 1–9 once.'),
+      example('Try It Yourself',line('1  2  3  4  5  6  7  8  ?'),'The missing number is 9.')
     ]),
     kakuro:()=>page('Fill the white cells with digits 1–9 so every run adds to its clue. Digits cannot repeat inside one run.',[
       'A means Across; D means Down.',
