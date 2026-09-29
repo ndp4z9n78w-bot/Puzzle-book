@@ -603,7 +603,7 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v22.2</span></h1><div class="build-version">Exact build: v22.2 • PDF Export Recovery • Guarded How-To Rendering</div></header>
+<header><h1>Offline Puzzle Studio <span class="badge">v22.3</span></h1><div class="build-version">Exact build: v22.3 • PDF Export Hotfix • Isolated How-To Vector Path</div></header>
 <div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v22.2</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
@@ -2200,10 +2200,17 @@ function sheetVectorStream(sheet,pw,ph){
     const lw=Math.max(.5,parseFloat($('frameWidth').value)||2);
     out+=pdfRect(inset,inset,pw-inset*2,ph-inset*2,false,true,lw);
   }
+  const isHowTo=!!sheet.querySelector('.howto-page');
+  // v22.3: How-To pages use an isolated bounded path. Do NOT run the generic
+  // border/SVG/text DOM walkers on these pages; Safari could stall on page 1.
+  if(isHowTo){
+    out+=howToTextPdfCommands(sheet,pw,ph);
+    out+=pageNumberPdfCommand(sheet,pw,ph);
+    return out;
+  }
   out+=borderPdfCommands(sheet,pw,ph);
   out+=svgPdfCommands(sheet,pw,ph);
-  const isHowTo=!!sheet.querySelector('.howto-page');
-  out+=isHowTo?howToTextPdfCommands(sheet,pw,ph):textPdfCommands(sheet,pw,ph);
+  out+=textPdfCommands(sheet,pw,ph);
   out+=pageNumberPdfCommand(sheet,pw,ph);
   return out;
 }
@@ -2390,7 +2397,7 @@ async function createPdfDirect(){
     const {w,h}=pdfPhysicalPoints(),streams=[];
     for(let i=0;i<sheets.length;i++){
       progress.textContent=`Writing vector PDF page ${i+1} of ${sheets.length}…`;
-      await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,(plan.length>=100&&i%5===0)?8:0)));
+      await new Promise(r=>setTimeout(r,(plan.length>=100&&i%5===0)?8:0));
       streams.push(sheetVectorStream(sheets[i],w,h));
     }
     progress.textContent='Assembling vector PDF…';
