@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v21.1 — Puzzle-Only Cleanup</title>
+<title>Offline Puzzle Studio v21.2 — How-To PDF Fix</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -545,8 +545,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v21.1</span></h1><div class="build-version">Exact build: v21.1 • Puzzle-Only Cleanup • Solution References Standardized</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v21.1</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v21.2</span></h1><div class="build-version">Exact build: v21.2 • How-To PDF Fix • Single-Pass Instruction Rendering</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v21.2</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -1993,7 +1993,7 @@ function textPdfCommands(sheet,pw,ph){
     acceptNode(node){
       if(!node.nodeValue||!node.nodeValue.trim())return NodeFilter.FILTER_REJECT;
       const p=node.parentElement;
-      if(!p||p.closest('svg')||p.closest('.pagenum')||p.closest('.page-edit-tools')||!isVisibleEl(p))return NodeFilter.FILTER_REJECT;
+      if(!p||p.closest('svg')||p.closest('.pagenum')||p.closest('.page-edit-tools')||p.closest('.instructions-section')||!isVisibleEl(p))return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;
     }
   });
@@ -2020,6 +2020,51 @@ function textPdfCommands(sheet,pw,ph){
   }
   return out;
 }
+function howToTextPdfCommands(sheet,pw,ph){
+  // v21.2: How-To pages contain inline <b>/<u>/<br> markup. The generic text-node
+  // exporter positions each inline text node from its parent box, which can stack
+  // multiple fragments on top of one another. Render instruction text once per
+  // visual block instead, while table cells remain individually positioned.
+  const sr=sheet.getBoundingClientRect(),sx=pw/sr.width;
+  let out='';
+  const blocks=[...sheet.querySelectorAll('.instructions-section > p,.visual-card h4,.visual-seq,.visual-note,.howto-step,.howto-example')];
+  for(const el of blocks){
+    if(!isVisibleEl(el))continue;
+    // Do not render a container again when it owns more-specific text blocks.
+    if((el.classList.contains('howto-step')||el.classList.contains('howto-example')) && el.querySelector('h4,.visual-seq,.visual-note,table'))continue;
+    const pr=relativePdfRect(el,sr,pw,ph),cs=getComputedStyle(el);
+    if(pr.w<=0||pr.h<=0)continue;
+    const size=Math.max(5,Math.min(24,(parseFloat(cs.fontSize)||12)*sx));
+    const leading=size*1.22;
+    const raw=(el.innerText||el.textContent||'').replace(/\u00a0/g,' ').trim();
+    if(!raw)continue;
+    let lines=[];
+    for(const part of raw.split(/\n+/)) lines.push(...wrapPdfText(part,Math.max(12,pr.w-4),size));
+    const bold=(parseInt(cs.fontWeight)||400)>=600||el.tagName==='H4';
+    const font=bold?'F2':'F1';
+    let y=pr.y+pr.h-size*.95;
+    for(const line of lines){
+      if(y<pr.y-2)break;
+      let x=pr.x+2,tw=approxTextWidth(line,size);
+      if(cs.textAlign==='center')x=pr.x+(pr.w-tw)/2;
+      else if(cs.textAlign==='right')x=pr.x+pr.w-tw-2;
+      out+=`BT /${font} ${pdfN(size)} Tf ${pdfN(x)} ${pdfN(y)} Td (${pdfEsc(line)}) Tj ET\n`;
+      y-=leading;
+    }
+  }
+  // Mini-grid/table values are intentionally rendered cell-by-cell.
+  for(const el of sheet.querySelectorAll('.instructions-section td,.instructions-section th')){
+    if(!isVisibleEl(el))continue;
+    const pr=relativePdfRect(el,sr,pw,ph),cs=getComputedStyle(el);
+    const value=pdfAscii(el.textContent||'').trim(); if(!value||pr.w<=0||pr.h<=0)continue;
+    const size=Math.max(5,Math.min(18,(parseFloat(cs.fontSize)||12)*sx));
+    const x=pr.x+(pr.w-approxTextWidth(value,size))/2;
+    const y=pr.y+(pr.h-size*.75)/2;
+    out+=`BT /F1 ${pdfN(size)} Tf ${pdfN(x)} ${pdfN(y)} Td (${pdfEsc(value)}) Tj ET\n`;
+  }
+  return out;
+}
+
 function borderPdfCommands(sheet,pw,ph){
   const sr=sheet.getBoundingClientRect();let out='';
   const els=[...sheet.querySelectorAll('td,th,.howto-step,.howto-example,.crypto-box,.sequence,.missing-mark,.puzzle-card')].filter(el=>!el.closest('.page-edit-tools'));
@@ -2110,6 +2155,7 @@ function sheetVectorStream(sheet,pw,ph){
   out+=borderPdfCommands(sheet,pw,ph);
   out+=svgPdfCommands(sheet,pw,ph);
   out+=textPdfCommands(sheet,pw,ph);
+  out+=howToTextPdfCommands(sheet,pw,ph);
   out+=pageNumberPdfCommand(sheet,pw,ph);
   return out;
 }
@@ -4135,7 +4181,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=20.1',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=21.2',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
