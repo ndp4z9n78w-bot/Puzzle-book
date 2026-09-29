@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v20.4 — Expert Mandala Upgrade</title>
+<title>Offline Puzzle Studio v20.5 — Expert Mandala Upgrade</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -546,8 +546,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v20.4</span></h1><div class="build-version">Exact build: v20.4 • Ornamental Illustration Mandalas • Expert Micro-Detail • Floral Hierarchy</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v20.4</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v20.5</span></h1><div class="build-version">Exact build: v20.5 • Expert Botanical Mandalas • Layered Petals + Fine Ornament</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v20.5</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -3187,7 +3187,7 @@ function mandalaSvg(item){
     if(silhouette==='burst4')return .72+.28*(.5+.5*Math.cos(4*a));
     return 1;
   };
-  const pt=(r,a)=>{const raw=silhouetteScale(a);const t=Math.max(0,Math.min(1,(r-48)/140));const blend=t*t*(3-2*t);const k=1+(raw-1)*blend;return[cx+Math.cos(a)*r*k,cy+Math.sin(a)*r*k]}, f=p=>p[0].toFixed(2)+' '+p[1].toFixed(2);
+  const pt=(r,a)=>{const raw=silhouetteScale(a);const t=Math.max(0,Math.min(1,(r-48)/140));const blend=t*t*(3-2*t);const k=1+(raw-1)*blend*(hard?.24:1);return[cx+Math.cos(a)*r*k,cy+Math.sin(a)*r*k]}, f=p=>p[0].toFixed(2)+' '+p[1].toFixed(2);
   const path=(d,w=.78,fill='white')=>{const e=document.createElementNS(ns,'path');e.setAttribute('d',d);e.setAttribute('fill',fill);e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e);return e};
   const circle=(r,w=.75)=>{const e=document.createElementNS(ns,'circle');e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('r',r);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e)};
   const petal=(ri,ro,a,span,round=.38)=>{const L=pt(ri,a-span/2),R=pt(ri,a+span/2),T=pt(ro,a),c1=pt(ri+(ro-ri)*round,a-span*.42),c2=pt(ro-(ro-ri)*.18,a-span*.16),c3=pt(ro-(ro-ri)*.18,a+span*.16),c4=pt(ri+(ro-ri)*round,a+span*.42);return `M ${f(L)} C ${f(c1)} ${f(c2)} ${f(T)} C ${f(c3)} ${f(c4)} ${f(R)} Q ${f(pt(ri+1,a))} ${f(L)} Z`};
@@ -3238,9 +3238,15 @@ function mandalaSvg(item){
   let centerStyle=['diamondLace','starBloom'].includes(key)?'star':['cloverMedallion','roundedBloom','oceanShell'].includes(key)?'clover':'flower';
   if(centerVariant===1)centerStyle='clover'; else if(centerVariant===2)centerStyle='star'; else if(centerVariant===3)centerStyle='flower';
   center(n,centerStyle);
-  const bands=recipes[key]||recipes.royalLotus;
-  bands.forEach((b,i)=>{let count=n;const denseBand=(seed+i+motifVariant)%5===0;if(hard&&((i%2===1)||denseBand)&&n<=12)count=n*2;const kind=varyMotif(b[0],i);const phase=b[3]+((phaseVariant+i)%3-1)*(TAU/count)*.10;const width=Math.max(.58,Math.min(.96,b[4]+(((seed>>(i%8))&1)?-.025:.035)));ring(count,b[1],b[2],kind,phase,width,hard?true:!!b[5]);if(hard&&i<bands.length-1){const seam=(b[2]+bands[i+1][1])*.5;if(i%2===0)beads(Math.min(32,count),seam,1.55,phase+TAU/count/2);}});
-  // v20.4 Expert Artist pass: illustration hierarchy + interior ornament instead of density-only repetition.
+  const expertFamilies=[
+    [['lotus',42,67,0,.78,1],['round',63,89,st/2,.92,1],['leaf',85,112,0,.78,1],['lotus',108,137,st/2,.80,1],['paisley',133,161,0,.76,1],['leaf',157,188,st/2,.82,1]],
+    [['round',42,66,0,.92,1],['lotus',62,88,st/2,.78,1],['round',84,111,0,.92,1],['leaf',107,136,st/2,.78,1],['lotus',132,161,0,.80,1],['scallop',157,188,st/2,.94,1]],
+    [['leaf',42,67,0,.78,1],['lotus',63,90,st/2,.78,1],['paisley',86,114,0,.76,1],['round',110,139,st/2,.92,1],['leaf',135,164,0,.80,1],['lotus',160,188,st/2,.82,1]],
+    [['lotus',42,68,0,.78,1],['clover',64,91,st/2,.90,1],['leaf',87,115,0,.78,1],['scallop',111,140,st/2,.92,1],['lotus',136,165,0,.80,1],['round',161,188,st/2,.92,1]]
+  ];
+  const bands=hard?expertFamilies[(seed+motifVariant)%expertFamilies.length]:(recipes[key]||recipes.royalLotus);
+  bands.forEach((b,i)=>{let count=n;const denseBand=(seed+i+motifVariant)%5===0;if(hard&&((i%2===1)||denseBand)&&n<=12)count=n*2;const kind=hard?b[0]:varyMotif(b[0],i);const phase=b[3]+((phaseVariant+i)%3-1)*(TAU/count)*.10;const width=Math.max(.58,Math.min(.96,b[4]+(((seed>>(i%8))&1)?-.025:.035)));ring(count,b[1],b[2],kind,phase,width,hard?true:!!b[5]);if(hard&&i<bands.length-1){const seam=(b[2]+bands[i+1][1])*.5;if(i%2===0)beads(Math.min(32,count),seam,1.55,phase+TAU/count/2);}});
+  // v20.5 Expert Artist pass: illustration hierarchy + interior ornament instead of density-only repetition.
   function stroke(d,w=.48){return path(d,w,'none')}
   function flowerAt(r,a,scale=1,petals=5){const c=pt(r,a),rr=3.1*scale;for(let j=0;j<petals;j++){const q=a+j*TAU/petals,cc=[c[0]+Math.cos(q)*rr*1.25,c[1]+Math.sin(q)*rr*1.25];const e=document.createElementNS(ns,'ellipse');e.setAttribute('cx',cc[0]);e.setAttribute('cy',cc[1]);e.setAttribute('rx',rr*.72);e.setAttribute('ry',rr*1.18);e.setAttribute('transform',`rotate(${q*180/Math.PI+90} ${cc[0]} ${cc[1]})`);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width','.48');e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e)}const dot=document.createElementNS(ns,'circle');dot.setAttribute('cx',c[0]);dot.setAttribute('cy',c[1]);dot.setAttribute('r',rr*.58);dot.setAttribute('fill','white');dot.setAttribute('stroke','#111');dot.setAttribute('stroke-width','.5');svg.appendChild(dot)}
   function veinFan(r1,r2,a,span,branches=5){const A=pt(r1,a),B=pt(r2,a);stroke(`M ${f(A)} Q ${f(pt((r1+r2)*.52,a+span*.04))} ${f(B)}`,.48);for(let j=1;j<=branches;j++){const t=j/(branches+1),r=r1+(r2-r1)*t,mid=pt(r,a);const l=pt(Math.min(r2-2,r+8),a-span*(.20-.09*t)),rr=pt(Math.min(r2-2,r+8),a+span*(.20-.09*t));stroke(`M ${f(mid)} Q ${f(pt(r+4,a-span*.08))} ${f(l)}`,.38);stroke(`M ${f(mid)} Q ${f(pt(r+4,a+span*.08))} ${f(rr)}`,.38)}}
