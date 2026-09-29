@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v19.4 — Silhouette Architecture Mandalas</title>
+<title>Offline Puzzle Studio v19.5 — Mandala Scale + Motif Diversity Pass</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -455,7 +455,7 @@ details summary{cursor:pointer;font-weight:700}
   width:100%;height:100%;min-height:0;padding:0;overflow:visible;
 }
 .mandala-svg{
-  width:min(6.65in,88%);height:auto;max-width:88%;max-height:7.85in;aspect-ratio:1/1;display:block;overflow:hidden;
+  width:min(7.35in,96%);height:auto;max-width:96%;max-height:8.55in;aspect-ratio:1/1;display:block;overflow:hidden;
 }
 
 
@@ -480,8 +480,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v19.4</span></h1><div class="build-version">Exact build: v19.4 • Silhouette Architecture • Shape Families + Recipe Fingerprints + Balanced Variety</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v19.4</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v19.5</span></h1><div class="build-version">Exact build: v19.5 • Larger Page Fill • Cleaner Shape Geometry • Expanded Motif DNA + Stronger Anti-Repetition</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v19.5</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -2901,7 +2901,9 @@ function mandalaSimilarityScore(a,b){
   if(va.family===vb.family)s+=.22;
   if((a.hybridKey||'')===(b.hybridKey||''))s+=.10;
   if(va.group===vb.group)s+=.10;
-  if(va.silhouette===vb.silhouette)s+=.12;
+  if(va.silhouette===vb.silhouette)s+=.10;
+  if((a.motifVariant??-1)===(b.motifVariant??-2))s+=.08;
+  if((a.centerVariant??-1)===(b.centerVariant??-2))s+=.05;
   if(va.center===vb.center)s+=.10;
   if(Math.abs(va.petals-vb.petals)<=2)s+=.04;
   if(va.rings===vb.rings)s+=.04;
@@ -3031,10 +3033,14 @@ function buildMandalaOnce(diff,profile){
       rotation:phase+(i%2?Math.PI/count:0),widthFactor:complexity==='open'?.82:.9,nested:(complexity==='intricate'&&i%2===0)?1:0,
       weight:1,visualBand:i/Math.max(1,layerCount-1)});
   }
+  const designSeed=Math.floor(rand(1,2147483000));
+  const centerVariant=Math.floor(rand(0,4));
+  const motifVariant=Math.floor(rand(0,6));
+  const phaseVariant=Math.floor(rand(0,8));
   return {type:'mandala',difficulty:diff,recipeKey,recipeLabel:r.label,styleName:r.label,familyKey:r.family,familyGroup:r.group,
-    silhouette,silhouetteKey:silhouette,symmetry,center:{style:r.family,petals:symmetry,rings:2},layers,
+    silhouette,silhouetteKey:silhouette,symmetry,designSeed,centerVariant,motifVariant,phaseVariant,center:{style:r.family,petals:symmetry,rings:2},layers,
     compositionMode:mood,coloringComplexity:complexity,qualityScore:98,finalQualityScore:98,
-    structuralSignature:[silhouette,recipeKey,symmetry,r.family,layers.map(x=>x.motif+':'+x.count).join(',')].join('|'),validated:true,validationTier:'structural',coloringPage:true,titleMode:'mandala'};
+    structuralSignature:[silhouette,recipeKey,symmetry,r.family,centerVariant,motifVariant,phaseVariant,layers.map(x=>x.motif+':'+x.count).join(',')].join('|'),validated:true,validationTier:'structural',coloringPage:true,titleMode:'mandala'};
 }
 function makeMandala(diff,priorMandalas=[]){
   const profile={
@@ -3111,7 +3117,7 @@ function mandalaSvg(item){
     if(silhouette==='burst4')return .72+.28*(.5+.5*Math.cos(4*a));
     return 1;
   };
-  const pt=(r,a)=>{const k=silhouetteScale(a);return[cx+Math.cos(a)*r*k,cy+Math.sin(a)*r*k]}, f=p=>p[0].toFixed(2)+' '+p[1].toFixed(2);
+  const pt=(r,a)=>{const raw=silhouetteScale(a);const t=Math.max(0,Math.min(1,(r-48)/140));const blend=t*t*(3-2*t);const k=1+(raw-1)*blend;return[cx+Math.cos(a)*r*k,cy+Math.sin(a)*r*k]}, f=p=>p[0].toFixed(2)+' '+p[1].toFixed(2);
   const path=(d,w=.78,fill='white')=>{const e=document.createElementNS(ns,'path');e.setAttribute('d',d);e.setAttribute('fill',fill);e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e);return e};
   const circle=(r,w=.75)=>{const e=document.createElementNS(ns,'circle');e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('r',r);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width',w);e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e)};
   const petal=(ri,ro,a,span,round=.38)=>{const L=pt(ri,a-span/2),R=pt(ri,a+span/2),T=pt(ro,a),c1=pt(ri+(ro-ri)*round,a-span*.42),c2=pt(ro-(ro-ri)*.18,a-span*.16),c3=pt(ro-(ro-ri)*.18,a+span*.16),c4=pt(ri+(ro-ri)*round,a+span*.42);return `M ${f(L)} C ${f(c1)} ${f(c2)} ${f(T)} C ${f(c3)} ${f(c4)} ${f(R)} Q ${f(pt(ri+1,a))} ${f(L)} Z`};
@@ -3123,12 +3129,18 @@ function mandalaSvg(item){
   const paisley=(ri,ro,a,span)=>{const L=pt(ri,a-span*.34),R=pt(ri,a+span*.34),T=pt(ro,a-span*.08),M=pt((ri+ro)*.67,a+span*.24);return `M ${f(L)} C ${f(pt(ro*.82,a-span*.43))} ${f(pt(ro*.97,a-span*.28))} ${f(T)} C ${f(pt(ro*.86,a+span*.06))} ${f(M)} ${f(R)} C ${f(pt((ri+ro)*.50,a+span*.10))} ${f(pt((ri+ro)*.47,a-span*.10))} ${f(L)} Z`};
   const fan=(ri,ro,a,span)=>{const L=pt(ri,a-span*.45),R=pt(ri,a+span*.45),O1=pt(ro,a-span*.38),O2=pt(ro,a+span*.38);return `M ${f(L)} Q ${f(pt((ri+ro)*.69,a-span*.48))} ${f(O1)} Q ${f(pt(ro,a))} ${f(O2)} Q ${f(pt((ri+ro)*.69,a+span*.48))} ${f(R)} Q ${f(pt(ri+1,a))} ${f(L)} Z`};
   const loop=(ri,ro,a,span)=>{const L=pt(ri,a-span*.42),R=pt(ri,a+span*.42),T=pt(ro,a);return `M ${f(L)} C ${f(pt(ro*.81,a-span*.50))} ${f(pt(ro*.97,a-span*.18))} ${f(T)} C ${f(pt(ro*.97,a+span*.18))} ${f(pt(ro*.81,a+span*.50))} ${f(R)} C ${f(pt((ri+ro)*.50,a+span*.15))} ${f(pt((ri+ro)*.50,a-span*.15))} ${f(L)} Z`};
-  const shape=(kind,ri,ro,a,span,i=0)=>kind==='round'?roundPetal(ri,ro,a,span):kind==='leaf'?leaf(ri,ro,a,span,(i%2?.08:-.08)):kind==='kite'||kind==='diamond'||kind==='star'?kite(ri,ro,a,span):kind==='scallop'||kind==='shell'?scallop(ri,ro,a,span):kind==='clover'?clover(ri,ro,a,span):kind==='paisley'?paisley(ri,ro,a,span):kind==='fan'?fan(ri,ro,a,span):kind==='loop'||kind==='arch'?loop(ri,ro,a,span):petal(ri,ro,a,span,kind==='lotus'||kind==='teardrop'?.28:.42);
+  const droplet=(ri,ro,a,span)=>petal(ri,ro,a,span,.22);
+  const shield=(ri,ro,a,span)=>{const I=pt(ri,a),L=pt((ri+ro)*.55,a-span*.42),T=pt(ro,a),R=pt((ri+ro)*.55,a+span*.42);return `M ${f(I)} Q ${f(L)} ${f(T)} Q ${f(R)} ${f(I)} Z`};
+  const bell=(ri,ro,a,span)=>{const L=pt(ri,a-span*.42),R=pt(ri,a+span*.42),A=pt(ro*.92,a-span*.34),B=pt(ro*.92,a+span*.34),T=pt(ro,a);return `M ${f(L)} C ${f(A)} ${f(A)} ${f(T)} C ${f(B)} ${f(B)} ${f(R)} Q ${f(pt(ri+2,a))} ${f(L)} Z`};
+  const shape=(kind,ri,ro,a,span,i=0)=>kind==='round'?roundPetal(ri,ro,a,span):kind==='leaf'?leaf(ri,ro,a,span,(i%2?.055:-.055)):kind==='kite'||kind==='diamond'||kind==='star'?kite(ri,ro,a,span):kind==='scallop'||kind==='shell'?scallop(ri,ro,a,span):kind==='clover'?clover(ri,ro,a,span):kind==='paisley'?paisley(ri,ro,a,span):kind==='fan'?fan(ri,ro,a,span):kind==='loop'||kind==='arch'?loop(ri,ro,a,span):kind==='droplet'?droplet(ri,ro,a,span):kind==='shield'?shield(ri,ro,a,span):kind==='bell'?bell(ri,ro,a,span):petal(ri,ro,a,span,kind==='lotus'||kind==='teardrop'?.28:.42);
   function ring(n,ri,ro,kind='petal',rot=0,width=.84,nested=false){const step=TAU/n,span=step*width;for(let i=0;i<n;i++){const a=rot+i*step;path(shape(kind,ri,ro,a,span,i),ro>165?.92:.72);if(nested&&ro-ri>=22){const ii=ri+(ro-ri)*.27,oo=ro-(ro-ri)*.19;if(oo>ii+5)path(shape(kind,ii,oo,a,span*.52,i),.43,'none')}}}
   function beads(n,r,size=3.2,rot=0){for(let i=0;i<n;i++){const a=rot+i*TAU/n,p=pt(r,a),e=document.createElementNS(ns,'circle');e.setAttribute('cx',p[0]);e.setAttribute('cy',p[1]);e.setAttribute('r',size);e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width','.62');e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e)}}
   function center(n=12,style='flower'){circle(5,.85);const s=TAU/n;if(style==='star'){ring(n,6,29,'lotus',0,.68,false);ring(n,25,46,'kite',s/2,.66,false)}else if(style==='clover'){ring(Math.max(6,Math.round(n/2)),6,31,'clover',0,.90,true);ring(n,25,47,'round',s/2,.70,false)}else{ring(n,6,30,'round',0,.82,false);ring(n,24,47,'lotus',s/2,.70,false)}}
-  const key=item.recipeKey||'royalLotus',baseN=Math.max(8,Math.min(16,item.symmetry||10)),n=hard?Math.max(12,baseN):baseN,st=TAU/n;
-  // v19.4: contiguous ornamental zones are warped through an independent whole-page silhouette field.
+  const key=item.recipeKey||'royalLotus',baseN=Math.max(6,Math.min(16,item.symmetry||10)),n=baseN,st=TAU/n;
+  const seed=(item.designSeed||1)>>>0, motifVariant=item.motifVariant||0, centerVariant=item.centerVariant||0, phaseVariant=item.phaseVariant||0;
+  const compatible={lotus:['lotus','droplet','petal'],round:['round','clover','bell'],leaf:['leaf','paisley','droplet'],scallop:['scallop','fan','bell'],loop:['loop','arch','round'],diamond:['diamond','kite','shield'],kite:['kite','diamond','shield'],arch:['arch','loop','bell'],clover:['clover','round','scallop'],paisley:['paisley','leaf','droplet'],fan:['fan','scallop','shell'],shell:['shell','fan','scallop'],petal:['petal','lotus','droplet'],teardrop:['teardrop','droplet','leaf']};
+  const varyMotif=(kind,bandIndex)=>{const a=compatible[kind]||[kind];return a[(motifVariant+bandIndex*2+(seed%3))%a.length]};
+  // v19.5: clean radial motifs stay stable near the center; silhouette influence increases smoothly toward the outer architecture.
   const recipes={
     royalLotus:[['lotus',42,68,0,.74,1],['round',64,91,st/2,.88,1],['lotus',87,116,0,.74,1],['leaf',112,142,st/2,.76,1],['lotus',138,166,0,.76,1],['scallop',162,188,st/2,.90,0]],
     layeredDahlia:[['round',42,65,0,.90,1],['round',61,87,st/2,.92,1],['petal',83,110,0,.78,1],['round',106,134,st/2,.92,1],['petal',130,160,0,.80,1],['round',156,188,st/2,.92,0]],
@@ -3153,13 +3165,14 @@ function mandalaSvg(item){
     oceanShell:[['fan',42,67,0,.88,1],['scallop',63,89,st/2,.92,1],['fan',85,112,0,.88,1],['scallop',108,137,st/2,.92,1],['fan',133,162,0,.88,1],['shell',158,188,st/2,.92,0]],
     starBloom:[['kite',42,65,0,.62,1],['lotus',61,87,st/2,.70,1],['diamond',83,109,0,.62,1],['lotus',105,134,st/2,.70,1],['diamond',130,160,0,.64,1],['scallop',156,188,st/2,.88,0]]
   };
-  const centerStyle=['diamondLace','starBloom'].includes(key)?'star':['cloverMedallion','roundedBloom','oceanShell'].includes(key)?'clover':'flower';
+  let centerStyle=['diamondLace','starBloom'].includes(key)?'star':['cloverMedallion','roundedBloom','oceanShell'].includes(key)?'clover':'flower';
+  if(centerVariant===1)centerStyle='clover'; else if(centerVariant===2)centerStyle='star'; else if(centerVariant===3)centerStyle='flower';
   center(n,centerStyle);
   const bands=recipes[key]||recipes.royalLotus;
-  bands.forEach((b,i)=>{let count=n;if(hard && (i===1||i===3) && n<=14)count=n*2;ring(count,b[1],b[2],b[0],b[3],b[4],!!b[5]);});
+  bands.forEach((b,i)=>{let count=n;const denseBand=(seed+i+motifVariant)%5===0;if(hard&&denseBand&&n<=10)count=n*2;const kind=varyMotif(b[0],i);const phase=b[3]+((phaseVariant+i)%3-1)*(TAU/count)*.10;const width=Math.max(.58,Math.min(.94,b[4]+(((seed>>(i%8))&1)?-.035:.025)));ring(count,b[1],b[2],kind,phase,width,!!b[5]);});
   // Controlled micro-detail occupies dedicated seams only; it never floats outside the silhouette.
-  if(hard){beads(n*2,72,2.35,st/4);beads(n*2,119,2.15,0);beads(n*2,168,2.05,st/4);}
-  else if(medium){beads(n,119,2.7,st/2);}
+  if(hard){if(seed%2)beads(n,76,2.25,st/3);if(seed%3)beads(n*2,123,1.9,st/5);if(seed%5<3)beads(n,169,2.35,st/2);}
+  else if(medium&&seed%3){beads(n,121,2.45,st/2);}
   const wrap=document.createElement('div');wrap.className='mandala-wrap';wrap.appendChild(svg);return wrap;
 }
 
@@ -3961,7 +3974,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=19.4',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=19.5',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
@@ -3974,7 +3987,7 @@ async function updateOfflineStatus(){
   }
   try{
     await navigator.serviceWorker.ready;
-    const cache=await caches.open('puzzle-studio-v16-5');
+    const cache=await caches.open('puzzle-studio-v19-5');
     const cached=await cache.match('./index.html');
     el.textContent=cached
       ? 'Offline ready — this version is cached on this device.'
