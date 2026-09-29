@@ -603,7 +603,7 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v22.3</span></h1><div class="build-version">Exact build: v22.3 • PDF Export Hotfix • Isolated How-To Vector Path</div></header>
+<header><h1>Offline Puzzle Studio <span class="badge">v22.4</span></h1><div class="build-version">Exact build: v22.4 • PDF Scope Repair • Stable Vector Page Loop</div></header>
 <div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v22.2</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
@@ -2397,7 +2397,8 @@ async function createPdfDirect(){
     const {w,h}=pdfPhysicalPoints(),streams=[];
     for(let i=0;i<sheets.length;i++){
       progress.textContent=`Writing vector PDF page ${i+1} of ${sheets.length}…`;
-      await new Promise(r=>setTimeout(r,(plan.length>=100&&i%5===0)?8:0));
+      // Yield periodically on large exports without referencing build-local state.
+      if(sheets.length>=100 && i%5===0) await new Promise(r=>setTimeout(r,8));
       streams.push(sheetVectorStream(sheets[i],w,h));
     }
     progress.textContent='Assembling vector PDF…';
