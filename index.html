@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v20.9 — Continuous Ornament Engine</title>
+<title>Offline Puzzle Studio v21.0 — Botanical Atelier Engine</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -546,8 +546,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v20.9</span></h1><div class="build-version">Exact build: v20.9 • Continuous Ornament Engine • Shared-Boundary Floral Architecture</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v20.9</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v21.0</span></h1><div class="build-version">Exact build: v21.0 • Botanical Atelier Engine • Layered Floral Illustration Architecture</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v21.0</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -3235,78 +3235,86 @@ function mandalaSvg(item){
     oceanShell:[['fan',42,67,0,.88,1],['scallop',63,89,st/2,.92,1],['fan',85,112,0,.88,1],['scallop',108,137,st/2,.92,1],['fan',133,162,0,.88,1],['shell',158,188,st/2,.92,0]],
     starBloom:[['kite',42,65,0,.62,1],['lotus',61,87,st/2,.70,1],['diamond',83,109,0,.62,1],['lotus',105,134,st/2,.70,1],['diamond',130,160,0,.64,1],['scallop',156,188,st/2,.88,0]]
   };
-  // v20.9: continuous ornament engine. Hard mandalas are built as shared-boundary
-  // ornamental architecture: every major layer touches the layer before it and no
-  // independent crown/shield pieces are permitted.
+  // v21.0: Botanical Atelier engine. Hard mandalas are composed as overlapping
+  // floral illustrations instead of tiled annular cells. Every decorative stroke is
+  // either a closed ornament or anchored inside a closed parent motif.
   if(hard){
-    const family=(seed + motifVariant*3 + centerVariant*5 + phaseVariant*7)%8;
-    const cfg=[
-      {n:8, center:'flower', edge:'lotus', twist:0.00, radii:[7,35,64,96,130,164,194]},
-      {n:10,center:'clover', edge:'round', twist:0.50, radii:[7,33,60,90,122,158,194]},
-      {n:12,center:'flower', edge:'leaf', twist:0.00, radii:[7,31,57,86,117,153,194]},
-      {n:9, center:'star', edge:'lotus', twist:0.50, radii:[7,36,66,98,132,165,194]},
-      {n:8, center:'clover', edge:'round', twist:0.00, radii:[7,34,63,94,128,162,194]},
-      {n:11,center:'flower', edge:'scallop',twist:0.50,radii:[7,31,58,88,120,156,194]},
-      {n:10,center:'star', edge:'leaf', twist:0.00, radii:[7,34,62,92,124,159,194]},
-      {n:12,center:'clover', edge:'lotus',twist:0.50,radii:[7,30,56,84,115,151,194]}
-    ][family];
-    const N=cfg.n, step=TAU/N, phase=((seed%37)/37)*step;
+    const family=(seed + motifVariant*5 + centerVariant*7 + phaseVariant*11)%10;
+    const atelier=[
+      {n:12,center:'flower',seq:['lotus','leaf','round','lotus','scallop'],outer:'lotus',tw:[0,.5,.12,.5,0],r:[7,38,68,101,137,169,195]},
+      {n:10,center:'clover',seq:['round','lotus','leaf','round','lotus'],outer:'leaf',tw:[0,.5,0,.5,.18],r:[7,40,72,105,139,170,195]},
+      {n:8, center:'flower',seq:['lotus','paisley','leaf','lotus','round'],outer:'scallop',tw:[0,.38,.08,.5,.12],r:[7,41,75,108,141,171,195]},
+      {n:14,center:'flower',seq:['round','petal','lotus','round','leaf'],outer:'round',tw:[0,.5,0,.5,0],r:[7,36,65,96,131,166,195]},
+      {n:9, center:'star',seq:['lotus','leaf','lotus','paisley','leaf'],outer:'lotus',tw:[0,.5,.16,.5,.08],r:[7,40,73,106,140,171,195]},
+      {n:12,center:'clover',seq:['scallop','lotus','round','leaf','lotus'],outer:'scallop',tw:[0,.5,.15,.5,0],r:[7,37,68,100,135,168,195]},
+      {n:10,center:'flower',seq:['leaf','round','lotus','leaf','round'],outer:'leaf',tw:[0,.42,.08,.5,.15],r:[7,39,71,104,138,170,195]},
+      {n:8, center:'clover',seq:['round','leaf','lotus','round','scallop'],outer:'round',tw:[0,.5,.2,.5,0],r:[7,42,76,109,142,172,195]},
+      {n:11,center:'flower',seq:['lotus','round','paisley','leaf','lotus'],outer:'lotus',tw:[0,.5,.1,.42,.18],r:[7,38,69,102,136,169,195]},
+      {n:12,center:'star',seq:['leaf','lotus','round','scallop','leaf'],outer:'scallop',tw:[0,.5,.12,.5,0],r:[7,37,67,99,134,168,195]}
+    ];
+    const cfg=atelier[family], N=cfg.n, step=TAU/N;
+    const phase=((seed%97)/97)*step;
     const polar=(r,a)=>pt(r,a);
-    const closedCell=(ri,ro,a0,a1,bulge=.10,innerInset=.035)=>{
-      const am=(a0+a1)/2, L0=polar(ri,a0+step*innerInset), R0=polar(ri,a1-step*innerInset);
-      const L1=polar(ro,a0+step*.025), R1=polar(ro,a1-step*.025), T=polar(ro*(1+bulge),am);
-      return `M ${f(L0)} C ${f(polar((ri+ro)*.54,a0+step*.01))} ${f(L1)} ${f(T)} C ${f(R1)} ${f(polar((ri+ro)*.54,a1-step*.01))} ${f(R0)} Q ${f(polar(ri,am))} ${f(L0)} Z`;
+    const closedOrnament=(kind,ri,ro,a,span,i)=>shape(kind,ri,ro,a,span,i);
+    const addInner=(kind,ri,ro,a,span,i)=>{
+      const ii=ri+(ro-ri)*.28, oo=ro-(ro-ri)*.17;
+      if(oo<=ii+5)return;
+      const innerKind=kind==='paisley'?'leaf':kind==='scallop'?'round':kind==='round'?'lotus':kind;
+      path(closedOrnament(innerKind,ii,oo,a,span*.52,i),.38,'none');
     };
-    const innerPetal=(ri,ro,a,span,kind)=>{
-      const ii=ri+(ro-ri)*.17, oo=ro-(ro-ri)*.14;
-      if(oo<=ii+6)return;
-      path(shape(kind,ii,oo,a,span*.48,0),.42,'none');
+    const anchoredVein=(ri,ro,a,span,branches=3)=>{
+      const A=polar(ri+(ro-ri)*.20,a), B=polar(ro-(ro-ri)*.14,a);
+      path(`M ${f(A)} Q ${f(polar((ri+ro)*.51,a+span*.025))} ${f(B)}`,.34,'none');
+      for(let j=1;j<=branches;j++){
+        const t=j/(branches+1), rr=ri+(ro-ri)*(.22+.58*t), M=polar(rr,a);
+        const L=polar(Math.min(ro-(ro-ri)*.15,rr+(ro-ri)*.16),a-span*(.15-.04*t));
+        const R=polar(Math.min(ro-(ro-ri)*.15,rr+(ro-ri)*.16),a+span*(.15-.04*t));
+        path(`M ${f(M)} Q ${f(polar(rr+(ro-ri)*.07,a-span*.05))} ${f(L)}`,.28,'none');
+        path(`M ${f(M)} Q ${f(polar(rr+(ro-ri)*.07,a+span*.05))} ${f(R)}`,.28,'none');
+      }
     };
-    const seam=(r,rot=0)=>{
-      const pts=[]; for(let i=0;i<=N*2;i++){const a=rot+i*TAU/(N*2);pts.push(polar(r*(1+.012*Math.cos(N*a-phase*N)),a));}
-      path('M '+pts.map(f).join(' L ')+' Z',.48,'none');
+    const laceBridge=(r,a0,a1,lift)=>{
+      const A=polar(r,a0),B=polar(r,a1),M=polar(r+lift,(a0+a1)/2);
+      path(`M ${f(A)} Q ${f(M)} ${f(B)}`,.36,'none');
     };
+    // Large illustrated center: no tiny bullseye surrounded by empty bands.
     center(N,cfg.center);
-    const kinds=[
-      ['lotus','round','leaf','lotus','round'],
-      ['round','lotus','scallop','leaf','round'],
-      ['leaf','round','lotus','leaf','scallop'],
-      ['lotus','leaf','round','lotus','scallop'],
-      ['round','scallop','lotus','round','leaf'],
-      ['scallop','lotus','round','leaf','lotus'],
-      ['leaf','lotus','round','scallop','leaf'],
-      ['lotus','round','scallop','lotus','leaf']
-    ][family];
-    for(let band=1;band<cfg.radii.length-1;band++){
-      const ri=cfg.radii[band], ro=cfg.radii[band+1];
-      const rot=phase+((band+cfg.twist)%2?step/2:0);
-      const kind=kinds[(band-1)%kinds.length];
+    ring(N,27,55,cfg.seq[0],phase, .82,true);
+    ring(N,49,79,cfg.seq[1],phase+step*.5,.80,true);
+    // Five interlocking ornamental crowns. Adjacent bands overlap by 5–9 units,
+    // creating a continuous flower while avoiding visible construction circles.
+    for(let band=0;band<5;band++){
+      const ri=cfg.r[band+1]-7, ro=cfg.r[band+2]+2;
+      const kind=cfg.seq[band], rot=phase+cfg.tw[band]*step;
+      const width=(band===4?.92:(band%2?.82:.76));
       for(let i=0;i<N;i++){
-        const am=rot+i*step, a0=am-step*.50, a1=am+step*.50;
-        const bulge=(band===cfg.radii.length-2?.055:.018)+((i+family)%2)*.008;
-        path(closedCell(ri,ro,a0,a1,bulge),band>=4?.72:.62,'white');
-        innerPetal(ri,ro,am,step,kind);
-        if(band>=2 && band<=4){
-          const A=polar(ri+(ro-ri)*.28,am), B=polar(ro-(ro-ri)*.20,am);
-          path(`M ${f(A)} Q ${f(polar((ri+ro)/2,am+(i%2?1:-1)*step*.035))} ${f(B)}`,.31,'none');
+        const a=rot+i*step;
+        path(closedOrnament(kind,ri,ro,a,step*width,i),band>=3?.76:.64,'white');
+        addInner(kind,ri,ro,a,step*width,i);
+        if(['leaf','lotus','paisley'].includes(kind) && band>=1)anchoredVein(ri,ro,a,step*width,band>=3?4:3);
+      }
+      // Lace bridges join neighboring motifs and occupy negative space without
+      // introducing detached shapes.
+      if(band===1||band===3){
+        const bridgeR=ro-3;
+        for(let i=0;i<N;i++){
+          const a=rot+i*step;
+          laceBridge(bridgeR,a+step*.23,a+step*.77,band===3?8:6);
         }
       }
-      seam(ro,rot);
     }
-    // Outer crown grows directly from the last shared seam; it is never detached.
-    const crownRi=cfg.radii[cfg.radii.length-2], crownRo=cfg.radii[cfg.radii.length-1];
-    const crownRot=phase+((cfg.radii.length-2+cfg.twist)%2?step/2:0);
+    // Deliberate outer silhouette grown from the final floral band. No polygon cage.
+    const ori=cfg.r[5]-8, oro=cfg.r[6];
     for(let i=0;i<N;i++){
-      const a=crownRot+i*step;
-      path(shape(cfg.edge,crownRi-1,crownRo,a,step*.90,i),.82,'white');
-      path(shape(cfg.edge,crownRi+8,crownRo-9,a,step*.48,i),.38,'none');
+      const a=phase+(cfg.tw[4]||0)*step+i*step;
+      path(closedOrnament(cfg.outer,ori,oro,a,step*.94,i),.84,'white');
+      path(closedOrnament(cfg.outer,ori+9,oro-10,a,step*.50,i),.38,'none');
+      if(cfg.outer==='leaf'||cfg.outer==='lotus')anchoredVein(ori+5,oro-5,a,step*.72,4);
     }
-    // Anchored lace details: endpoints terminate on existing shared seams.
-    const laceR=cfg.radii[3];
+    // Small bead jewels are attached at valleys of the outer crown.
     for(let i=0;i<N;i++){
-      const a=phase+i*step;
-      const L=polar(laceR,a-step*.27), M=polar(laceR+10,a), R=polar(laceR,a+step*.27);
-      path(`M ${f(L)} Q ${f(M)} ${f(R)}`,.34,'none');
+      const a=phase+i*step+step*.5,p=polar(ori+1,a),e=document.createElementNS(ns,'circle');
+      e.setAttribute('cx',p[0]);e.setAttribute('cy',p[1]);e.setAttribute('r','2.15');e.setAttribute('fill','white');e.setAttribute('stroke','#111');e.setAttribute('stroke-width','.45');e.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(e);
     }
     const wrap=document.createElement('div');wrap.className='mandala-wrap';wrap.appendChild(svg);return wrap;
   }
