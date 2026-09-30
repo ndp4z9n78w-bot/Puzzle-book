@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v22.8 — Verified How-To Suite</title>
+<title>Offline Puzzle Studio v22.8.1 — Sudoku Practice Revision</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -621,11 +621,13 @@ details summary{cursor:pointer;font-weight:700}
 .crypto-chain-row{display:grid;grid-template-columns:1.15in 1fr;gap:.08in;align-items:start;font-size:11px;line-height:1.4;margin:.05in 0}.crypto-chain-row span{font-family:"Courier New",monospace;font-weight:700}
 .crypto-chain-steps{display:grid;grid-template-columns:1fr 1fr;gap:.07in .12in;margin-top:.1in}.crypto-chain-steps div{border-top:1px solid #bbb;padding-top:.06in;font-size:10.5px;line-height:1.35}.crypto-chain-steps b{display:block;margin-bottom:.02in}
 @media(max-width:650px){.crypto-rule-grid{grid-template-columns:1fr}.crypto-chain-steps{grid-template-columns:1fr}.crypto-chain-row{grid-template-columns:1fr}}
+
+.sudoku-try-layout{display:flex;gap:22px;align-items:center;justify-content:center}.sudoku-practice-grid{border-collapse:collapse;flex:0 0 auto}.sudoku-practice-grid td{width:30px;height:30px;text-align:center;vertical-align:middle;padding:0;font-weight:700}.sudoku-practice-grid tr:nth-child(3n) td{border-bottom-width:3px}.sudoku-practice-grid td:nth-child(3n){border-right-width:3px}.sudoku-practice-grid tr:first-child td{border-top-width:3px}.sudoku-practice-grid td:first-child{border-left-width:3px}.sudoku-practice-grid td.focus{outline:3px solid #111;outline-offset:-4px}.sudoku-complete .sudoku-practice-grid{margin:8px auto}.sudoku-try>p{text-align:center}.sudoku-try-layout p{margin:5px 0}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v22.8</span></h1><div class="build-version">Exact build: v22.8 • Verified How-To Suite • Code-Rendered Logic Examples</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v22.8</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v22.8.1</span></h1><div class="build-version">Exact build: v22.8.1 • Sudoku Try-It-Yourself Revision • Verified How-To Suite</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v22.8.1</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -2201,16 +2203,14 @@ function howToTextPdfCommands(sheet,pw,ph){
     const gap=10, panelW=(pw-76-2*gap)/3, panelY=ph-405, panelH=244;
     const heads=[['1','Each Row','row','Each row must contain 1 through 9 exactly once.'],['2','Each Column','col','Each column must contain 1 through 9 exactly once.'],['3','Each 3 x 3 Box','box','Each 3 x 3 box must contain 1 through 9 exactly once.']];
     heads.forEach((a,i)=>{let x=28+i*(panelW+gap);box(x,panelY,panelW,panelH,.7);put(a[0]+'.',x+10,panelY+panelH-24,13,true);put(a[1],x+28,panelY+panelH-24,12,true);wrap(a[3],x+10,panelY+panelH-45,panelW-20,8.5,false,3);grid(x+10,panelY+14,panelW-20,a[2],false);});
-    // Example + try it yourself
-    const lowerY=ph-555, leftW=(pw-66)*.57, rightW=(pw-66)-leftW-10;
-    box(28,lowerY,leftW,132,.7);center('EXAMPLE',28+leftW/2,lowerY+112,12,true);
-    wrap('The row already has 1 through 8. The only missing number is 9, so the empty cell must be 9.',40,lowerY+91,leftW*.48,9,false,5);
-    const rx=40+leftW*.50, rw=leftW*.45, cy=lowerY+55, cw=rw/9;
-    for(let i=0;i<9;i++){box(rx+i*cw,cy,cw,cw,.45);if(i<8)center(String(i+1),rx+i*cw+cw/2,cy+cw*.32,8,true);}
-    put('9',rx+8*cw+(cw-approxTextWidth('9',9))/2,cy+cw*.32,9,true);put('This cell must be 9.',rx,lowerY+25,8.5,true);
-    const rightX=38+leftW;
-    box(rightX,lowerY,rightW,132,.7);center('TRY IT YOURSELF',rightX+rightW/2,lowerY+112,12,true);wrap('Fill in the missing number in this row.',rightX+10,lowerY+89,rightW-20,9,false,2);
-    let tx=rightX+10, tw=rightW-20, tc=tw/9, ty=lowerY+47;for(let i=0;i<9;i++){box(tx+i*tc,ty,tc,tc,.45);if(i<8)center(String(i+1),tx+i*tc+tc/2,ty+tc*.30,8,true);} center('Answer: 9',rightX+rightW/2,lowerY+22,9,true);
+    // Revised Try It Yourself: one forced cell requiring row + column + 3x3-box reasoning.
+    const lowerY=ph-570, lowerH=148;
+    box(28,lowerY,pw-56,lowerH,.7);center('TRY IT YOURSELF',pw/2,lowerY+lowerH-20,12,true);
+    center('What number belongs in the ? cell?',pw/2,lowerY+lowerH-40,9.5,true);
+    const practice=[[5,3,'',6,7,8,9,1,2],[6,7,2,'',9,5,3,4,8],[1,9,8,3,4,2,'',6,7],[8,'',9,7,6,1,4,2,3],[4,2,6,8,'?',3,7,9,1],[7,1,3,9,2,4,8,'',6],[9,6,'',5,3,7,2,8,4],[2,8,7,4,1,'',6,3,5],[3,4,5,2,8,6,1,7,'']];
+    const gx=48, gy=lowerY+14, gw=112, gc=gw/9;
+    for(let r=0;r<9;r++)for(let c=0;c<9;c++){const xx=gx+c*gc,yy=gy+(8-r)*gc;box(xx,yy,gc,gc,(r%3===0||c%3===0)?0.8:0.3);const v=practice[r][c];if(v!==''){const fs=6.4;put(String(v),xx+(gc-approxTextWidth(String(v),fs))/2,yy+gc*.31,fs,true);}if(r===4&&c===4){box(xx+1.2,yy+1.2,gc-2.4,gc-2.4,1.1);}}
+    put('Use all three rules:',190,lowerY+91,9.5,true);put('- Check its row',190,lowerY+72,9,false);put('- Check its column',190,lowerY+55,9,false);put('- Check its 3 x 3 box',190,lowerY+38,9,false);put('Only one digit can satisfy all three.',190,lowerY+18,8.5,true);
     // Bottom tips and full before/after example
     const botY=38, botH=lowerY-botY-12; box(28,botY,pw-56,botH,.7);put('TIPS FOR SOLVING',40,botY+botH-22,12,true);
     const tips=['Look for rows, columns, or boxes that are almost complete.','Use elimination: a number cannot repeat in its row, column, or box.','Start with the easiest forced placements, then recheck the grid.','A valid Sudoku has one completed solution.'];
@@ -2850,16 +2850,12 @@ function instructionHtml(type){
   };
   const nonogramPic=`<table class="howto-pixel"><tr><td></td><td class="on"></td><td></td></tr><tr><td class="on"></td><td class="on"></td><td class="on"></td></tr><tr><td></td><td class="on"></td><td></td></tr></table>`;
   const map={
-    sudoku:()=>page('Fill every empty cell so each row, column, and 3×3 box contains 1–9 exactly once.',[
-      'Each row must contain the numbers 1 through 9 exactly once.',
-      'Each column must contain the numbers 1 through 9 exactly once.',
-      'Each 3×3 box must contain the numbers 1 through 9 exactly once.'
-    ],[
-      example('Each Row',line('1  2  3  4  5  6  7  8  9'),'No digit repeats in a row.'),
-      example('Each Column',miniGrid([[1],[2],[3],[4],[5],[6],[7],[8],[9]]),'No digit repeats in a column.'),
-      example('Each 3×3 Box',miniGrid([[1,2,3],[4,5,6],[7,8,9]]),'Every 3×3 box also contains 1–9 once.'),
-      example('Try It Yourself',line('1  2  3  4  5  6  7  8  ?'),'The missing number is 9.')
-    ]),
+    sudoku:()=>{
+      const solved=[[5,3,4,6,7,8,9,1,2],[6,7,2,1,9,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,9,7,6,1,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]];
+      const blanks=new Set(['0,2','1,3','2,6','3,1','4,4','5,7','6,2','7,5','8,8']);
+      const sudokuGrid=(complete=false)=>`<table class="howto-mini-grid sudoku-practice-grid">${solved.map((row,r)=>`<tr>${row.map((v,c)=>{const k=r+','+c;const target=k==='4,4';const txt=complete?String(v):(target?'?':(blanks.has(k)?'':String(v)));return `<td class="${target?'focus':''}">${txt}</td>`;}).join('')}</tr>`).join('')}</table>`;
+      return `<div class="howto-page sudoku-howto"><p class="howto-goal"><strong>Goal:</strong> Fill every empty cell so each row, column, and 3×3 box contains 1–9 exactly once.</p>${steps(['Each row must contain the numbers 1 through 9 exactly once.','Each column must contain the numbers 1 through 9 exactly once.','Each 3×3 box must contain the numbers 1 through 9 exactly once.'])}<div class="howto-example-grid">${example('Each Row',line('1  2  3  4  5  6  7  8  9'),'No digit repeats in a row.')}${example('Each Column',miniGrid([[1],[2],[3],[4],[5],[6],[7],[8],[9]]),'No digit repeats in a column.')}${example('Each 3×3 Box',miniGrid([[1,2,3],[4,5,6],[7,8,9]]),'Every 3×3 box also contains 1–9 once.') }</div><div class="howto-example sudoku-try"><h4>Try It Yourself</h4><p><strong>What number belongs in the ? cell?</strong></p><div class="sudoku-try-layout">${sudokuGrid(false)}<div><strong>Use all three rules:</strong><p>Check its row.</p><p>Check its column.</p><p>Check its 3×3 box.</p><p>Only one digit can satisfy all three.</p></div></div></div><div class="howto-example sudoku-complete"><h4>Complete Solution Example</h4>${sudokuGrid(true)}</div></div>`;
+    },
     kakuro:()=>page('Fill the white cells with digits 1–9 so every run adds to its clue. Digits cannot repeat inside one run.',[
       'A means Across; D means Down.',
       'Add the digits in a run to match its clue.',
@@ -4470,7 +4466,7 @@ build();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=22.8',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=22.8.1',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
@@ -4483,7 +4479,7 @@ async function updateOfflineStatus(){
   }
   try{
     await navigator.serviceWorker.ready;
-    const cache=await caches.open('offline-puzzle-studio-v22-8');
+    const cache=await caches.open('offline-puzzle-studio-v22-8-1');
     const cached=await cache.match('./index.html');
     el.textContent=cached
       ? 'Offline ready — this version is cached on this device.'
