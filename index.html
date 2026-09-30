@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v23.0 — Verified How-To Suite</title>
+<title>Offline Puzzle Studio v23.1 — Verified How-To Suite</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -611,7 +611,7 @@ details summary{cursor:pointer;font-weight:700}
 .howto-number-directions strong{display:block;margin-bottom:4px}
 .number-search-howto .howto-number-solution p{line-height:1.55;margin:0}
 @media(max-width:650px){.howto-number-layout{grid-template-columns:1fr}.number-search-howto .howto-example-grid{grid-template-columns:1fr}}
-/* v23.0 Cryptogram How-To: fixed spacing and deduction-chain teaching */
+/* v23.1 Cryptogram How-To: fixed spacing and deduction-chain teaching */
 .crypto-rule-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.12in;max-width:6.2in;margin:.08in auto .16in}
 .crypto-rule-grid .howto-example{min-height:1.7in}
 .crypto-map-lines{font:700 17px/1.5 "Courier New",monospace;letter-spacing:.04em;margin:.04in 0 .08in}
@@ -622,7 +622,7 @@ details summary{cursor:pointer;font-weight:700}
 .crypto-chain-steps{display:grid;grid-template-columns:1fr 1fr;gap:.07in .12in;margin-top:.1in}.crypto-chain-steps div{border-top:1px solid #bbb;padding-top:.06in;font-size:10.5px;line-height:1.35}.crypto-chain-steps b{display:block;margin-bottom:.02in}
 @media(max-width:650px){.crypto-rule-grid{grid-template-columns:1fr}.crypto-chain-steps{grid-template-columns:1fr}.crypto-chain-row{grid-template-columns:1fr}}
 
-/* v23.0 repair overrides */
+/* v23.1 repair overrides */
 .kakuro td.clue{
   background:
     linear-gradient(to bottom right,transparent calc(50% - .8px),#111 50%,transparent calc(50% + .8px)),
@@ -674,11 +674,14 @@ details summary{cursor:pointer;font-weight:700}
 @media(max-width:650px){.ht-grid,.ht-grid.two,.ht-row,.ht-row.wide-left,.ht-split{grid-template-columns:1fr}.howto-page{max-height:none!important}}
 
 .kakuro td.clue{position:relative;background:linear-gradient(to top right,transparent 49%,#111 49.5%,#111 50.5%,transparent 51%)!important}.kakuro td.clue .across{position:absolute!important;top:2px!important;right:3px!important;left:auto!important}.kakuro td.clue .down{position:absolute!important;bottom:2px!important;left:3px!important;top:auto!important;right:auto!important}
+
+/* v23.1 approved How-To fidelity helpers */
+.ht-logic-cell{width:86px;height:86px;border:1px solid #bbb;margin:8px auto;position:relative;display:flex;align-items:center;justify-content:center;font-size:26px}.ht-logic-cell.two{border-top:6px solid #111;border-right:6px solid #111}.ht-logic-cell .x{position:absolute;font-style:normal;font-size:20px}.ht-logic-cell .x.t{top:-17px;left:34px}.ht-logic-cell .x.r{right:-15px;top:31px}.ht-logic-cell .x.b{bottom:-17px;left:34px}.ht-logic-cell .x.l{left:-15px;top:31px}.howto-page{max-height:8.55in;overflow:hidden}.howto-page .ht-section{break-inside:avoid}.diagonal-grid td:nth-child(3n){border-right-width:3px}.diagonal-grid tr:nth-child(3n) td{border-bottom-width:3px}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v23.0</span></h1><div class="build-version">Exact build: v23.0 • Repair Build • Generator + How-To Fixes</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v23.0</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v23.1</span></h1><div class="build-version">Exact build: v23.1 • Fidelity + Solver QC • Approved How-To Integration</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v23.1</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -1043,7 +1046,12 @@ function makeMaze(diff){
     const vert=(grid[r-1][c]===0&&grid[r+1][c]===0);
     if(horiz||vert){
       grid[r][c]=0;
-      opened++;
+      // Keep corridors one cell wide: reject an opening if it creates any 2x2 open area.
+      let makesWide=false;
+      for(let rr=Math.max(0,r-1);rr<=Math.min(n-2,r);rr++)for(let cc=Math.max(0,c-1);cc<=Math.min(n-2,c);cc++){
+        if(grid[rr][cc]===0&&grid[rr+1][cc]===0&&grid[rr][cc+1]===0&&grid[rr+1][cc+1]===0)makesWide=true;
+      }
+      if(makesWide)grid[r][c]=1;else opened++;
     }
   }
 
@@ -1277,7 +1285,7 @@ function makeSlither(diff){
     for(let r=1;r<R-1;r++)for(let c=1;c<C-1;c++)region.add(`${r},${c}`);
     solution=boundaryFromRegion(model,region);
   }
-  // v23.0: every cell displays its calculated 0-3 clue; no intentionally blank clue squares.
+  // v23.1: every cell displays its calculated 0-3 clue; no intentionally blank clue squares.
   const clues=fullSlitherClues(model,solution);
   const unique=slitherCountSolutions(model,clues,2)===1;
   return {type:'slither',R,C,clues,solution,validated:unique&&isSingleLoop(model,solution),validationTier:unique?'unique':'structural'};
@@ -1378,7 +1386,7 @@ const CRYPTO_PHRASES=[
 "YOU MISS EVERY SHOT YOU NEVER TAKE",
 ];
 let cryptoUsedPhrases=new Set();
-// v23.0 Cryptogram: choose hints by deduction load, not a fixed arbitrary count.
+// v23.1 Cryptogram: choose hints by deduction load, not a fixed arbitrary count.
 // Every word receives a usable foothold. Easy leaves very few unknown letter-types per word;
 // harder levels deliberately leave longer deduction chains while still avoiding one-hint dead ends.
 function cryptoHintPlan(plain,map,diff){
@@ -1466,8 +1474,13 @@ function makeNonogram(diff){
    if(ch==='A'){for(let r=m;r<=M;r++){let off=Math.floor((r-m)/2),l=Math.max(m,center-off),rr=Math.min(M,center+off);grid[r][l]=1;grid[r][rr]=1}for(let c=m+1;c<M;c++)grid[Math.floor(n*.58)][c]=1}
  }
  // Avoid accidental all-empty/all-full rows and columns; this keeps the clue page readable.
- for(let r=0;r<n;r++)if(grid[r].every(v=>v===0))grid[r][(r*3+2)%n]=1;
- for(let c=0;c<n;c++)if(grid.every(row=>row[c]===0))grid[(c*5+1)%n][c]=1;
+ for(let r=0;r<n;r++)if(grid[r].every(v=>v===0)){
+   let c=(r*3+2)%n;grid[r][c]=1;if(family==='symmetric')grid[r][n-1-c]=1;
+ }
+ for(let c=0;c<n;c++)if(grid.every(row=>row[c]===0)){
+   let r=(c*5+1)%n;grid[r][c]=1;if(family==='symmetric')grid[r][n-1-c]=1;
+ }
+ if(family==='symmetric')for(let r=0;r<n;r++)for(let c=0;c<n;c++)grid[r][n-1-c]=grid[r][c];
  const rows=grid.map(nonoClues),cols=Array.from({length:n},(_,c)=>nonoClues(grid.map(row=>row[c])));
  // Full uniqueness checks get expensive at book scale; for 8x8 we can prove uniqueness,
  // while larger books use exact known-answer structural validation so generation never stalls.
@@ -1508,13 +1521,25 @@ function makeDiagonal(diff){
 }
 
 /* ---------- MINI SUDOKU ---------- */
+function miniCountSolutions(item,limit=2){
+ const n=item.n,br=item.boxR,bc=item.boxC,b=clone(item.puzzle);let count=0;
+ function rec(){
+  if(count>=limit)return;let best=null,cands=null;
+  for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(!b[r][c]){
+   let used=new Set();for(let i=0;i<n;i++){used.add(b[r][i]);used.add(b[i][c])}
+   let r0=Math.floor(r/br)*br,c0=Math.floor(c/bc)*bc;for(let rr=r0;rr<r0+br;rr++)for(let cc=c0;cc<c0+bc;cc++)used.add(b[rr][cc]);
+   let p=[...Array(n)].map((_,i)=>i+1).filter(v=>!used.has(v));if(!p.length)return;if(!cands||p.length<cands.length){best=[r,c];cands=p}
+  }
+  if(!best){count++;return}let [r,c]=best;for(const v of cands){b[r][c]=v;rec();b[r][c]=0;if(count>=limit)return}
+ }rec();return count;
+}
 function makeMini(diff){
  let n=(diff==='Hard'||diff==='Expert')?6:4,boxR=2,boxC=n===6?3:2;
  let pattern=(r,c)=>(boxC*(r%boxR)+Math.floor(r/boxR)+c)%n;
  let nums=shuffle([...Array(n).keys()].map(x=>x+1)),rows=shuffle([...Array(n).keys()]),cols=shuffle([...Array(n).keys()]);
- let sol=rows.map(r=>cols.map(c=>nums[pattern(r,c)])),puzzle=clone(sol),remove={Easy:.35,Medium:.48,Hard:.58,Expert:.68}[diff]??.48;
- for(let i=0;i<n*n;i++)if(Math.random()<remove)puzzle[Math.floor(i/n)][i%n]=0;
- return {type:'mini',n,boxR,boxC,puzzle,solution:sol,validated:true,validationTier:'known-answer'}
+ let sol=rows.map(r=>cols.map(c=>nums[pattern(r,c)])),puzzle=clone(sol),target={Easy:10,Medium:8,Hard:16,Expert:13}[diff]||8;
+ for(const idx of shuffle([...Array(n*n).keys()])){let r=Math.floor(idx/n),c=idx%n,old=puzzle[r][c];puzzle[r][c]=0;let probe={n,boxR,boxC,puzzle};if(miniCountSolutions(probe,2)!==1)puzzle[r][c]=old;if(puzzle.flat().filter(Boolean).length<=target)break}
+ let item={type:'mini',n,boxR,boxC,puzzle,solution:sol,validated:false,validationTier:'failed'};let ct=miniCountSolutions(item,2);item.validated=ct===1;item.validationTier=ct===1?'unique':'failed';return item;
 }
 
 /* ---------- KILLER SUDOKU ---------- */
@@ -1536,7 +1561,9 @@ function makeKiller(diff){
   }
   // Structural validation: the known Sudoku solution must satisfy every cage sum and no-repeat rule.
   const valid=cages.every(cg=>{const vals=cg.cells.map(([r,c])=>sol[r][c]);return new Set(vals).size===vals.length&&vals.reduce((a,b)=>a+b,0)===cg.sum;});
-  return {type:'killer',solution:sol,cages,validated:valid,validationTier:valid?'structural':'failed'};
+  let item={type:'killer',solution:sol,cages,validated:valid,validationTier:valid?'structural':'failed'};
+  if(valid){const ct=killerCountSolutions(item,2);item.validated=ct===1;item.validationTier=ct===1?'unique':'failed';}
+  return item;
 }
 
 
@@ -1613,10 +1640,10 @@ function makeIrregular(diff){
  let puzzle=clone(solution),target={Easy:46,Medium:40,Hard:35,Expert:30}[diff]||40;
  for(let idx of shuffle([...Array(81).keys()])){
    let r=Math.floor(idx/9),c=idx%9,old=puzzle[r][c];puzzle[r][c]=0;
-   if(diff!=='Expert' && countIrregular(clone(puzzle),regions,2)!==1)puzzle[r][c]=old;
+   if(countIrregular(clone(puzzle),regions,2)!==1)puzzle[r][c]=old;
    if(puzzle.flat().filter(Boolean).length<=target)break;
  }
- return {type:'irregular',puzzle,solution,regions,validated:true,validationTier:diff==='Expert'?'structural':'unique'}
+ return {type:'irregular',puzzle,solution,regions,validated:true,validationTier:'unique'}
 }
 
 /* ---------- STRONG VALIDATORS ---------- */
@@ -1780,8 +1807,8 @@ function makeHidato(diff){
  let sol=Array.from({length:n},()=>Array(n).fill(0));path.forEach(([r,c],i)=>sol[r][c]=i+1);
  let puzzle=clone(sol),targetKeep={Easy:.52,Medium:.40,Hard:.31,Expert:.24}[diff]||.40;
  let cells=shuffle([...Array(N-2).keys()].map(i=>i+1));
- for(let idx of cells){let [r,c]=path[idx],old=puzzle[r][c];puzzle[r][c]=0;if(diff==='Easy'||diff==='Medium'){let probe={type:'hidato',n,puzzle,solution:sol};if(hidatoCountSolutions(probe,2)!==1)puzzle[r][c]=old}if(puzzle.flat().filter(Boolean).length/N<=targetKeep)break}
- let item={type:'hidato',n,puzzle,solution:sol,validated:true,validationTier:(diff==='Easy'||diff==='Medium')?'unique':'structural'};return item;
+ for(let idx of cells){let [r,c]=path[idx],old=puzzle[r][c];puzzle[r][c]=0;{let probe={type:'hidato',n,puzzle,solution:sol};if(hidatoCountSolutions(probe,2)!==1)puzzle[r][c]=old}if(puzzle.flat().filter(Boolean).length/N<=targetKeep)break}
+ let item={type:'hidato',n,puzzle,solution:sol,validated:false,validationTier:'failed'};let ct=hidatoCountSolutions(item,2);item.validated=ct===1;item.validationTier=ct===1?'unique':'failed';return item;
 }
 
 /* ---------- TAKUZU ---------- */
@@ -1847,7 +1874,7 @@ function makeMissingNumber(diff){
  else if(kind===7){let a=1+Math.floor(Math.random()*5);seq=Array.from({length:7},(_,i)=>a+Math.pow(2,i))}
  else if(kind===8){let a=10+Math.floor(Math.random()*20);seq=Array.from({length:7},(_,i)=>a+(i%2?3:-2)*i)}
  else {let a=1+Math.floor(Math.random()*5),b=2+Math.floor(Math.random()*5);seq=[a,b];for(let i=2;i<7;i++)seq.push(seq[i-1]+seq[i-2]+(i%2))}
- let missingCount=diff==='Expert'?(Math.random()<.55?3:2):((diff==='Hard'&&Math.random()<.72)||(diff==='Medium'&&Math.random()<.38)?2:1);
+ let missingCount=1;
  let choices=shuffle([...Array(seq.length-2).keys()].map(i=>i+1)),missingIndices=choices.slice(0,missingCount).sort((a,b)=>a-b);
  let puzzle=seq.slice();missingIndices.forEach(i=>puzzle[i]=null);
  return {type:'missingnumber',puzzle,solution:seq,answer:missingIndices.map(i=>seq[i]),missingIndex:missingIndices[0],missingIndices,patternKind:kind,validated:true,validationTier:'structural'}
@@ -1984,7 +2011,7 @@ function renderPuzzleInto(container,item,index,title){
  if(item.type==='irregular')container.appendChild(genericTable(item.puzzle,{regions:item.regions,cls:'irregular'}));
  if(item.type==='mini')container.appendChild(genericTable(item.puzzle));
  if(item.type==='kenken')container.appendChild(kenkenTable(item,false));
- if(item.type==='hidato')container.appendChild(genericTable(item.puzzle,{small:true,blankMark:'?'}));
+ if(item.type==='hidato')container.appendChild(genericTable(item.puzzle,{small:true}));
  if(item.type==='takuzu')container.appendChild(genericTable(item.puzzle,{small:true,zeroVisible:true}));
  if(item.type==='magicsquare')container.appendChild(genericTable(item.puzzle));
  if(item.type==='missingnumber')container.appendChild(missingNumberBlock(item,false))
@@ -2709,7 +2736,7 @@ function renderOverview(){
     if(overviewMandalaReview && item.type==='mandala')prev.classList.add('mandala-review');
     if(item.type==='sudoku')prev.appendChild(sudokuTable(item.puzzle));
     else if(item.type==='mandala')prev.appendChild(mandalaSvg(item));
-    else if(item.type==='mini'||item.type==='hidato'||item.type==='takuzu'||item.type==='magicsquare')prev.appendChild(genericTable(item.puzzle,{small:true,blankMark:'?'}));
+    else if(item.type==='mini'||item.type==='hidato'||item.type==='takuzu'||item.type==='magicsquare')prev.appendChild(genericTable(item.puzzle,{small:true}));
     else {
       const tag=document.createElement('div');tag.style.fontSize='12px';tag.style.textAlign='center';tag.textContent=label;prev.appendChild(tag);
     }
@@ -2787,7 +2814,7 @@ function instructionHtml(type){
     kakuro:()=>page('Fill white cells with 1–9. Each run must add to its clue, with no repeated digit inside that run.',
       `<div class="ht-grid">${card('Read the Clue','<div class="ht-kakuro-clue"><span class="d">D 17</span><span class="a">A 4</span></div><p class="ht-center">The diagonal runs top-left to bottom-right. A is top-right; D is bottom-left.</p>')}${card('Match the Sum','<div class="ht-big">A 16 → 7 + 9</div><div class="ht-big">D 9 → 4 + 5</div>')}${card('No Repeats','<div class="ht-big">1 + 5 = 6 ✓</div><div class="ht-big">3 + 3 = 6 ✗</div>')}</div>${section('Worked Example','<div class="ht-big">A 16 → 7 + 9</div><p class="ht-center">The two white cells to the right total 16 and use different digits.</p>')}${section('Try It Yourself','<div class="ht-big">A 9 → 4 + ?</div><p class="ht-center">The missing digit is 5.</p>')}`),
     slither:()=>page('Draw one continuous closed loop along the dots. Each clue tells exactly how many sides of that cell belong to the loop.',
-      `<div class="ht-grid">${card('Read the Clues','<div class="ht-big">0 &nbsp; 1 &nbsp; 2 &nbsp; 3</div><p>Each number counts used sides.</p>')}${card('Make One Loop','<p class="ht-center">No separate loops, no loose ends.</p>')}${card('Never Branch','<p class="ht-center">At a dot, the loop continues through or does not touch it.</p>')}</div><div class="ht-grid two">${card('Quick Logic: 0','<div class="ht-big">0 → no sides used</div>')}${card('Quick Logic: 2','<div class="ht-big">2 → TOP + RIGHT</div><p class="ht-center">2 sides used; the other two stay unused.</p>')}</div>${section('Try It Yourself',`<div class="ht-row"><div>${slitherGrid(false)}</div><div><p>Use the 4×4 clues to make one loop.</p><p>Every cell shows its calculated clue.</p></div></div>`)}${section('Complete Solution Example',slitherGrid(true))}`),
+      `<div class="ht-grid">${card('Read the Clues','<div class="ht-big">0 &nbsp; 1 &nbsp; 2 &nbsp; 3</div><p>Each number counts used sides.</p>')}${card('Make One Loop','<p class="ht-center">No separate loops, no loose ends.</p>')}${card('Never Branch','<p class="ht-center">At a dot, the loop continues through or does not touch it.</p>')}</div><div class="ht-grid two">${card('Quick Logic: 0','<div class="ht-logic-cell zero"><b>0</b><i class="x t">×</i><i class="x r">×</i><i class="x b">×</i><i class="x l">×</i></div><p class="ht-center">No sides are used.</p>')}${card('Quick Logic: 2','<div class="ht-logic-cell two"><b>2</b></div><p class="ht-center"><strong>Top + right</strong> are the 2 used sides.</p>')}</div>${section('Try It Yourself',`<div class="ht-row"><div>${slitherGrid(false)}</div><div><p>Use the 4×4 clues to make one loop.</p><p>Every cell shows its calculated clue.</p></div></div>`)}${section('Complete Solution Example',slitherGrid(true))}`),
     wordsearch:()=>page('Find every word hidden in the letter grid. Words may run horizontally, vertically, or diagonally in either direction.',
       `<div class="ht-grid">${card('Horizontal','<div class="ht-big">B I R D</div><p class="ht-center">Forward or backward.</p>')}${card('Vertical','<div class="ht-big">T<br>R<br>E<br>E</div><p class="ht-center">Down or up.</p>')}${card('Diagonal','<div class="ht-big">S · · ·<br>· T · ·<br>· · A ·<br>· · · R</div>')}</div>${section('Try It Yourself',`<div class="ht-row"><div>${searchSvg(false,false)}<div class="ht-capsule-legend">CAT &nbsp; DOG &nbsp; BIRD &nbsp; TREE &nbsp; STAR &nbsp; FROG</div></div><div><p>This grid contains one answer in each major direction:</p><p>horizontal forward/backward, vertical down/up, diagonal down/up.</p></div></div>`)}${section('Complete Solution Example',searchSvg(false,true))}`),
     numbersearch:()=>page('Find every number sequence hidden in the grid. Sequences may run horizontally, vertically, or diagonally in either direction.',
@@ -2803,15 +2830,15 @@ function instructionHtml(type){
     irregular:()=>page('Fill each row, column, and bold irregular region with every digit exactly once. Irregular regions replace standard Sudoku boxes.',
       `<div class="ht-grid">${card('Rows & Columns','<p>Normal row and column rules still apply.</p>')}${card('Follow the Regions','<p>Thick outlines show the irregular regions.</p>')}${card('Each Region','<p>A region contains each allowed digit once.</p>')}</div>${section('From 4×4 to Standard 9×9','<div class="ht-split"><p><strong>Teaching:</strong> 4×4 → 4 cells/region → 1–4</p><p><strong>Standard:</strong> 9×9 → 9 cells/region → 1–9</p></div><p class="ht-center">The rule is identical; only the size changes.</p>')}`),
     mini:()=>page('Mini Sudoku uses the same rules as regular Sudoku on a smaller grid.',
-      `<div class="ht-grid">${card('Each Row','<p>Use each allowed digit once.</p>')}${card('Each Column','<p>Use each allowed digit once.</p>')}${card('Each Box','<p>Use each allowed digit once.</p>')}</div>${section('Grid Sizes','<div class="ht-split"><p><strong>4×4:</strong> digits 1–4, 2×2 boxes.</p><p><strong>6×6:</strong> digits 1–6, 2×3 boxes.</p></div>')}`),
+      `<div class="ht-grid">${card('Each Row','<p>Use each allowed digit once.</p>')}${card('Each Column','<p>Use each allowed digit once.</p>')}${card('Each Box','<p>Use each allowed digit once.</p>')}</div>${section('Grid Sizes','<div class="ht-split"><p><strong>4×4:</strong> digits 1–4, 2×2 boxes.</p><p><strong>6×6:</strong> digits 1–6, 2×3 boxes.</p></div>')}${section('Try It Yourself',table([[1,'',3,4],[3,4,'',2],[2,1,4,''],['',3,2,1]]))}${section('Complete Solution Example',table([[1,2,3,4],[3,4,1,2],[2,1,4,3],[4,3,2,1]]))}`),
     kenken:()=>page('Fill each row and column with 1 through the grid size, while every cage reaches its target using the printed operation.',
-      `<div class="ht-grid">${card('Rows & Columns','<p>No repeated digit in a row or column.</p>')}${card('Read the Cage','<div class="ht-big">6+ → 2 + 4</div>')}${card('Use the Operation','<div class="ht-big">+ &nbsp; − &nbsp; × &nbsp; ÷</div>')}</div>${section('Cage Lines','<p class="ht-center"><strong>Dotted internal lines</strong> separate cells inside the same cage. <strong>Bold solid lines</strong> mark the outside boundary of each cage.</p>')}`),
+      `<div class="ht-grid">${card('Rows & Columns','<p>No repeated digit in a row or column.</p>')}${card('Read the Cage','<div class="ht-big">6+ → 2 + 4</div>')}${card('Use the Operation','<div class="ht-big">+ &nbsp; − &nbsp; × &nbsp; ÷</div>')}</div>${section('Worked Cage Examples','<div class="ht-split"><div>6+ → 2+4=6</div><div>2− → 4−2=2</div><div>6× → 2×3=6</div><div>2÷ → 4÷2=2</div></div>')}${section('Cage Lines','<p class="ht-center"><strong>Dotted internal lines</strong> separate cells inside the same cage. <strong>Bold solid lines</strong> mark the outside boundary of each cage.</p>')}${section('Try It Yourself','<p class="ht-center">Use the row/column rule together with each cage target.</p>')}`),
     hidato:()=>page('Complete one continuous number path from 1 to the highest number. Consecutive numbers may touch horizontally, vertically, or diagonally.',
-      `<div class="ht-grid">${card('Follow the Numbers','<div class="ht-big">1 → 2 → 3 → 4</div>')}${card('All 8 Directions','<div class="ht-big">5</div><p>4 or 6 may touch by a side or corner.</p>')}${card('Use the Anchors','<p>Given numbers act as checkpoints.</p>')}</div>${section('Winding Paths','<p class="ht-center">The route can turn often and move diagonally as it winds across the whole grid.</p>')}`),
+      `<div class="ht-grid">${card('Follow the Numbers','<div class="ht-big">1 → 2 → 3 → 4</div>')}${card('All 8 Directions','<div class="ht-big">5</div><p>4 or 6 may touch by a side or corner.</p>')}${card('Use the Anchors','<p>Given numbers act as checkpoints.</p>')}</div>${section('Winding Paths','<p class="ht-center">The route can turn often and move diagonally as it winds across the whole grid.</p>')}${section('Try It Yourself',table([[1,'',23,20,21],[4,2,24,22,19],[5,7,25,17,18],[8,6,11,16,15],[9,10,12,13,14]]))}${section('Complete Solution Example',table([[1,3,23,20,21],[4,2,24,22,19],[5,7,25,17,18],[8,6,11,16,15],[9,10,12,13,14]]))}`),
     takuzu:()=>page('Fill every cell with 0 or 1 while obeying all Binary puzzle rules.',
-      `<div class="ht-grid">${card('Equal 0s & 1s','<div class="ht-big">0 1 0 1 1 0</div><p>In six cells: three 0s and three 1s.</p>')}${card('Never Three','<div class="ht-big">0 0 1 ✓<br>1 1 1 ✗</div>')}${card('No Duplicate Lines','<p>No two completed rows or columns may match.</p>')}</div>${section('Quick Deductions','<div class="ht-split"><div class="ht-big">0 0 _ → 0 0 1</div><div class="ht-big">1 _ 1 → 1 0 1</div></div>')}`),
+      `<div class="ht-grid">${card('Equal 0s & 1s','<div class="ht-big">0 1 0 1 1 0</div><p>In six cells: three 0s and three 1s.</p>')}${card('Never Three','<div class="ht-big">0 0 1 ✓<br>1 1 1 ✗</div>')}${card('No Duplicate Lines','<p>No two completed rows or columns may match.</p>')}</div>${section('Quick Deductions','<div class="ht-split"><div class="ht-big">0 0 _ → 0 0 1</div><div class="ht-big">1 _ 1 → 1 0 1</div></div><div class="ht-big">0 1 1 0 _ _ → 0 1 1 0 0 1</div>')}${section('Try It Yourself',table([[0,'',1,'',1,''],['',1,'',1,'',1],[1,'','',1,'',0],['',1,1,'',1,''],[1,'',1,1,'',''],['',1,'','',0,1]]))}${section('Complete Solution Example',table([[0,0,1,0,1,1],[0,1,0,1,0,1],[1,0,0,1,1,0],[0,1,1,0,1,0],[1,0,1,1,0,0],[1,1,0,0,0,1]]))}`),
     magicsquare:()=>page('Place the required numbers so every row, column, and main diagonal has the same total.',
-      `<div class="ht-grid">${card('Know the Target','<div class="ht-big">3×3 with 1–9 → target 15</div>')}${card('Check Every Line','<p>Rows, columns, and both main diagonals must hit the target.</p>')}${card('Use Each Number Once','<div class="ht-big">1 2 3 4 5 6 7 8 9</div>')}</div>${section('Try It Yourself',table([[8,'?',6],['?',5,'?'],[4,'?',2]]))}${section('Complete Solution Example',table([[8,1,6],[3,5,7],[4,9,2]])+'<p class="ht-center"><strong>Row:</strong> 8+1+6=15 &nbsp; <strong>Column:</strong> 8+3+4=15<br><strong>Diagonals:</strong> 8+5+2=15 &nbsp; and &nbsp; 6+5+4=15</p>')}`),
+      `<div class="ht-grid">${card('Know the Target','<div class="ht-big">3×3 with 1–9 → target 15</div>')}${card('Check Every Line','<p>Rows, columns, and both main diagonals must hit the target.</p>')}${card('Use Each Number Once','<div class="ht-big">1 2 3 4 5 6 7 8 9</div>')}</div>${section('Try It Yourself',table([[8,'',6],['',5,''],[4,'',2]]))}${section('Complete Solution Example',table([[8,1,6],[3,5,7],[4,9,2]])+'<p class="ht-center"><strong>Row:</strong> 8+1+6=15 &nbsp; <strong>Column:</strong> 8+3+4=15<br><strong>Diagonals:</strong> 8+5+2=15 &nbsp; and &nbsp; 6+5+4=15</p>')}`),
     missingnumber:()=>page('Find the pattern in the sequence, then replace the question mark with the missing value.',
       `<div class="ht-grid">${card('Compare Changes','<div class="ht-big">4 → 7 → 10<br>+3 &nbsp; +3</div>')}${card('Find the Rule','<div class="ht-big">3 6 12 24<br>×2 each time</div>')}${card('Check the Whole Pattern','<div class="ht-big">2 4 6 8 10</div><p>The rule must explain every step.</p>')}</div>${section('Try It Yourself','<div class="ht-big">3 &nbsp; 5 &nbsp; 8 &nbsp; ? &nbsp; 21 &nbsp; 34 &nbsp; 55</div>')}${section('Complete Solution Example','<p class="ht-center">3+5=8 &nbsp; 5+8=13 &nbsp; 8+13=21 &nbsp; 13+21=34 &nbsp; 21+34=55<br><strong>Missing number: 13</strong></p>')}`)
   };
@@ -2842,7 +2869,7 @@ function mazeSvg(item,answer){
  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
  svg.setAttribute('viewBox',`0 0 ${size} ${size}`);svg.setAttribute('class','maze-svg');svg.setAttribute('style','width:100%;max-width:6.5in;display:block;margin:auto');
  const line=(x1,y1,x2,y2,w=1.25)=>{let l=document.createElementNS(svg.namespaceURI,'line');l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);l.setAttribute('stroke','#111');l.setAttribute('stroke-width',w);l.setAttribute('stroke-linecap','square');svg.appendChild(l)};
- // Draw each open/blocked boundary once. No filled wall blocks or hatch marks.
+ // Draw each open/blocked boundary once, then hatch blocked cells so pathways are unmistakable.
  for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(g[r][c]===0){
    const x=pad+c*cell,y=pad+r*cell;
    if(r===0||g[r-1][c]===1)line(x,y,x+cell,y);
@@ -2850,11 +2877,15 @@ function mazeSvg(item,answer){
    if(r===n-1||g[r+1][c]===1)line(x,y+cell,x+cell,y+cell);
    if(c===n-1||g[r][c+1]===1)line(x+cell,y,x+cell,y+cell);
  }
+ for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(g[r][c]===1){
+   const x=pad+c*cell,y=pad+r*cell,sp=Math.max(3,cell*.42);
+   for(let k=-cell;k<cell*2;k+=sp){let x1=Math.max(x,x+k),y1=Math.max(y,y-k),x2=Math.min(x+cell,x+k+cell),y2=Math.min(y+cell,y-k+cell);if(x2>x1&&y2>y1)line(x1,y1,x2,y2,.35)}
+ }
  if(answer&&item.path?.length){
    const p=document.createElementNS(svg.namespaceURI,'polyline');p.setAttribute('points',item.path.map(([r,c])=>`${pad+(c+.5)*cell},${pad+(r+.5)*cell}`).join(' '));p.setAttribute('fill','none');p.setAttribute('stroke','#777');p.setAttribute('stroke-width',Math.max(1.4,cell*.16));p.setAttribute('stroke-linecap','round');p.setAttribute('stroke-linejoin','round');svg.appendChild(p);
  }
  const text=(txt,x,y,anchor='middle')=>{const t=document.createElementNS(svg.namespaceURI,'text');t.textContent=txt;t.setAttribute('font-size',Math.max(8,Math.min(13,cell*.55)));t.setAttribute('font-family','Arial,sans-serif');t.setAttribute('font-weight','700');t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('text-anchor',anchor);svg.appendChild(t)};
- const sy=pad+((item.start?.[0]??1)+.65)*cell, fy=pad+((item.finish?.[0]??n-2)+.65)*cell; text('START →',pad-4,sy,'end'); text('→ FINISH',pad+n*cell+4,fy,'start');
+ const sy=pad+((item.start?.[0]??1)+.65)*cell, fy=pad+((item.finish?.[0]??n-2)+.65)*cell; text('START',pad-cell*.78,sy,'end'); text('→',pad-cell*.12,sy,'end'); text('→',pad+n*cell+cell*.12,fy,'start'); text('FINISH',pad+n*cell+cell*.78,fy,'start');
  return svg;
 }
 
@@ -3435,9 +3466,9 @@ function searchBlock(item,answer){
    svg.setAttribute('viewBox',`0 0 ${n} ${n}`);svg.setAttribute('class','search-answer-overlay');
    for(let p of item.items){
      let x1=p.c+.5,y1=p.r+.5,x2=p.c+p.dc*(p.s.length-1)+.5,y2=p.r+p.dr*(p.s.length-1)+.5;
-     let mx=(x1+x2)/2,my=(y1+y2)/2,dist=Math.hypot(x2-x1,y2-y1)+1.12,angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
+     let mx=(x1+x2)/2,my=(y1+y2)/2,dist=Math.hypot(x2-x1,y2-y1)+.90,angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
      let rect=document.createElementNS(svg.namespaceURI,'rect');
-     rect.setAttribute('x',mx-dist/2);rect.setAttribute('y',my-.48);rect.setAttribute('width',dist);rect.setAttribute('height','.96');
+     rect.setAttribute('x',mx-dist/2);rect.setAttribute('y',my-.42);rect.setAttribute('width',dist);rect.setAttribute('height','.84');
      rect.setAttribute('rx','.48');rect.setAttribute('fill','none');rect.setAttribute('stroke','#111');rect.setAttribute('stroke-width','.09');
      rect.setAttribute('transform',`rotate(${angle} ${mx} ${my})`);svg.appendChild(rect);
    }
@@ -3495,7 +3526,7 @@ function kenkenTable(item,answer){
 }
 
 function diagonalTable(item,answer){
- const t=genericTable(answer?item.solution:item.puzzle);t.classList.add('diagonal-grid');
+ const t=sudokuTable(answer?item.solution:item.puzzle);t.classList.add('diagonal-grid');
  /* diagonal constraint is explained in the How-To; puzzle grid stays visually clean */
  return t;
 }
@@ -3655,7 +3686,7 @@ function render(){
      if(item.type==='irregular')w.appendChild(genericTable(item.puzzle,{regions:item.regions,cls:'irregular'}));
      if(item.type==='mini')w.appendChild(genericTable(item.puzzle));
      if(item.type==='kenken')w.appendChild(kenkenTable(item,false));
-     if(item.type==='hidato')w.appendChild(genericTable(item.puzzle,{small:true,blankMark:'?'}));
+     if(item.type==='hidato')w.appendChild(genericTable(item.puzzle,{small:true}));
      if(item.type==='takuzu')w.appendChild(genericTable(item.puzzle,{small:true,zeroVisible:true}));
      if(item.type==='magicsquare')w.appendChild(genericTable(item.puzzle));
      if(item.type==='missingnumber')w.appendChild(missingNumberBlock(item,false))
@@ -3977,12 +4008,25 @@ function runQC(){
  if(!n)issues.push('No puzzles have been generated.');
  // v20 deep-check Slitherlink every time QC runs, rather than trusting generation flags.
  project.items.forEach(x=>{if(x.type==='slither'){const m=slitherEdgeModel(x.R,x.C);const loop=isSingleLoop(m,x.solution||[]);const clueOK=x.clues?.every((row,r)=>row.every((clue,c)=>clue==null||m.cellEdges[r][c].reduce((sum,id)=>sum+((x.solution||[])[id]===1),0)===clue));const unique=loop&&clueOK&&slitherCountSolutions(m,x.clues,2)===1;x.validated=!!unique;x.validationTier=unique?'unique':'failed';}});
+ project.items.forEach(x=>{
+   if(x.type==='wordsearch'||x.type==='numbersearch'){
+     const ok=(x.items||[]).every(p=>[...p.s].every((ch,i)=>x.grid?.[p.r+p.dr*i]?.[p.c+p.dc*i]===ch));x.validated=ok;x.validationTier=ok?'placement':'failed';
+   }else if(x.type==='mini'){const ct=miniCountSolutions(x,2);x.validated=ct===1;x.validationTier=ct===1?'unique':'failed';
+   }else if(x.type==='killer'){const ct=killerCountSolutions(x,2);x.validated=ct===1;x.validationTier=ct===1?'unique':'failed';
+   }else if(x.type==='hidato'){const ct=hidatoCountSolutions(x,2);x.validated=ct===1;x.validationTier=ct===1?'unique':'failed';
+   }else if(x.type==='irregular'){const ct=countIrregular(clone(x.puzzle),x.regions,2);x.validated=ct===1;x.validationTier=ct===1?'unique':'failed';
+   }else if(x.type==='magicsquare'){
+     const a=x.solution||[],m=x.magic;const ok=a.length===3&&a.every(r=>r.reduce((q,v)=>q+v,0)===m)&&[0,1,2].every(c=>a.reduce((q,r)=>q+r[c],0)===m)&&a[0][0]+a[1][1]+a[2][2]===m&&a[0][2]+a[1][1]+a[2][0]===m;x.validated=ok;x.validationTier=ok?'math':'failed';
+   }else if(x.type==='missingnumber'){x.validated=Array.isArray(x.missingIndices)&&x.missingIndices.length===1;x.validationTier=x.validated?'math':'failed';}
+ });
  let failed=project.items.map((x,i)=>(!x.validated||x.validationTier==='failed')?i+1:null).filter(Boolean);
  if(failed.length)issues.push(`Validation failed or is unconfirmed for puzzle(s): ${failed.join(', ')}.`);
  let knownOnly=project.items.map((x,i)=>x.validationTier==='known-answer'?i+1:null).filter(Boolean);
  if(knownOnly.length)warnings.push(`Puzzle(s) ${knownOnly.join(', ')} have a known generated answer but no uniqueness proof.`);
  let structural=project.items.filter(x=>x.validationTier==='structural').length;
  let unique=project.items.filter(x=>x.validationTier==='unique').length;
+ let placement=project.items.filter(x=>x.validationTier==='placement').length;
+ let math=project.items.filter(x=>x.validationTier==='math').length;
  let fps=new Map(),dups=[];
  project.items.forEach((x,i)=>{let f=puzzleFingerprint(x);if(fps.has(f))dups.push([fps.get(f)+1,i+1]);else fps.set(f,i)});
  if(dups.length)warnings.push(`Possible duplicate puzzle pairs: ${dups.map(x=>x.join(' & ')).join(', ')}.`);
@@ -3998,7 +4042,7 @@ function runQC(){
  }).filter(Boolean);
  if(badAnswers.length)issues.push(`Puzzle(s) missing solution data: ${badAnswers.join(', ')}.`);
  if($('copyrightPage').checked && !($('copyrightText').value||'').trim())warnings.push('Copyright page is enabled with generic publication text. Add your own wording if desired.');
- let box=$('qcResults'),summary=`${unique} unique-solution verified • ${structural} structurally verified • ${knownOnly.length} known-answer only`;
+ let box=$('qcResults'),summary=`${unique} unique-solution verified • ${placement} placement verified • ${math} math-rule verified • ${structural} structurally verified • ${knownOnly.length} known-answer only`;
  if(issues.length){box.className='qc-box qc-bad';box.innerHTML='<b>Quality check: problems found</b><br>'+summary+'<br><br>'+issues.map(x=>'• '+x).join('<br>')+(warnings.length?'<br><br><b>Warnings</b><br>'+warnings.map(x=>'• '+x).join('<br>'):'')}
  else if(warnings.length){box.className='qc-box qc-warn';box.innerHTML='<b>Quality check: usable with warnings</b><br>'+summary+'<br><br>'+warnings.map(x=>'• '+x).join('<br>')}
  else {box.className='qc-box qc-good';box.innerHTML=`<b>Quality check passed</b><br>${summary}<br>${n} puzzle${n===1?'':'s'} checked. No duplicate fingerprints, missing answers, or validation failures detected.`}
@@ -4277,7 +4321,7 @@ async function updateOfflineStatus(){
   }
   try{
     await navigator.serviceWorker.ready;
-    const cache=await caches.open('offline-puzzle-studio-v23-0');
+    const cache=await caches.open('offline-puzzle-studio-v23-1');
     const cached=await cache.match('./index.html');
     el.textContent=cached
       ? 'Offline ready — this version is cached on this device.'
