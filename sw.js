@@ -1,4 +1,4 @@
-const CACHE='offline-puzzle-studio-v22-9';
+const CACHE='offline-puzzle-studio-v23-0';
 const CORE=['./','./index.html','./sw.js'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
