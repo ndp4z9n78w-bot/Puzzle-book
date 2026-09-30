@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v23.5 — Adversarial QC Candidate</title>
+<title>Offline Puzzle Studio v23.6 — Adversarial QC Candidate</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -429,6 +429,10 @@ details summary{cursor:pointer;font-weight:700}
   position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible
 }
 .word-category{text-align:center;font-size:13px;font-weight:700;margin:0 0 8px}
+.word-grid-svg{display:block;margin:auto;width:min(100%,6.1in);height:auto;aspect-ratio:1/1;overflow:visible}
+.solution-grid.two .word-grid-svg{width:min(100%,3.05in)!important}
+.solution-grid.four .word-grid-svg{width:min(100%,2.05in)!important}
+
 .solution-grid{height:calc(100% - .72in)!important;overflow:hidden}
 .solution-grid.two{grid-template-columns:1fr!important;grid-template-rows:minmax(0,1fr) minmax(0,1fr)!important;gap:.25in!important}
 .solution-grid.four{grid-template-columns:1fr 1fr!important;grid-template-rows:1fr 1fr!important;gap:.18in!important}
@@ -689,8 +693,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v23.5</span></h1><div class="build-version">Exact build: v23.5 • Bug Squash + Adversarial QC • Verified How-To Integration</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v23.5</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v23.6</span></h1><div class="build-version">Exact build: v23.6 • Bug Squash + Adversarial QC • Verified How-To Integration</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v23.6</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -1103,8 +1107,8 @@ function makeMaze(diff){
 
 /* ---------- KAKURO ---------- */
 function kakuroPattern(n,diff){
- let target={Easy:.12,Medium:.20,Hard:.27,Expert:.32}[diff]??.20,best=null;
- for(let attempt=0;attempt<100;attempt++){
+ let target={Easy:.28,Medium:.32,Hard:.36,Expert:.40}[diff]??.32,best=null;
+ for(let attempt=0;attempt<28;attempt++){
   let white=Array.from({length:n},()=>Array(n).fill(true));
   let cells=shuffle([...Array(n*n).keys()]);
   let want=Math.floor(n*n*target),placed=0;
@@ -1179,7 +1183,7 @@ function kakuroClues(item){
 function makeKakuro(diff){
  let n={Easy:5,Medium:6,Hard:7,Expert:8}[diff]||6;
  // Publication rule: generator itself must prove uniqueness before a puzzle enters the project.
- for(let attempt=0;attempt<24;attempt++){
+ for(let attempt=0;attempt<12;attempt++){
   let w=kakuroPattern(n,diff)||Array.from({length:n},()=>Array(n).fill(true));
   let core=buildKakuroFromPattern(w),item={type:'kakuro',w:core.w,solution:core.solution,runs:core.runs,cellRuns:core.cellRuns,clues:null,validated:false,validationTier:'failed'};
   item.clues=kakuroClues(item);
@@ -1452,7 +1456,7 @@ function nonoClues(arr){
 }
 function makeNonogram(diff){
  const n=overrideSize({Easy:8,Medium:10,Hard:12,Expert:15}[diff],[8,10,12,15]);
- const familyPool=varietyLevel()==='standard'?['diamond','heart','letter']:['diamond','heart','letter','rings','symmetric'];
+ const familyPool=varietyLevel()==='standard'?['diamond','heart','letter','house','tree','sailboat','fish']:['diamond','heart','letter','house','tree','sailboat','fish','flower','cup','umbrella','rings','symmetric'];
  for(let attempt=0;attempt<50;attempt++){
   const family=pick(familyPool),grid=Array.from({length:n},()=>Array(n).fill(0));
   let answerLabel='Pattern',mid=(n-1)/2;
@@ -1462,6 +1466,24 @@ function makeNonogram(diff){
   }else if(family==='heart'){
    answerLabel='Heart';
    for(let r=0;r<n;r++)for(let c=0;c<n;c++){const x=(c-mid)/(n*.34),y=(r-n*.48)/(n*.38),q=x*x+y*y-1;if(q*q*q-x*x*y*y*y<=0)grid[r][c]=1}
+  }else if(family==='house'){
+   answerLabel='House';const lo=Math.floor(n*.22),hi=n-1-lo,roof=Math.floor(n*.22),base=Math.floor(n*.48);
+   for(let r=roof;r<=base;r++){let span=r-roof;let l=Math.max(lo,Math.floor(mid-span)),rr=Math.min(hi,Math.ceil(mid+span));grid[r][l]=1;grid[r][rr]=1}
+   for(let r=base;r<=hi;r++){grid[r][lo]=1;grid[r][hi]=1}for(let c=lo;c<=hi;c++){grid[base][c]=1;grid[hi][c]=1}
+  }else if(family==='tree'){
+   answerLabel='Tree';const top=Math.max(1,Math.floor(n*.1)),bottom=Math.floor(n*.68),trunk=Math.max(1,Math.floor(n*.12));
+   for(let r=top;r<=bottom;r++){let span=Math.max(1,Math.floor((r-top+2)*.42));for(let c=Math.max(0,Math.floor(mid)-span);c<=Math.min(n-1,Math.ceil(mid)+span);c++)grid[r][c]=1}
+   for(let r=bottom+1;r<n-1;r++)for(let c=Math.floor(mid)-trunk;c<=Math.floor(mid)+trunk;c++)if(c>=0&&c<n)grid[r][c]=1;
+  }else if(family==='sailboat'){
+   answerLabel='Sailboat';const mast=Math.floor(mid);for(let r=1;r<Math.floor(n*.7);r++)grid[r][mast]=1;for(let r=2;r<Math.floor(n*.58);r++)for(let c=mast+1;c<=Math.min(n-2,mast+r-1);c++)grid[r][c]=1;let br=Math.floor(n*.72);for(let c=1;c<n-1;c++)grid[br][c]=1;for(let c=2;c<n-2;c++)grid[Math.min(n-1,br+1)][c]=1;
+  }else if(family==='fish'){
+   answerLabel='Fish';const cr=Math.floor(mid),left=Math.floor(n*.2),right=Math.floor(n*.72),h=Math.max(1,Math.floor(n*.18));for(let r=cr-h;r<=cr+h;r++)for(let c=left;c<=right;c++){let dx=(c-(left+right)/2)/((right-left)/2),dy=(r-cr)/h;if(dx*dx+dy*dy<=1)grid[r][c]=1}for(let k=0;k<=h;k++){if(right+k<n)grid[cr-k][right+k]=1;if(right+k<n)grid[cr+k][right+k]=1}
+  }else if(family==='flower'){
+   answerLabel='Flower';const cr=Math.floor(n*.38),cc=Math.floor(mid),rad=Math.max(1,Math.floor(n*.12));for(let r=0;r<n;r++)for(let c=0;c<n;c++){let d=Math.hypot(r-cr,c-cc);if(d<=rad||Math.abs(d-rad*2)<rad*.65)grid[r][c]=1}for(let r=cr+rad;r<n-1;r++)grid[r][cc]=1;
+  }else if(family==='cup'){
+   answerLabel='Cup';const top=Math.floor(n*.28),bot=Math.floor(n*.72),l=Math.floor(n*.2),rr=Math.floor(n*.68);for(let r=top;r<=bot;r++){grid[r][l]=1;grid[r][rr]=1}for(let c=l;c<=rr;c++)grid[bot][c]=1;for(let r=top+1;r<bot;r++)if(rr+2<n)grid[r][rr+2]=1;
+  }else if(family==='umbrella'){
+   answerLabel='Umbrella';const cr=Math.floor(n*.42),cc=Math.floor(mid),rad=Math.max(2,Math.floor(n*.34));for(let c=Math.max(0,cc-rad);c<=Math.min(n-1,cc+rad);c++){let dx=(c-cc)/rad,rr=cr-Math.round(Math.sqrt(Math.max(0,1-dx*dx))*rad*.65);for(let r=rr;r<=cr;r++)grid[r][c]=1}for(let r=cr;r<n-2;r++)grid[r][cc]=1;if(cc+1<n)grid[n-2][cc+1]=1;
   }else if(family==='rings'){
    answerLabel='Rings';for(let r=0;r<n;r++)for(let c=0;c<n;c++){const d=Math.max(Math.abs(r-mid),Math.abs(c-mid));if(Math.round(d)%2===0)grid[r][c]=1}
   }else if(family==='symmetric'){
@@ -1537,7 +1559,9 @@ function makeMini(diff){
 
 /* ---------- KILLER SUDOKU ---------- */
 function makeKiller(diff){
-  const base=makeSudoku(diff),sol=base.solution,cages=[],seen=Array.from({length:9},()=>Array(9).fill(false));
+  // Killer only needs a completed Sudoku solution; do not waste time generating/removing ordinary Sudoku clues.
+  const sol=Array.from({length:9},()=>Array(9).fill(0));solveSudoku(sol);
+  const cages=[],seen=Array.from({length:9},()=>Array(9).fill(false));
   const maxSize={Easy:2,Medium:3,Hard:4,Expert:5}[diff]||3;
   for(let r=0;r<9;r++)for(let c=0;c<9;c++)if(!seen[r][c]){
     const desired=2+Math.floor(Math.random()*Math.max(1,maxSize-1)),cells=[[r,c]],digits=new Set([sol[r][c]]);seen[r][c]=true;
@@ -1648,7 +1672,12 @@ function killerCountSolutions(item,limit=2){
   let br=Math.floor(r/3)*3,bc=Math.floor(c/3)*3;for(let rr=br;rr<br+3;rr++)for(let cc=bc;cc<bc+3;cc++)if(b[rr][cc]===v)return false;
   let cg=item.cages[cellCage[r][c]],sum=v,used=new Set([v]),unk=0;
   for(let [rr,cc] of cg.cells){if(rr===r&&cc===c)continue;let x=b[rr][cc];if(x){if(used.has(x))return false;used.add(x);sum+=x}else unk++}
-  if(sum>cg.sum)return false;if(!unk)return sum===cg.sum;return true
+  if(sum>cg.sum)return false;if(!unk)return sum===cg.sum;
+  // Bound the remaining cage sum with unused digits. This rejects impossible branches early.
+  const avail=[];for(let d=1;d<=9;d++)if(!used.has(d))avail.push(d);
+  if(avail.length<unk)return false;
+  const min=sum+avail.slice(0,unk).reduce((a,b)=>a+b,0),max=sum+avail.slice(-unk).reduce((a,b)=>a+b,0);
+  return min<=cg.sum&&max>=cg.sum
  }
  function rec(){
   if(count>=limit)return;let best=null,bestC=null;
@@ -1860,22 +1889,31 @@ function makeTakuzu(diff){
 /* ---------- MAGIC SQUARE ---------- */
 function makeMagicSquare(diff){
  let base=[[8,1,6],[3,5,7],[4,9,2]],sol=clone(base);
- const transforms=1+(varietyLevel()==='standard'?2:6);
- for(let t=0;t<transforms;t++){
+ for(let t=0;t<2+Math.floor(Math.random()*5);t++){
    let op=Math.floor(Math.random()*3);
    if(op===0)sol=sol.map(r=>r.slice().reverse());
    if(op===1)sol=sol.slice().reverse();
    if(op===2)sol=sol[0].map((_,c)=>sol.map(r=>r[c]));
  }
- let scale=varietyLevel()==='wild'?pick([1,1,2,3]):1;
- let add=varietyLevel()==='wild'?pick([0,0,3,5,10]):0;
- if(scale!==1||add!==0)sol=sol.map(r=>r.map(v=>v*scale+add));
- let magic=sol[0].reduce((a,b)=>a+b,0),puzzle=clone(sol),remove={Easy:3,Medium:4,Hard:5,Expert:6}[diff];
+ // Positive affine transforms preserve every magic-square line equality.
+ // Keep values small enough for a friendly 3x3 arithmetic puzzle.
+ const choices=[{scale:1,add:0},{scale:1,add:1},{scale:1,add:2},{scale:1,add:5},{scale:2,add:0},{scale:2,add:1}];
+ const tr=pick(choices);sol=sol.map(r=>r.map(v=>v*tr.scale+tr.add));
+ let magic=sol[0].reduce((a,b)=>a+b,0),allowed=[...new Set(sol.flat())].sort((a,b)=>a-b),puzzle=clone(sol),remove={Easy:3,Medium:4,Hard:5,Expert:6}[diff];
  for(let idx of shuffle([...Array(9).keys()]).slice(0,remove))puzzle[Math.floor(idx/3)][idx%3]=0;
- return {type:'magicsquare',n:3,puzzle,solution:sol,magic,validated:true,validationTier:'structural'}
+ return {type:'magicsquare',n:3,puzzle,solution:sol,magic,allowed,validated:true,validationTier:'structural'}
 }
 
-/* ---------- MISSING NUMBER ---------- */
+function missingNumberRule(kind,seq){
+ if(kind===0){const d=seq[1]-seq[0];return `Add ${d} each time.`}
+ if(kind===1){const m=seq[1]/seq[0];return `Multiply by ${m} each time.`}
+ if(kind===2)return 'Each number is the sum of the previous two numbers.';
+ if(kind===3)return 'Add consecutive odd numbers: +1, +3, +5, +7, ...';
+ if(kind===4)return 'Add the next counting number each time: +1, +2, +3, +4, ...';
+ if(kind===6)return 'The added amount grows by 2 each step.';
+ if(kind===7)return 'Add powers of 2: +1, +2, +4, +8, ...';
+ return 'Compare each step and use the same repeating pattern across the whole sequence.';
+}
 function makeMissingNumber(diff){
  let maxKind=varietyLevel()==='standard'?4:varietyLevel()==='high'?7:10;
  let kind=Math.floor(Math.random()*maxKind),seq=[];
@@ -1889,10 +1927,9 @@ function makeMissingNumber(diff){
  else if(kind===7){let a=1+Math.floor(Math.random()*5);seq=Array.from({length:7},(_,i)=>a+Math.pow(2,i))}
  else if(kind===8){let a=10+Math.floor(Math.random()*20);seq=Array.from({length:7},(_,i)=>a+(i%2?3:-2)*i)}
  else {let a=1+Math.floor(Math.random()*5),b=2+Math.floor(Math.random()*5);seq=[a,b];for(let i=2;i<7;i++)seq.push(seq[i-1]+seq[i-2]+(i%2))}
- let missingCount=1;
- let choices=shuffle([...Array(seq.length-2).keys()].map(i=>i+1)),missingIndices=choices.slice(0,missingCount).sort((a,b)=>a-b);
- let puzzle=seq.slice();missingIndices.forEach(i=>puzzle[i]=null);
- return {type:'missingnumber',puzzle,solution:seq,answer:missingIndices.map(i=>seq[i]),missingIndex:missingIndices[0],missingIndices,patternKind:kind,validated:true,validationTier:'structural'}
+ let missingCount=1,choices=shuffle([...Array(seq.length-2).keys()].map(i=>i+1)),missingIndices=choices.slice(0,missingCount).sort((a,b)=>a-b),puzzle=seq.slice();
+ missingIndices.forEach(i=>puzzle[i]=null);
+ return {type:'missingnumber',puzzle,solution:seq,answer:missingIndices.map(i=>seq[i]),missingIndex:missingIndices[0],missingIndices,patternKind:kind,ruleText:missingNumberRule(kind,seq),validated:true,validationTier:'structural'}
 }
 
 /* ---------- RENDERING ---------- */
@@ -2828,8 +2865,8 @@ function instructionHtml(type){
   const maps={
     sudoku:()=>page('Fill every empty cell so each row, column, and 3×3 box contains 1–9 exactly once.',
       `<div class="ht-grid">${card('Each Row','<div class="ht-big">1 2 3 4 5 6 7 8 9</div><p class="ht-center">No repeats.</p>')}${card('Each Column',table([[1],[2],[3],[4],[5],[6],[7],[8],[9]]))}${card('Each 3×3 Box',table([[1,2,3],[4,5,6],[7,8,9]]))}</div>${section('Try It Yourself',`<div class="ht-row wide-left"><div>${tableClass(sudokuPractice,sudokuCls,'s9')}</div><div><p><strong>What number belongs in the ? cell?</strong></p><ul class="ht-list"><li>Check its row.</li><li>Check its column.</li><li>Check its 3×3 box.</li></ul><p>Only one digit satisfies all three rules.</p></div></div>`)}${section('Complete Solution Example',table(sudokuSol,'s9'))}`),
-    kakuro:()=>page('Fill white cells with 1–9. Each run must add to its clue, with no repeated digit inside that run.',
-      `<div class="ht-grid">${card('Read the Clue','<div class="ht-kakuro-clue"><span class="d">D 17</span><span class="a">A 4</span></div><p class="ht-center">The diagonal rises from bottom-left to top-right, matching the puzzle cells. A is top-right; D is bottom-left.</p>')}${card('Match the Sum','<div class="ht-big">A 16 → 7 + 9</div><div class="ht-big">D 9 → 4 + 5</div>')}${card('No Repeats','<div class="ht-big">1 + 5 = 6 ✓</div><div class="ht-big">3 + 3 = 6 ✗</div>')}</div>${section('Worked Example','<div class="ht-big">A 16 → 7 + 9</div><p class="ht-center">The two white cells to the right total 16 and use different digits.</p>')}${section('Try It Yourself','<div class="ht-big">A 9 → 4 + ?</div><p class="ht-center">The missing digit is 5.</p>')}`),
+    kakuro:()=>page('Goal: fill every white square with 1–9 so each run adds to its printed clue. A digit may not repeat inside the same run.',
+      `<div class="ht-grid">${card('1. Read a Clue Cell','<div class="ht-kakuro-clue"><span class="d">D 17</span><span class="a">A 4</span></div><p class="ht-center"><strong>A 4</strong> controls the white squares immediately to the right. <strong>D 17</strong> controls the white squares immediately below. The diagonal matches the puzzle.</p>')}${card('2. Make the Sum','<div class="ht-big">A 4 → 1 + 3</div><p>Those two cells must total 4. They cannot be 2 + 2 because repeats are forbidden in one run.</p>')}${card('3. Use Crossings','<div class="ht-big">A 16 → 7 + 9</div><p>A crossing down clue can tell you which cell is 7 and which is 9.</p>')}</div>${section('Worked Example','<div class="ht-row"><div><div class="ht-kakuro-clue"><span class="a">A 16</span></div></div><div><div class="ht-big">□ + □ = 16</div><p>Two different digits that total 16 can only be <strong>7 and 9</strong>. A crossing clue decides their order.</p></div></div>')}${section('Try It Yourself','<div class="ht-big">A 9 → 4 + □</div><p class="ht-center">What belongs in the empty cell?</p><p class="ht-center"><strong>Answer: 5</strong>, because 4 + 5 = 9 and the digits are different.</p>')}${section('Remember','<p class="ht-center"><strong>Across clue → right. Down clue → below. Match the sum. Never repeat a digit inside one run.</strong></p>')}`),
     slither:()=>page('Draw one continuous closed loop along the dots. Each clue tells exactly how many sides of that cell belong to the loop.',
       `<div class="ht-grid">${card('Read the Clues','<div class="ht-big">0 &nbsp; 1 &nbsp; 2 &nbsp; 3</div><p>Each number counts used sides.</p>')}${card('Make One Loop','<p class="ht-center">No separate loops, no loose ends.</p>')}${card('Never Branch','<p class="ht-center">At a dot, the loop continues through or does not touch it.</p>')}</div><div class="ht-grid two">${card('Quick Logic: 0','<div class="ht-logic-cell zero"><b>0</b><i class="x t">×</i><i class="x r">×</i><i class="x b">×</i><i class="x l">×</i></div><p class="ht-center">No sides are used.</p>')}${card('Quick Logic: 2','<div class="ht-logic-cell two"><b>2</b></div><p class="ht-center"><strong>Top + right</strong> are the 2 used sides.</p>')}</div>${section('Try It Yourself',`<div class="ht-row"><div>${slitherGrid(false)}</div><div><p>Use the 4×4 clues to make one loop.</p><p>Every cell shows its calculated clue.</p></div></div>`)}${section('Complete Solution Example',slitherGrid(true))}`),
     wordsearch:()=>page('Find every word hidden in the letter grid. Words may run horizontally, vertically, or diagonally in either direction.',
@@ -3467,7 +3504,39 @@ function missingNumberBlock(item,answer){
      let comma=document.createElement('span');comma.textContent=',';d.appendChild(comma);
    }
  });
+ if(answer&&item.ruleText){let rule=document.createElement('div');rule.className='missing-rule';rule.textContent='Rule: '+item.ruleText;d.appendChild(rule)}
  return d
+}
+function searchPathText(item,p){
+ if(!p||typeof p.s!=='string'||!p.s.length||!Number.isInteger(p.r)||!Number.isInteger(p.c)||!Number.isInteger(p.dr)||!Number.isInteger(p.dc))return null;
+ if(![-1,0,1].includes(p.dr)||![-1,0,1].includes(p.dc)||(p.dr===0&&p.dc===0))return null;
+ let out='';
+ for(let i=0;i<p.s.length;i++){
+   const r=p.r+p.dr*i,c=p.c+p.dc*i;
+   if(r<0||c<0||r>=item.grid.length||c>=item.grid[r].length)return null;
+   out+=String(item.grid[r][c]);
+ }
+ return out;
+}
+function searchPlacementsOK(item){
+ if(!Array.isArray(item.grid)||!item.grid.length||!Array.isArray(item.items)||!item.items.length)return false;
+ const n=item.grid.length;if(!item.grid.every(row=>Array.isArray(row)&&row.length===n))return false;
+ return item.items.every(p=>searchPathText(item,p)===String(p.s));
+}
+function searchAnswerSvg(item){
+ const ns='http://www.w3.org/2000/svg',n=item.grid.length,svg=document.createElementNS(ns,'svg');
+ svg.setAttribute('viewBox',`0 0 ${n} ${n}`);svg.setAttribute('class','word-grid-svg');svg.setAttribute('role','img');
+ // Draw the characters and answer outlines in one coordinate system so print scaling cannot desynchronize them.
+ for(let r=0;r<n;r++)for(let c=0;c<n;c++){
+   const tx=document.createElementNS(ns,'text');tx.setAttribute('x',c+.5);tx.setAttribute('y',r+.5);tx.setAttribute('text-anchor','middle');tx.setAttribute('dominant-baseline','central');tx.setAttribute('font-family','Arial, sans-serif');tx.setAttribute('font-size','.47');tx.setAttribute('font-weight','700');tx.textContent=item.grid[r][c];svg.appendChild(tx);
+ }
+ for(const p of item.items){
+   if(searchPathText(item,p)!==String(p.s))continue;
+   const x1=p.c+.5,y1=p.r+.5,x2=p.c+p.dc*(p.s.length-1)+.5,y2=p.r+p.dr*(p.s.length-1)+.5;
+   const mx=(x1+x2)/2,my=(y1+y2)/2,dist=Math.hypot(x2-x1,y2-y1)+.78,angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
+   const rect=document.createElementNS(ns,'rect');rect.setAttribute('x',mx-dist/2);rect.setAttribute('y',my-.37);rect.setAttribute('width',dist);rect.setAttribute('height','.74');rect.setAttribute('rx','.37');rect.setAttribute('fill','none');rect.setAttribute('stroke','#111');rect.setAttribute('stroke-width','.075');rect.setAttribute('vector-effect','non-scaling-stroke');rect.setAttribute('transform',`rotate(${angle} ${mx} ${my})`);svg.appendChild(rect);
+ }
+ return svg;
 }
 function searchBlock(item,answer){
  let d=document.createElement('div');
@@ -3475,21 +3544,11 @@ function searchBlock(item,answer){
    let cat=document.createElement('div');cat.className='word-category';cat.textContent=`Category: ${item.category||'Word Search'}`;d.appendChild(cat)
  }
  let wrap=document.createElement('div');wrap.className='search-grid-wrap';
- let t=document.createElement('table');t.className='word-grid';
- item.grid.forEach(row=>{let tr=t.insertRow();row.forEach(v=>{let td=tr.insertCell();td.textContent=v})});
- wrap.appendChild(t);
  if(answer){
-   let n=item.grid.length,svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-   svg.setAttribute('viewBox',`0 0 ${n} ${n}`);svg.setAttribute('class','search-answer-overlay');
-   for(let p of item.items){
-     let x1=p.c+.5,y1=p.r+.5,x2=p.c+p.dc*(p.s.length-1)+.5,y2=p.r+p.dr*(p.s.length-1)+.5;
-     let mx=(x1+x2)/2,my=(y1+y2)/2,dist=Math.hypot(x2-x1,y2-y1)+.90,angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
-     let rect=document.createElementNS(svg.namespaceURI,'rect');
-     rect.setAttribute('x',mx-dist/2);rect.setAttribute('y',my-.42);rect.setAttribute('width',dist);rect.setAttribute('height','.84');
-     rect.setAttribute('rx','.48');rect.setAttribute('fill','none');rect.setAttribute('stroke','#111');rect.setAttribute('stroke-width','.09');
-     rect.setAttribute('transform',`rotate(${angle} ${mx} ${my})`);svg.appendChild(rect);
-   }
-   wrap.appendChild(svg)
+   wrap.appendChild(searchAnswerSvg(item));
+ }else{
+   let t=document.createElement('table');t.className='word-grid';
+   item.grid.forEach(row=>{let tr=t.insertRow();row.forEach(v=>{let td=tr.insertCell();td.textContent=v})});wrap.appendChild(t);
  }
  let list=document.createElement('div');list.className='word-list';list.innerHTML=item.items.map(x=>`<div>${x.s}</div>`).join('');
  d.appendChild(wrap);d.appendChild(list);return d
@@ -3506,7 +3565,7 @@ function cryptogramBlock(item,answer){
 }
 function magicSquareBlock(item,answer){
  let wrap=document.createElement('div');wrap.className='magic-square-block';
- let target=document.createElement('div');target.className='magic-target';target.innerHTML=`<strong>Target Sum: ${item.magic}</strong><br><small>Every row, column &amp; both main diagonals</small>`;wrap.appendChild(target);
+ let target=document.createElement('div');target.className='magic-target';const allowed=(item.allowed||[...new Set((item.solution||[]).flat())]).join(', ');target.innerHTML=`<strong>Target Sum: ${item.magic}</strong><br><small>Use each once: ${allowed}<br>Every row, column &amp; both main diagonals</small>`;wrap.appendChild(target);
  wrap.appendChild(genericTable(answer?item.solution:item.puzzle));return wrap;
 }
 
@@ -4102,7 +4161,7 @@ function runQC(){
      }else if(x.type==='maze'){
        x.validated=mazePathOK(x);x.validationTier=x.validated?'path':'failed';
      }else if(x.type==='wordsearch'||x.type==='numbersearch'){
-       const ok=(x.items||[]).length>0&&(x.items||[]).every(p=>[...p.s].every((ch,i)=>x.grid?.[p.r+p.dr*i]?.[p.c+p.dc*i]===ch));x.validated=ok;x.validationTier=ok?'placement':'failed';
+       const ok=searchPlacementsOK(x);x.validated=ok;x.validationTier=ok?'placement':'failed';
      }else if(x.type==='cryptogram'){
        x.validated=cryptogramOK(x);x.validationTier=x.validated?'mapping':'failed';
      }else if(x.type==='nonogram'){
@@ -4433,7 +4492,7 @@ async function updateOfflineStatus(){
   }
   try{
     await navigator.serviceWorker.ready;
-    const cache=await caches.open('offline-puzzle-studio-v23-5');
+    const cache=await caches.open('offline-puzzle-studio-v23.6');
     const cached=await cache.match('./index.html');
     el.textContent=cached
       ? 'Offline ready — this version is cached on this device.'
