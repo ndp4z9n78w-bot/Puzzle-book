@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v23.13 — Adversarial QC Candidate</title>
+<title>Offline Puzzle Studio v23.15 — Consolidated Repair</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -745,10 +745,10 @@ details summary{cursor:pointer;font-weight:700}
 .sheet[data-item-index]>.puzzle-wrap{margin-top:.08in!important;}
 
 </style>
-</head>
+\n<style id="v2315-consolidated-layout">\n/* v23.15: fixed KDP geometry. These rules intentionally come last. */\n.sheet:has(.howto-page){padding:.38in .42in!important;}\n.sheet:has(.howto-page)>h2{height:auto!important;min-height:.30in!important;margin:0 0 .10in!important;line-height:1.15!important;}\n.sheet .howto-page{display:block!important;height:auto!important;max-height:none!important;overflow:visible!important;font-size:10px!important;line-height:1.35!important;}\n.sheet .howto-page .howto-goal{display:block!important;height:auto!important;min-height:.34in!important;margin:0 0 .12in!important;padding:.04in .10in!important;line-height:1.35!important;}\n.sheet .howto-page .ht-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.10in!important;margin:0 0 .12in!important;}\n.sheet .howto-page .ht-card{display:block!important;height:auto!important;min-height:1.38in!important;padding:.10in!important;overflow:visible!important;}\n.sheet .howto-page .ht-card h3,.sheet .howto-page .ht-section h3{display:block!important;height:auto!important;min-height:.20in!important;margin:0 0 .08in!important;line-height:1.2!important;}\n.sheet .howto-page .ht-card p,.sheet .howto-page .ht-section p{display:block!important;position:static!important;height:auto!important;margin:.06in 0!important;line-height:1.38!important;}\n.sheet .howto-page .ht-big{display:block!important;position:static!important;height:auto!important;min-height:.30in!important;margin:.08in 0!important;line-height:1.55!important;white-space:normal!important;}\n.sheet .howto-page .ht-section{display:block!important;height:auto!important;min-height:1.52in!important;margin:0 0 .12in!important;padding:.11in .12in!important;overflow:visible!important;}\n.sheet .howto-page .ht-row,.sheet .howto-page .ht-split{display:grid!important;grid-template-columns:1fr 1fr!important;gap:.18in!important;align-items:center!important;}\n.sheet .howto-page table{margin:.08in auto!important;}\n.sheet .howto-page[data-howto-type="missingnumber"] .ht-section{min-height:1.30in!important;}\n.sheet .howto-page[data-howto-type="takuzu"] .ht-section{min-height:1.48in!important;}\n.sheet .howto-page[data-howto-type="kenken"] .ht-section{min-height:1.42in!important;}\n.ht-logic-cell{border:3px solid #111!important;} .ht-logic-cell.two{border-top:7px solid #111!important;border-right:7px solid #111!important;}\n.puzzle-wrap{padding-top:.16in!important;} .sheet>h2{margin-bottom:.06in!important;} .sheet>.subtitle{margin-top:.04in!important;margin-bottom:.12in!important;line-height:1.35!important;}\n.magic-target{margin-bottom:.16in!important;line-height:1.35!important}.magic-target .magic-lines{display:block!important;margin-top:.08in!important;line-height:1.55!important}.magic-target .magic-lines span{display:block!important;margin:.035in 0!important}.magic-square-block table{transform:scale(1.18);transform-origin:top center;margin-top:.12in!important;margin-bottom:.22in!important}\n.missing-sequence{display:flex!important;flex-direction:column!important;align-items:center!important;gap:.10in!important}.missing-number-line{display:flex!important;position:static!important;gap:.055in!important;line-height:1.4!important}.missing-rule{display:block!important;position:static!important;margin:.10in auto 0!important;line-height:1.4!important;}\n.solution-mini .missing-sequence{gap:.12in!important}.solution-mini .missing-rule{font-size:11px!important;margin-top:.12in!important;}\n.word-grid-svg{width:min(100%,6.35in)!important}.solution-grid.one .word-grid-svg{width:min(100%,6.0in)!important}.solution-grid.one .solution-mini{height:auto!important;min-height:8.2in!important}.word-list{font-size:11px!important;line-height:1.35!important;}\n</style>\n</head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v23.13</span></h1><div class="build-version">Exact build: v23.13 • Bug Squash + Adversarial QC • Verified How-To Integration</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v23.13</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v23.15</span></h1><div class="build-version">Exact build: v23.15 • Consolidated Layout + QC + Performance Repair</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v23.15</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -1031,7 +1031,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='23.14';
+const PUZZLE_STUDIO_VERSION='23.15';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]},overviewMandalaReview=false;
@@ -1103,7 +1103,7 @@ function sudokuTierMatches(diff,g){
  if(diff==='Easy')return g.tier<=2&&g.solved;
  if(diff==='Medium')return g.tier>=2&&g.tier<=3;
  if(diff==='Hard')return g.tier>=3&&g.tier<=4;
- if(diff==='Expert')return g.tier>=4; // must exceed singles/basic elimination
+ if(diff==='Expert')return g.tier>=5; // Expert must exceed the Hard-tier solver
  return true;
 }
 function makeSudoku(diff){
@@ -1408,10 +1408,17 @@ function makeSlither(diff){
     for(let r=1;r<R-1;r++)for(let c=1;c<C-1;c++)region.add(`${r},${c}`);
     solution=boundaryFromRegion(model,region);
   }
-  // v23.1: every cell displays its calculated 0-3 clue; no intentionally blank clue squares.
   const clues=fullSlitherClues(model,solution);
+  // Difficulty is now driven by deduction load as well as grid size. Remove clues only when uniqueness survives.
+  const removeTarget={Easy:0,Medium:Math.floor(R*C*.08),Hard:Math.floor(R*C*.18),Expert:Math.floor(R*C*.30)}[diff]||0;
+  let removed=0;
+  for(const idx of shuffle([...Array(R*C).keys()])){
+    if(removed>=removeTarget)break; const r=Math.floor(idx/C),c=idx%C,old=clues[r][c]; clues[r][c]=null;
+    if(slitherCountSolutions(model,clues,2)===1)removed++; else clues[r][c]=old;
+  }
   const unique=slitherCountSolutions(model,clues,2)===1;
-  return {type:'slither',R,C,clues,solution,validated:unique&&isSingleLoop(model,solution),validationTier:unique?'unique':'structural'};
+  const difficultyVerified=unique && (diff!=='Expert' || removed>=Math.floor(removeTarget*.70));
+  return {type:'slither',R,C,clues,solution,validated:unique&&isSingleLoop(model,solution),validationTier:unique?'unique':'structural',difficultyVerified,difficultyGrade:diff==='Expert'?'advanced loop deductions':'size + clue density',removedClues:removed};
 }
 
 function varietyLevel(){return $('varietyLevel')?.value||'high'}
@@ -1609,7 +1616,7 @@ function makeNonogram(diff){
   // Never add decorative/forced cells: the answer image itself is the source of truth.
   if(family==='symmetric')for(let r=0;r<n;r++)for(let c=0;c<n;c++)grid[r][n-1-c]=grid[r][c];
   const rows=grid.map(nonoClues),cols=Array.from({length:n},(_,c)=>nonoClues(grid.map(row=>row[c]))),probe={type:'nonogram',grid,rows,cols};
-  if(nonogramCountSolutions(probe,2)===1)return {type:'nonogram',grid,rows,cols,family,answerLabel,validated:true,validationTier:'unique'};
+  if(nonogramCountSolutions(probe,2)===1)return {type:'nonogram',grid,rows,cols,family,answerLabel,validated:true,validationTier:'unique',validationCached:true};
  }
  return {type:'nonogram',grid:[],rows:[],cols:[],family:'failed',answerLabel:'',validated:false,validationTier:'failed'};
 }
@@ -1661,9 +1668,9 @@ function makeMini(diff){
  let n=(diff==='Hard'||diff==='Expert')?6:4,boxR=2,boxC=n===6?3:2;
  let pattern=(r,c)=>(boxC*(r%boxR)+Math.floor(r/boxR)+c)%n;
  let nums=shuffle([...Array(n).keys()].map(x=>x+1)),rows=shuffle([...Array(n).keys()]),cols=shuffle([...Array(n).keys()]);
- let sol=rows.map(r=>cols.map(c=>nums[pattern(r,c)])),puzzle=clone(sol),target={Easy:10,Medium:8,Hard:16,Expert:13}[diff]||8;
+ let sol=rows.map(r=>cols.map(c=>nums[pattern(r,c)])),puzzle=clone(sol),target={Easy:10,Medium:8,Hard:15,Expert:10}[diff]||8;
  for(const idx of shuffle([...Array(n*n).keys()])){let r=Math.floor(idx/n),c=idx%n,old=puzzle[r][c];puzzle[r][c]=0;let probe={n,boxR,boxC,puzzle};if(miniCountSolutions(probe,2)!==1)puzzle[r][c]=old;if(puzzle.flat().filter(Boolean).length<=target)break}
- let item={type:'mini',n,boxR,boxC,puzzle,solution:sol,validated:false,validationTier:'failed'};let ct=miniCountSolutions(item,2);item.validated=ct===1;item.validationTier=ct===1?'unique':'failed';return item;
+ let item={type:'mini',n,boxR,boxC,puzzle,solution:sol,validated:false,validationTier:'failed'};let ct=miniCountSolutions(item,2);item.validated=ct===1;item.validationTier=ct===1?'unique':'failed';item.difficultyVerified=ct===1&&(diff!=='Expert'||puzzle.flat().filter(Boolean).length<=10);item.difficultyGrade=diff==='Expert'?'sparse unique 6×6':'clue/uniqueness graded';return item;
 }
 
 /* ---------- KILLER SUDOKU ---------- */
@@ -1680,7 +1687,7 @@ function makeKiller(diff){
     }
     const valid=cages.every(cg=>{const vals=cg.cells.map(([r,c])=>sol[r][c]);return new Set(vals).size===vals.length&&vals.reduce((a,b)=>a+b,0)===cg.sum;});
     let item={type:'killer',solution:sol,cages,validated:valid,validationTier:valid?'structural':'failed',generationAttempts:attempt+1};
-    if(valid){const ct=killerCountSolutions(item,2,180000);if(ct===1){item.validated=true;item.validationTier='unique';return item}if(ct===-1)item.validationTier='timeout';}
+    if(valid){const ct=killerCountSolutions(item,2,180000);if(ct===1){item.validated=true;item.validationTier='unique';item.validationCached=true;return item}if(ct===-1)item.validationTier='timeout';}
   }
   return {type:'killer',solution:[],cages:[],validated:false,validationTier:'failed',generationAttempts:10};
 }
@@ -1973,9 +1980,14 @@ function makeHidato(diff){
  if(!path){path=[];for(let r=0;r<n;r++){let cs=[...Array(n).keys()];if(r%2)cs.reverse();for(let c of cs)path.push([r,c])}}
  let sol=Array.from({length:n},()=>Array(n).fill(0));path.forEach(([r,c],i)=>sol[r][c]=i+1);
  let puzzle=clone(sol),targetKeep={Easy:.52,Medium:.40,Hard:.31,Expert:.24}[diff]||.40;
- let cells=shuffle([...Array(N-2).keys()].map(i=>i+1));
- for(let idx of cells){let [r,c]=path[idx],old=puzzle[r][c];puzzle[r][c]=0;{let probe={type:'hidato',n,puzzle,solution:sol};if(hidatoCountSolutions(probe,2)!==1)puzzle[r][c]=old}if(puzzle.flat().filter(Boolean).length/N<=targetKeep)break}
- let item={type:'hidato',n,puzzle,solution:sol,validated:false,validationTier:'failed'};let ct=hidatoCountSolutions(item,2);item.validated=ct===1;item.validationTier=ct===1?'unique':'failed';return item;
+ let cells=shuffle([...Array(N-2).keys()].map(i=>i+1)),target=Math.ceil(N*targetKeep);
+ // Remove in small batches, then prove uniqueness. Roll back a batch instead of solving after every single removal.
+ let kept=puzzle.flat().filter(Boolean).length;
+ for(let pos=0;pos<cells.length && kept>target;pos+=4){
+   const changed=[]; for(const idx of cells.slice(pos,pos+4)){if(kept<=target)break;const [r,c]=path[idx];changed.push([r,c,puzzle[r][c]]);puzzle[r][c]=0;kept--;}
+   const probe={type:'hidato',n,puzzle,solution:sol}; if(hidatoCountSolutions(probe,2)!==1){for(const [r,c,v] of changed){puzzle[r][c]=v;kept++;}}
+ }
+ let item={type:'hidato',n,puzzle,solution:sol,validated:false,validationTier:'failed'};let ct=hidatoCountSolutions(item,2);item.validated=ct===1;item.validationTier=ct===1?'unique':'failed';item.validationCached=ct===1;return item;
 }
 
 /* ---------- TAKUZU ---------- */
@@ -2647,7 +2659,7 @@ function solutionCapacity(type){
  }
  if(!requested){
    if(['maze','kakuro','slither','cryptogram','nonogram','killer','irregular','kenken'].includes(type))requested=1;
-   else if(['wordsearch','numbersearch'].includes(type))requested=2;
+   else if(['wordsearch','numbersearch'].includes(type))requested=1;
    else if(['missingnumber','magicsquare'].includes(type))requested=4;
    else requested=2;
  }
@@ -3636,7 +3648,7 @@ function searchAnswerSvg(item){
    if(searchPathText(item,p)!==String(p.s))continue;
    const x1=p.c+.5,y1=p.r+.5,x2=p.c+p.dc*(p.s.length-1)+.5,y2=p.r+p.dr*(p.s.length-1)+.5;
    const mx=(x1+x2)/2,my=(y1+y2)/2,dist=Math.hypot(x2-x1,y2-y1)+.78,angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
-   const rect=document.createElementNS(ns,'rect');rect.setAttribute('x',mx-dist/2);rect.setAttribute('y',my-.37);rect.setAttribute('width',dist);rect.setAttribute('height','.74');rect.setAttribute('rx','.37');rect.setAttribute('fill','none');rect.setAttribute('stroke','#111');rect.setAttribute('stroke-width','.11');rect.setAttribute('transform',`rotate(${angle} ${mx} ${my})`);svg.appendChild(rect);
+   const rect=document.createElementNS(ns,'rect');rect.setAttribute('x',mx-dist/2);rect.setAttribute('y',my-.37);rect.setAttribute('width',dist);rect.setAttribute('height','.74');rect.setAttribute('rx','.37');rect.setAttribute('fill','none');rect.setAttribute('stroke','#111');rect.setAttribute('stroke-width','.16');rect.setAttribute('transform',`rotate(${angle} ${mx} ${my})`);svg.appendChild(rect);
  }
  return svg;
 }
@@ -3671,7 +3683,7 @@ function cryptogramBlock(item,answer){
 }
 function magicSquareBlock(item,answer){
  let wrap=document.createElement('div');wrap.className='magic-square-block';
- let target=document.createElement('div');target.className='magic-target';const allowed=(item.allowed||[...new Set((item.solution||[]).flat())]).join(', ');target.innerHTML=`<strong>Target Sum: ${item.magic}</strong><br><small>Use each once: ${allowed}<br>Every row, column &amp; both main diagonals</small>`;wrap.appendChild(target);
+ let target=document.createElement('div');target.className='magic-target';const allowed=(item.allowed||[...new Set((item.solution||[]).flat())]).join(', ');target.innerHTML=`<strong>Target Sum: ${item.magic}</strong><small class="magic-lines"><span>Use each once: ${allowed}</span><span>Every row, column &amp; both main diagonals = ${item.magic}</span></small>`;wrap.appendChild(target);
  wrap.appendChild(genericTable(answer?item.solution:item.puzzle));return wrap;
 }
 
@@ -4107,6 +4119,10 @@ async function build(){
          regeneratedAttempts++; item= type==='sudoku'?makeSudoku(diff):type==='maze'?makeMaze(diff):type==='kakuro'?makeKakuro(diff):type==='slither'?makeSlither(diff):type==='wordsearch'?makeSearch('wordsearch',diff):type==='numbersearch'?makeSearch('numbersearch',diff):type==='cryptogram'?makeCryptogram(diff):type==='nonogram'?makeNonogram(diff):type==='killer'?makeKiller(diff):type==='diagonal'?makeDiagonal(diff):type==='irregular'?makeIrregular(diff):type==='mini'?makeMini(diff):type==='kenken'?makeKenKen(diff):type==='hidato'?makeHidato(diff):type==='takuzu'?makeTakuzu(diff):type==='magicsquare'?makeMagicSquare(diff):makeMissingNumber(diff);
        }
      }
+     // Hard publication gate: a failed/partial generator result can never enter the project.
+     if(!item || item.validated!==true || item.validationTier==='failed' || (type==='kakuro' && (!Array.isArray(item.solution)||!item.solution.length||!Array.isArray(item.runs)||!item.runs.length))){
+       throw new Error(`${label} could not produce a fully validated puzzle after retries. Nothing partial was added; try Generate again.`);
+     }
      // v20: regenerate repeat-prone puzzle families before adding them to the book.
      if(type!=='cryptogram'){
        let tries=0, fp=puzzleFingerprint(item);
@@ -4194,6 +4210,19 @@ function puzzleFingerprint(item){
    return item.type+':'+JSON.stringify(item);
  }catch(e){return psRandom()+''}
 }
+
+function missingSequenceRuleOK(x){
+ const a=x.solution||[],k=x.patternKind;if(a.length<3)return false;
+ if(k===0){const d=a[1]-a[0];return a.every((v,i)=>i===0||v-a[i-1]===d)}
+ if(k===1){const m=a[1]/a[0];return Number.isFinite(m)&&a.every((v,i)=>i===0||v===a[i-1]*m)}
+ if(k===2)return a.slice(2).every((v,i)=>v===a[i]+a[i+1]);
+ if(k===3)return a.slice(1).every((v,i)=>v-a[i]===2*i+1);
+ if(k===4)return a.slice(1).every((v,i)=>v-a[i]===i+1);
+ if(k===6){const ds=a.slice(1).map((v,i)=>v-a[i]);return ds.slice(1).every((v,i)=>v-ds[i]===2)}
+ if(k===7){const ds=a.slice(1).map((v,i)=>v-a[i]);return ds.every((v,i)=>v===Math.pow(2,i));}
+ return true;
+}
+
 function runQC(){
  let issues=[],warnings=[],n=project.items.length;
  if(!n)issues.push('No puzzles have been generated.');
@@ -4268,7 +4297,7 @@ function runQC(){
      }else if(x.type==='kakuro'){
        const metaOK=kakuroMetadataOK(x),ct=metaOK?kakuroCountSolutions(x,2):0;x.validated=metaOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='slither'){
-       const m=slitherEdgeModel(x.R,x.C),loop=isSingleLoop(m,x.solution||[]),allClued=Array.isArray(x.clues)&&x.clues.length===x.R&&x.clues.every(row=>Array.isArray(row)&&row.length===x.C&&row.every(clue=>Number.isInteger(clue)&&clue>=0&&clue<=3)),clueOK=allClued&&x.clues.every((row,r)=>row.every((clue,c)=>m.cellEdges[r][c].reduce((sum,id)=>sum+((x.solution||[])[id]===1),0)===clue)),ct=loop&&clueOK?slitherCountSolutions(m,x.clues,2):0;x.validated=loop&&clueOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
+       const m=slitherEdgeModel(x.R,x.C),loop=isSingleLoop(m,x.solution||[]),shapeOK=Array.isArray(x.clues)&&x.clues.length===x.R&&x.clues.every(row=>Array.isArray(row)&&row.length===x.C&&row.every(clue=>clue==null||(Number.isInteger(clue)&&clue>=0&&clue<=3))),clueOK=shapeOK&&x.clues.every((row,r)=>row.every((clue,c)=>clue==null||m.cellEdges[r][c].reduce((sum,id)=>sum+((x.solution||[])[id]===1),0)===clue)),ct=loop&&clueOK?slitherCountSolutions(m,x.clues,2):0;x.validated=loop&&clueOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='maze'){
        x.validated=mazePathOK(x);x.validationTier=x.validated?'path':'failed';
      }else if(x.type==='wordsearch'||x.type==='numbersearch'){
@@ -4277,15 +4306,15 @@ function runQC(){
        x.validated=cryptogramOK(x);x.validationTier=x.validated?'mapping':'failed';
      }else if(x.type==='nonogram'){
        const cluesOK=x.grid&&x.rows&&x.cols&&x.rows.every((cl,i)=>nonoClues(x.grid[i]).join(',')===cl.join(','))&&x.cols.every((cl,c)=>nonoClues(x.grid.map(r=>r[c])).join(',')===cl.join(','));
-       const ct=cluesOK?nonogramCountSolutions(x,2):0;x.validated=cluesOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
+       const ct=cluesOK?(x.validationCached?1:nonogramCountSolutions(x,2)):0;x.validated=cluesOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='mini'){
        const ct=miniCountSolutions(x,2);x.validated=ct===1;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='killer'){
-       const cagesOK=killerCagesMatchSolution(x),ct=cagesOK?killerCountSolutions(x,2):0;x.validated=cagesOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
+       const cagesOK=killerCagesMatchSolution(x),ct=cagesOK?(x.validationCached?1:killerCountSolutions(x,2,180000)):0;x.validated=cagesOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='kenken'){
        const cageOK=kenkenCagesMatchSolution(x),ct=cageOK?kenkenCountSolutions(x,2):0;x.validated=cageOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='hidato'){
-       const ct=hidatoCountSolutions(x,2);x.validated=visibleGivensMatch(x,[0,null])&&ct===1;x.validationTier=x.validated?'unique':'failed';
+       const givensOK=visibleGivensMatch(x,[0,null]),ct=givensOK?(x.validationCached?1:hidatoCountSolutions(x,2)):0;x.validated=givensOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='takuzu'){
        const ct=takuzuCountSolutions(x,2);x.validated=visibleGivensMatch(x,[null])&&ct===1;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='irregular'){
@@ -4296,7 +4325,7 @@ function runQC(){
        const a=x.solution||[],m=x.magic,ok=a.length===3&&visibleGivensMatch(x,[0,null])&&a.every(r=>r.reduce((q,v)=>q+v,0)===m)&&[0,1,2].every(c=>a.reduce((q,r)=>q+r[c],0)===m)&&a[0][0]+a[1][1]+a[2][2]===m&&a[0][2]+a[1][1]+a[2][0]===m;
        x.validated=ok;x.validationTier=ok?'math':'failed';
      }else if(x.type==='missingnumber'){
-       const idx=x.missingIndices||[],sol=x.solution||[],ans=x.answer||[],puz=x.puzzle||[];const holes=new Set(idx),ok=idx.length===1&&puz.length===sol.length&&idx.every((k,i)=>sol[k]===ans[i]&&puz[k]==null)&&puz.every((v,i)=>holes.has(i)?v==null:v===sol[i]);x.validated=ok;x.validationTier=ok?'math':'failed';
+       const idx=x.missingIndices||[],sol=x.solution||[],ans=x.answer||[],puz=x.puzzle||[];const holes=new Set(idx),ok=idx.length===1&&puz.length===sol.length&&idx.every((k,i)=>sol[k]===ans[i]&&puz[k]==null)&&puz.every((v,i)=>holes.has(i)?v==null:v===sol[i])&&missingSequenceRuleOK(x)&&x.ruleText===missingNumberRule(x.patternKind,sol);x.validated=ok;x.validationTier=ok?'math':'failed';
      }
    }catch(err){x.validated=false;x.validationTier='failed';issues.push(`${x.type||'Puzzle'} QC error: ${err.message}`)}
  });
@@ -4309,7 +4338,7 @@ function runQC(){
  const diffMiss=project.items.map((x,i)=>x.type==='sudoku'&&x.difficultyVerified===false?`${i+1} (${x.difficulty}: ${x.difficultyGrade||'uncertified'})`:null).filter(Boolean);
  if(diffMiss.length)issues.push(`Sudoku difficulty certification failed: ${diffMiss.join(', ')}. Regenerate these puzzles before publishing.`);
  const expertSudoku=project.items.filter(x=>x.type==='sudoku'&&x.difficulty==='Expert');
- if(expertSudoku.length && expertSudoku.every(x=>x.difficultyVerified))warnings.push(`Expert Sudoku certification: ${expertSudoku.length}/${expertSudoku.length} require pairs/subsets or logic beyond the basic solver.`);
+ if(expertSudoku.length && expertSudoku.every(x=>x.difficultyVerified))warnings.push(`Expert Sudoku certification: ${expertSudoku.length}/${expertSudoku.length} exceed the Hard-tier logical solver and require advanced logic.`);
  let unique=project.items.filter(x=>x.validationTier==='unique').length;
  let placement=project.items.filter(x=>x.validationTier==='placement').length;
  let math=project.items.filter(x=>x.validationTier==='math').length;
@@ -4617,7 +4646,7 @@ if(!restoreAutosave())$('status').textContent='Ready — choose a puzzle type, t
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=23.14',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=23.15',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
@@ -4628,7 +4657,7 @@ async function updateOfflineStatus(){
     el.textContent='Offline cache status: service workers not supported in this browser.';
     return;
   }
-  const CACHE_NAME='puzzle-studio-v23.14';
+  const CACHE_NAME='puzzle-studio-v23.15';
   const timeout=(ms)=>new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),ms));
   try{
     // Never leave the UI stuck on Preparing. Registration/activation gets a short window.
