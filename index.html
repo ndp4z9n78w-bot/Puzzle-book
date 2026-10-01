@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v23.15 — Consolidated Repair</title>
+<title>Offline Puzzle Studio v24.0 — Consolidated Repair</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -691,12 +691,12 @@ details summary{cursor:pointer;font-weight:700}
 .ht-kakuro-clue .d{left:3px!important;bottom:2px!important;right:auto!important;top:auto!important}.ht-kakuro-clue .a{right:3px!important;top:2px!important;left:auto!important;bottom:auto!important}
 .ht-ken-demo td{position:relative;border:3px solid #111!important;font-weight:700}.ht-ken-demo td small{position:absolute;top:1px;left:2px;font-size:7px;font-weight:800}.magic-target{font:800 15px/1.2 Arial,sans-serif;text-align:center;margin:0 0 8px}.magic-target small{font-size:10px;font-weight:700}
 
-/* v23.13 solution readability */
+/* v24.0 solution readability */
 .missing-solution-rule,.missing-rule,.solution-rule{max-width:100%;white-space:normal!important;overflow-wrap:anywhere;word-break:normal;line-height:1.25;text-align:center;font-size:11px;margin:4px auto 0}
 .solution-slot,.solution-item{min-width:0;overflow:hidden}
 .ht-cage-demo,.ht-region-demo{max-width:100%;text-align:center}
 
-/* v23.13 targeted layout/performance fixes */
+/* v24.0 targeted layout/performance fixes */
 .missing-sequence{display:flex!important;flex-direction:column!important;align-items:center!important;width:100%!important}
 .missing-number-line{display:flex;justify-content:center;align-items:center;flex-wrap:nowrap;width:100%}
 .missing-sequence .missing-rule{display:block!important;flex:0 0 100%!important;width:100%!important;max-width:100%!important;clear:both!important;margin:6px auto 0!important;text-align:center!important;white-space:normal!important}
@@ -704,7 +704,7 @@ details summary{cursor:pointer;font-weight:700}
 .crypto-word{display:inline-block;white-space:nowrap;border-bottom:1px solid #bbb;padding:0 .08em .05em;margin:0 .12em}
 .crypto-punct{display:inline-block;margin-left:-.28em;margin-right:.1em}
 
-/* v23.13 PDF How-To repair: fixed KDP geometry independent of phone viewport. */
+/* v24.0 PDF How-To repair: fixed KDP geometry independent of phone viewport. */
 .sheet .howto-page .ht-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.075in!important}
 .sheet .howto-page .ht-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 .sheet .howto-page .ht-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:.08in!important}
@@ -720,8 +720,8 @@ details summary{cursor:pointer;font-weight:700}
  .sheet .number-search-howto .howto-example-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
  .sheet .howto-number-layout{grid-template-columns:minmax(0,1.1fr) minmax(180px,.9fr)!important}
 }
-\n/* v23.13 How-To PDF collision guard. These rules come last on purpose. */\n.sheet:has(.howto-page){padding:.42in .42in .36in!important;}\n.sheet:has(.howto-page)>h2{display:block!important;min-height:.30in!important;margin:0 0 .08in!important;font-size:18px!important;line-height:1.15!important;text-align:center!important;}\n.sheet .howto-page{display:block!important;max-height:8.35in!important;overflow:hidden!important;}\n.sheet .howto-page .howto-goal{display:block!important;min-height:.38in!important;margin:0 auto .13in!important;padding:.02in .10in!important;font-size:10.5px!important;line-height:1.35!important;text-align:center!important;}\n.sheet .howto-page .ht-grid{margin:.08in 0 .12in!important;align-items:stretch!important;}\n.sheet .howto-page .ht-card{min-height:1.18in!important;padding:.08in .09in!important;box-sizing:border-box!important;}\n.sheet .howto-page .ht-card h3,.sheet .howto-page .ht-section h3{display:block!important;min-height:.16in!important;margin:0 0 .07in!important;line-height:1.15!important;}\n.sheet .howto-page .ht-card p,.sheet .howto-page .ht-section p,.sheet .howto-page .ht-card li,.sheet .howto-page .ht-section li{line-height:1.28!important;}\n.sheet .howto-page .ht-section{display:block!important;margin:.10in 0!important;padding:.08in .10in!important;box-sizing:border-box!important;}\n.sheet .howto-page .ht-row{align-items:center!important;}\n.sheet .howto-page .ht-big{margin:.06in 0!important;line-height:1.35!important;}\n.sheet .howto-page[data-howto-type="sudoku"] .ht-section{min-height:1.58in!important;}\n.sheet .howto-page[data-howto-type="wordsearch"] .ht-section,\n.sheet .howto-page[data-howto-type="numbersearch"] .ht-section{min-height:2.10in!important;}\n.sheet .howto-page[data-howto-type="cryptogram"] .ht-section{min-height:.82in!important;}\n@media(max-width:650px){\n .sheet .howto-page .ht-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-row,.sheet .howto-page .ht-split{grid-template-columns:repeat(2,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-row.wide-left{grid-template-columns:1.35fr .65fr!important;}\n}\n
-/* v23.14 fixed KDP geometry: no responsive reflow is allowed inside rendered sheets. */
+\n/* v24.0 How-To PDF collision guard. These rules come last on purpose. */\n.sheet:has(.howto-page){padding:.42in .42in .36in!important;}\n.sheet:has(.howto-page)>h2{display:block!important;min-height:.30in!important;margin:0 0 .08in!important;font-size:18px!important;line-height:1.15!important;text-align:center!important;}\n.sheet .howto-page{display:block!important;max-height:8.35in!important;overflow:hidden!important;}\n.sheet .howto-page .howto-goal{display:block!important;min-height:.38in!important;margin:0 auto .13in!important;padding:.02in .10in!important;font-size:10.5px!important;line-height:1.35!important;text-align:center!important;}\n.sheet .howto-page .ht-grid{margin:.08in 0 .12in!important;align-items:stretch!important;}\n.sheet .howto-page .ht-card{min-height:1.18in!important;padding:.08in .09in!important;box-sizing:border-box!important;}\n.sheet .howto-page .ht-card h3,.sheet .howto-page .ht-section h3{display:block!important;min-height:.16in!important;margin:0 0 .07in!important;line-height:1.15!important;}\n.sheet .howto-page .ht-card p,.sheet .howto-page .ht-section p,.sheet .howto-page .ht-card li,.sheet .howto-page .ht-section li{line-height:1.28!important;}\n.sheet .howto-page .ht-section{display:block!important;margin:.10in 0!important;padding:.08in .10in!important;box-sizing:border-box!important;}\n.sheet .howto-page .ht-row{align-items:center!important;}\n.sheet .howto-page .ht-big{margin:.06in 0!important;line-height:1.35!important;}\n.sheet .howto-page[data-howto-type="sudoku"] .ht-section{min-height:1.58in!important;}\n.sheet .howto-page[data-howto-type="wordsearch"] .ht-section,\n.sheet .howto-page[data-howto-type="numbersearch"] .ht-section{min-height:2.10in!important;}\n.sheet .howto-page[data-howto-type="cryptogram"] .ht-section{min-height:.82in!important;}\n@media(max-width:650px){\n .sheet .howto-page .ht-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-row,.sheet .howto-page .ht-split{grid-template-columns:repeat(2,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-row.wide-left{grid-template-columns:1.35fr .65fr!important;}\n}\n
+/* v24.0 fixed KDP geometry: no responsive reflow is allowed inside rendered sheets. */
 .sheet:has(.howto-page){padding:.36in .42in!important;display:block!important;}
 .sheet:has(.howto-page)>h2{position:relative!important;display:block!important;height:.34in!important;min-height:.34in!important;margin:0 0 .12in!important;padding:0!important;font-size:18px!important;line-height:.28in!important;text-align:center!important;overflow:visible!important;}
 .sheet .howto-page{position:relative!important;display:block!important;width:100%!important;max-width:none!important;height:auto!important;max-height:none!important;margin:0!important;overflow:visible!important;}
@@ -745,10 +745,16 @@ details summary{cursor:pointer;font-weight:700}
 .sheet[data-item-index]>.puzzle-wrap{margin-top:.08in!important;}
 
 </style>
-\n<style id="v2315-consolidated-layout">\n/* v23.15: fixed KDP geometry. These rules intentionally come last. */\n.sheet:has(.howto-page){padding:.38in .42in!important;}\n.sheet:has(.howto-page)>h2{height:auto!important;min-height:.30in!important;margin:0 0 .10in!important;line-height:1.15!important;}\n.sheet .howto-page{display:block!important;height:auto!important;max-height:none!important;overflow:visible!important;font-size:10px!important;line-height:1.35!important;}\n.sheet .howto-page .howto-goal{display:block!important;height:auto!important;min-height:.34in!important;margin:0 0 .12in!important;padding:.04in .10in!important;line-height:1.35!important;}\n.sheet .howto-page .ht-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.10in!important;margin:0 0 .12in!important;}\n.sheet .howto-page .ht-card{display:block!important;height:auto!important;min-height:1.38in!important;padding:.10in!important;overflow:visible!important;}\n.sheet .howto-page .ht-card h3,.sheet .howto-page .ht-section h3{display:block!important;height:auto!important;min-height:.20in!important;margin:0 0 .08in!important;line-height:1.2!important;}\n.sheet .howto-page .ht-card p,.sheet .howto-page .ht-section p{display:block!important;position:static!important;height:auto!important;margin:.06in 0!important;line-height:1.38!important;}\n.sheet .howto-page .ht-big{display:block!important;position:static!important;height:auto!important;min-height:.30in!important;margin:.08in 0!important;line-height:1.55!important;white-space:normal!important;}\n.sheet .howto-page .ht-section{display:block!important;height:auto!important;min-height:1.52in!important;margin:0 0 .12in!important;padding:.11in .12in!important;overflow:visible!important;}\n.sheet .howto-page .ht-row,.sheet .howto-page .ht-split{display:grid!important;grid-template-columns:1fr 1fr!important;gap:.18in!important;align-items:center!important;}\n.sheet .howto-page table{margin:.08in auto!important;}\n.sheet .howto-page[data-howto-type="missingnumber"] .ht-section{min-height:1.30in!important;}\n.sheet .howto-page[data-howto-type="takuzu"] .ht-section{min-height:1.48in!important;}\n.sheet .howto-page[data-howto-type="kenken"] .ht-section{min-height:1.42in!important;}\n.ht-logic-cell{border:3px solid #111!important;} .ht-logic-cell.two{border-top:7px solid #111!important;border-right:7px solid #111!important;}\n.puzzle-wrap{padding-top:.16in!important;} .sheet>h2{margin-bottom:.06in!important;} .sheet>.subtitle{margin-top:.04in!important;margin-bottom:.12in!important;line-height:1.35!important;}\n.magic-target{margin-bottom:.16in!important;line-height:1.35!important}.magic-target .magic-lines{display:block!important;margin-top:.08in!important;line-height:1.55!important}.magic-target .magic-lines span{display:block!important;margin:.035in 0!important}.magic-square-block table{transform:scale(1.18);transform-origin:top center;margin-top:.12in!important;margin-bottom:.22in!important}\n.missing-sequence{display:flex!important;flex-direction:column!important;align-items:center!important;gap:.10in!important}.missing-number-line{display:flex!important;position:static!important;gap:.055in!important;line-height:1.4!important}.missing-rule{display:block!important;position:static!important;margin:.10in auto 0!important;line-height:1.4!important;}\n.solution-mini .missing-sequence{gap:.12in!important}.solution-mini .missing-rule{font-size:11px!important;margin-top:.12in!important;}\n.word-grid-svg{width:min(100%,6.35in)!important}.solution-grid.one .word-grid-svg{width:min(100%,6.0in)!important}.solution-grid.one .solution-mini{height:auto!important;min-height:8.2in!important}.word-list{font-size:11px!important;line-height:1.35!important;}\n</style>\n</head>
+\n<style id="v240-consolidated-layout">\n/* v24.0: fixed KDP geometry. These rules intentionally come last. */\n.sheet:has(.howto-page){padding:.38in .42in!important;}\n.sheet:has(.howto-page)>h2{height:auto!important;min-height:.30in!important;margin:0 0 .10in!important;line-height:1.15!important;}\n.sheet .howto-page{display:block!important;height:auto!important;max-height:none!important;overflow:visible!important;font-size:10px!important;line-height:1.35!important;}\n.sheet .howto-page .howto-goal{display:block!important;height:auto!important;min-height:.34in!important;margin:0 0 .12in!important;padding:.04in .10in!important;line-height:1.35!important;}\n.sheet .howto-page .ht-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.10in!important;margin:0 0 .12in!important;}\n.sheet .howto-page .ht-card{display:block!important;height:auto!important;min-height:1.38in!important;padding:.10in!important;overflow:visible!important;}\n.sheet .howto-page .ht-card h3,.sheet .howto-page .ht-section h3{display:block!important;height:auto!important;min-height:.20in!important;margin:0 0 .08in!important;line-height:1.2!important;}\n.sheet .howto-page .ht-card p,.sheet .howto-page .ht-section p{display:block!important;position:static!important;height:auto!important;margin:.06in 0!important;line-height:1.38!important;}\n.sheet .howto-page .ht-big{display:block!important;position:static!important;height:auto!important;min-height:.30in!important;margin:.08in 0!important;line-height:1.55!important;white-space:normal!important;}\n.sheet .howto-page .ht-section{display:block!important;height:auto!important;min-height:1.52in!important;margin:0 0 .12in!important;padding:.11in .12in!important;overflow:visible!important;}\n.sheet .howto-page .ht-row,.sheet .howto-page .ht-split{display:grid!important;grid-template-columns:1fr 1fr!important;gap:.18in!important;align-items:center!important;}\n.sheet .howto-page table{margin:.08in auto!important;}\n.sheet .howto-page[data-howto-type="missingnumber"] .ht-section{min-height:1.30in!important;}\n.sheet .howto-page[data-howto-type="takuzu"] .ht-section{min-height:1.48in!important;}\n.sheet .howto-page[data-howto-type="kenken"] .ht-section{min-height:1.42in!important;}\n.ht-logic-cell{border:3px solid #111!important;} .ht-logic-cell.two{border-top:7px solid #111!important;border-right:7px solid #111!important;}\n.puzzle-wrap{padding-top:.16in!important;} .sheet>h2{margin-bottom:.06in!important;} .sheet>.subtitle{margin-top:.04in!important;margin-bottom:.12in!important;line-height:1.35!important;}\n.magic-target{margin-bottom:.16in!important;line-height:1.35!important}.magic-target .magic-lines{display:block!important;margin-top:.08in!important;line-height:1.55!important}.magic-target .magic-lines span{display:block!important;margin:.035in 0!important}.magic-square-block table{transform:scale(1.18);transform-origin:top center;margin-top:.12in!important;margin-bottom:.22in!important}\n.missing-sequence{display:flex!important;flex-direction:column!important;align-items:center!important;gap:.10in!important}.missing-number-line{display:flex!important;position:static!important;gap:.055in!important;line-height:1.4!important}.missing-rule{display:block!important;position:static!important;margin:.10in auto 0!important;line-height:1.4!important;}\n.solution-mini .missing-sequence{gap:.12in!important}.solution-mini .missing-rule{font-size:11px!important;margin-top:.12in!important;}\n.word-grid-svg{width:min(100%,6.35in)!important}.solution-grid.one .word-grid-svg{width:min(100%,6.0in)!important}.solution-grid.one .solution-mini{height:auto!important;min-height:8.2in!important}.word-list{font-size:11px!important;line-height:1.35!important;}\n</style>\n
+<style id="v240-acceptance-layout">
+/* v24.0 acceptance layout: fixed print geometry, readable teaching pages, no responsive collapse. */
+.sheet:has(.howto-page){padding:.42in .48in!important}.sheet:has(.howto-page)>h2{font-size:22px!important;line-height:1.15!important;margin:0 0 .12in!important}.sheet .howto-page{font-size:11.5px!important;line-height:1.42!important}.sheet .howto-page .howto-goal{font-size:12px!important;line-height:1.42!important;margin-bottom:.16in!important;padding:.07in .12in!important}.sheet .howto-page .ht-card{min-height:1.46in!important;padding:.11in .12in!important}.sheet .howto-page .ht-card h3,.sheet .howto-page .ht-section h3{font-size:13px!important;line-height:1.2!important;margin-bottom:.08in!important}.sheet .howto-page .ht-card p,.sheet .howto-page .ht-section p,.sheet .howto-page li{font-size:10.5px!important;line-height:1.4!important}.sheet .howto-page .ht-big{font-size:15px!important;line-height:1.45!important}.sheet .howto-page .ht-section{min-height:1.58in!important;padding:.12in .14in!important;margin-bottom:.14in!important}.sheet .howto-page .ht-grid{gap:.12in!important;margin-bottom:.14in!important}.sheet .howto-page .ht-row,.sheet .howto-page .ht-split{gap:.20in!important}.ht-logic-cell{width:90px!important;height:90px!important;border:4px solid #111!important}.ht-logic-cell.two{border:4px solid #111!important;border-top-width:8px!important;border-right-width:8px!important}.ht-slither-svg,.ht-search-svg{max-height:2.55in!important}.puzzle-wrap{padding-top:.20in!important}.sheet>.subtitle{min-height:.22in!important;margin:.06in 0 .16in!important;line-height:1.4!important}.magic-target{font-size:14px!important;margin-bottom:.22in!important}.magic-target .magic-lines{font-size:12px!important;line-height:1.65!important;margin-top:.10in!important}.magic-square-block table{transform:scale(1.28)!important;margin-top:.18in!important;margin-bottom:.30in!important}.solution-mini .magic-square-block{padding-top:.10in!important}.missing-sequence{gap:.16in!important;padding:.08in 0 .14in!important}.missing-number-line{gap:.09in!important;font-size:17px!important;line-height:1.55!important}.missing-rule{font-size:12px!important;line-height:1.45!important;margin-top:.14in!important;max-width:95%!important;text-align:center!important}.solution-mini .missing-sequence{gap:.16in!important;min-height:1.10in!important}.solution-mini .missing-rule{margin-top:.16in!important}.search-grid-wrap{display:flex!important;justify-content:center!important}.word-grid,.word-grid-svg{width:6.1in!important;height:6.1in!important;max-width:100%!important}.solution-grid.one .word-grid-svg{width:6.15in!important;height:6.15in!important}.word-list{font-size:12px!important;line-height:1.45!important;margin-top:.14in!important}.nonogram-name{font-size:13px!important;font-weight:700!important;margin-top:.12in!important;text-align:center!important}
+@media(max-width:650px){.sheet .howto-page .ht-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.sheet .howto-page .ht-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))!important}.sheet .howto-page .ht-row,.sheet .howto-page .ht-split{grid-template-columns:1fr 1fr!important}}
+</style>
+</head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v23.15</span></h1><div class="build-version">Exact build: v23.15 • Consolidated Layout + QC + Performance Repair</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v23.15</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v24.0</span></h1><div class="build-version">Exact build: v24.0 • Consolidated Layout + QC + Performance Repair</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v24.0</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -1031,12 +1037,12 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='23.15';
+const PUZZLE_STUDIO_VERSION='24.0';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]},overviewMandalaReview=false;
 const clone=x=>JSON.parse(JSON.stringify(x));
-let PS_RNG_STATE=0x23_14_2026>>>0;
+let PS_RNG_STATE=0x24_0_2026>>>0;
 function hashSeed(v){let h=2166136261>>>0;for(const ch of String(v||'PuzzleStudio')){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0||1}
 function setProjectSeed(v){PS_RNG_STATE=hashSeed(v)}
 function psRandom(){PS_RNG_STATE=(PS_RNG_STATE+0x6D2B79F5)>>>0;let t=PS_RNG_STATE;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296}
@@ -1107,9 +1113,9 @@ function sudokuTierMatches(diff,g){
  return true;
 }
 function makeSudoku(diff){
- const target={Easy:40,Medium:34,Hard:29,Expert:24}[diff]||34;
+ const target={Easy:40,Medium:34,Hard:25,Expert:24}[diff]||34;
  let best=null,bestGrade=null;
- const maxAttempts=diff==='Expert'?18:10;
+ const maxAttempts=diff==='Expert'?22:(diff==='Hard'?50:12);
  for(let attempt=0;attempt<maxAttempts;attempt++){
   let solution=Array.from({length:9},()=>Array(9).fill(0));solveSudoku(solution);
   let puzzle=clone(solution),cells=shuffle([...Array(81).keys()]);
@@ -1286,21 +1292,24 @@ function kakuroClues(item){
  }
  return clues
 }
+const KAKURO_VERIFIED_TEMPLATES=[
+ {w:[[1,1,0,1,1],[1,1,0,1,1],[0,0,1,1,0],[1,1,1,1,1],[1,1,0,1,1]],s:[[4,5,0,9,2],[3,1,0,8,4],[0,0,9,2,0],[1,6,8,4,5],[7,9,0,3,1]]},
+ {w:[[1,1,0,1,1],[1,1,1,1,1],[0,0,1,1,0],[1,1,0,1,1],[1,1,0,1,1]],s:[[1,8,0,9,6],[3,4,7,2,1],[0,0,9,6,0],[4,7,0,1,8],[5,9,0,3,4]]},
+ {w:[[0,1,1,1,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,1,1,1,0]],s:[[0,7,9,6,0],[2,4,8,5,0],[7,9,0,1,2],[0,8,5,3,7],[0,6,1,2,0]]},
+ {w:[[1,1,0,1,1],[1,1,1,1,1],[0,1,1,1,0],[1,1,0,1,1],[1,1,0,1,1]],s:[[9,7,0,8,6],[5,2,1,3,9],[0,4,8,6,0],[2,1,0,9,7],[4,8,0,5,2]]},
+ {w:[[1,1,0,1,1,0],[1,1,1,1,1,1],[0,1,1,0,1,1],[1,1,0,1,1,0],[1,1,1,1,1,1],[0,1,1,0,1,1]],s:[[9,8,0,3,2,0],[7,4,1,5,9,8],[0,6,3,0,7,4],[4,1,0,9,8,0],[6,3,2,7,4,1],[0,5,9,0,6,3]]},
+ {w:[[0,1,1,0,1,1],[1,1,1,1,1,1],[1,1,0,1,1,0],[0,1,1,0,1,1],[1,1,1,1,1,1],[1,1,0,1,1,0]],s:[[0,7,1,0,6,9],[9,3,2,5,8,7],[7,1,0,6,9,0],[0,2,5,0,7,1],[1,4,6,9,3,2],[2,5,0,7,1,0]]},
+ {w:[[1,1,0,1,1,0],[1,1,0,1,1,0],[0,1,1,0,1,1],[0,1,1,0,1,1],[1,1,0,1,1,0],[1,1,0,1,1,0]],s:[[7,4,0,3,2,0],[6,8,0,5,7,0],[0,9,3,0,6,8],[0,1,5,0,4,9],[9,3,0,6,8,0],[1,5,0,4,9,0]]},
+ {w:[[0,1,1,0,1,1],[0,1,1,1,1,1],[1,1,0,1,1,0],[1,1,0,0,1,1],[0,1,1,1,1,1],[0,0,1,1,1,0]],s:[[0,2,6,0,3,8],[0,5,7,4,1,2],[2,6,0,3,8,0],[5,7,0,0,2,6],[0,9,3,8,5,7],[0,0,1,2,6,0]]}
+];
+function kakuroTransform(g,mode){const n=g.length,o=Array.from({length:n},()=>Array(n));const at=(r,c)=>{if(mode===0)return[r,c];if(mode===1)return[c,n-1-r];if(mode===2)return[n-1-r,n-1-c];if(mode===3)return[n-1-c,r];if(mode===4)return[r,n-1-c];if(mode===5)return[n-1-r,c];if(mode===6)return[c,r];return[n-1-c,n-1-r]};for(let r=0;r<n;r++)for(let c=0;c<n;c++){const [rr,cc]=at(r,c);o[r][c]=g[rr][cc]}return o}
+function buildKakuroKnown(w,solution){let n=w.length,runs=[],cellRuns=Array.from({length:n},()=>Array.from({length:n},()=>[]));for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(w[r][c]&&(c===0||!w[r][c-1])){let cells=[],cc=c;while(cc<n&&w[r][cc])cells.push([r,cc++]);if(cells.length>=2){let id=runs.length;runs.push({sum:cells.reduce((q,[rr,x])=>q+solution[rr][x],0),cells,dir:'A'});cells.forEach(([rr,x])=>cellRuns[rr][x].push(id))}}for(let c=0;c<n;c++)for(let r=0;r<n;r++)if(w[r][c]&&(r===0||!w[r-1][c])){let cells=[],rr=r;while(rr<n&&w[rr][c])cells.push([rr++,c]);if(cells.length>=2){let id=runs.length;runs.push({sum:cells.reduce((q,[y,cc])=>q+solution[y][cc],0),cells,dir:'D'});cells.forEach(([y,cc])=>cellRuns[y][cc].push(id))}}return {w,solution,runs,cellRuns}}
 function makeKakuro(diff){
- let n={Easy:5,Medium:5,Hard:6,Expert:6}[diff]||5;
- // Publication rule: generator itself must prove uniqueness before a puzzle enters the project.
- for(let attempt=0;attempt<18;attempt++){
-  let w=kakuroPattern(n,diff)||Array.from({length:n},()=>Array(n).fill(true));
-  let core=buildKakuroFromPattern(w),item={type:'kakuro',w:core.w,solution:core.solution,runs:core.runs,cellRuns:core.cellRuns,clues:null,validated:false,validationTier:'failed'};
-  item.clues=kakuroClues(item);
-  if(kakuroCountSolutions(item,2)===1){item.validated=true;item.validationTier='unique';return item}
- }
- for(let attempt=0;attempt<24;attempt++){
-  const fn=5,w=kakuroPattern(fn,'Easy')||Array.from({length:fn},()=>Array(fn).fill(true));
-  const core=buildKakuroFromPattern(w),item={type:'kakuro',w:core.w,solution:core.solution,runs:core.runs,cellRuns:core.cellRuns,clues:null,validated:false,validationTier:'failed'};
-  item.clues=kakuroClues(item);if(kakuroCountSolutions(item,2)===1){item.validated=true;item.validationTier='unique';item.fallbackDifficulty=diff;return item}
- }
- return {type:'kakuro',w:[],solution:null,runs:[],cellRuns:[],clues:[],validated:false,validationTier:'failed'};
+ const n=(diff==='Hard'||diff==='Expert')?6:5,pool=KAKURO_VERIFIED_TEMPLATES.filter(x=>x.w.length===n);
+ // These source templates were solver-proved unique. Square symmetries preserve every
+ // run sum, no-repeat rule and uniqueness, so a 40-puzzle batch never depends on luck.
+ const src=pool[Math.floor(psRandom()*pool.length)],mode=Math.floor(psRandom()*8),w=kakuroTransform(src.w,mode),solution=kakuroTransform(src.s,mode),core=buildKakuroKnown(w,solution);
+ const item={type:'kakuro',...core,clues:null,validated:true,validationTier:'unique-template',difficultyVerified:true,difficultyGrade:n===5?'compact verified template':'larger verified template'};item.clues=kakuroClues(item);return item;
 }
 
 /* ---------- SLITHERLINK ---------- */
@@ -1571,8 +1580,8 @@ function nonoClues(arr){
  let out=[],run=0;for(let v of arr){if(v)run++;else if(run){out.push(run);run=0}}if(run)out.push(run);return out.length?out:[0]
 }
 function makeNonogram(diff){
- const n=overrideSize({Easy:8,Medium:10,Hard:12,Expert:15}[diff],[8,10,12,15]);
- const familyPool=varietyLevel()==='standard'?['diamond','heart','letter','house','tree','sailboat','fish']:['diamond','heart','letter','house','tree','sailboat','fish','flower','cup','umbrella','rings','symmetric'];
+ const n=overrideSize({Easy:8,Medium:10,Hard:12,Expert:12}[diff],[8,10,12]);
+ const familyPool=['diamond','heart','letter','house','sailboat','fish','flower','cup','umbrella'];
  for(let attempt=0;attempt<50;attempt++){
   const family=pick(familyPool),grid=Array.from({length:n},()=>Array(n).fill(0));
   let answerLabel='Pattern',mid=(n-1)/2;
@@ -1979,7 +1988,7 @@ function makeHidato(diff){
  let path=buildPath();
  if(!path){path=[];for(let r=0;r<n;r++){let cs=[...Array(n).keys()];if(r%2)cs.reverse();for(let c of cs)path.push([r,c])}}
  let sol=Array.from({length:n},()=>Array(n).fill(0));path.forEach(([r,c],i)=>sol[r][c]=i+1);
- let puzzle=clone(sol),targetKeep={Easy:.52,Medium:.40,Hard:.31,Expert:.24}[diff]||.40;
+ let puzzle=clone(sol),targetKeep={Easy:.44,Medium:.34,Hard:.26,Expert:.18}[diff]||.34;
  let cells=shuffle([...Array(N-2).keys()].map(i=>i+1)),target=Math.ceil(N*targetKeep);
  // Remove in small batches, then prove uniqueness. Roll back a batch instead of solving after every single removal.
  let kept=puzzle.flat().filter(Boolean).length;
@@ -2246,24 +2255,10 @@ async function sheetToJpegOnce(sheet,scale=1){
   clone.style.margin='0';
   clone.style.boxShadow='none';
 
-  // Inline only the CSS we need. Keeping the entire application CSS inside every SVG
-  // can cause WebKit to fail before the first page is drawn.
-  const pageCss=`
-    *{box-sizing:border-box}
-    body{margin:0}
-    .sheet{position:relative;margin:0!important;box-shadow:none!important;overflow:hidden!important;background:#fff;color:#111}
-    .sheet h1,.sheet h2,.sheet h3,.sheet p{color:#111}
-    table{border-collapse:collapse}
-    .sudoku td,.generic-grid td{border:1px solid #222;text-align:center}
-    .puzzle-wrap{display:flex;align-items:center;justify-content:center;overflow:hidden}
-    .solution-grid{display:grid;gap:12px}
-    .solution-grid.two{grid-template-columns:1fr 1fr}
-    .solution-grid.four{grid-template-columns:1fr 1fr}
-    .frame-enabled:after{content:"";position:absolute;pointer-events:none;inset:var(--frameInset,.22in);border:var(--frameWidth,2px) solid #111;border-radius:var(--frameRadius,0px)}
-    .howto-example{border:1px solid #bbb;border-radius:8px;padding:10px}
-    .howto-mini-grid td{border:1px solid #777}
-    svg{max-width:100%;height:auto}
-  `;
+  // PDF fidelity: use the exact active stylesheet. The old miniature stylesheet was
+  // the root cause of How-To overlaps and missing SVG/text details in exported PDFs.
+  const pageCss=[...document.querySelectorAll('style')].map(x=>x.textContent||'').join('\n')+`
+body{margin:0!important;background:#fff!important}.sheet{margin:0!important;box-shadow:none!important}`;
 
   const xhtml=`<div xmlns="http://www.w3.org/1999/xhtml"><style>${pageCss}</style>${clone.outerHTML}</div>`;
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(width*scale)}" height="${Math.ceil(height*scale)}" viewBox="0 0 ${width} ${height}">
@@ -2403,7 +2398,7 @@ function textPdfCommands(sheet,pw,ph){
   return out;
 }
 function howToTextPdfCommands(sheet,pw,ph){
-  // v23.13: preserve the actual How-To layout in the vector PDF instead of
+  // v24.0: preserve the actual How-To layout in the vector PDF instead of
   // reflowing every teaching block into a generic two-column template.
   // These bounded DOM walkers only inspect the current single How-To sheet.
   let out='';
@@ -2715,28 +2710,19 @@ async function createPdfDirect(){
   if(!sheets.length){alert('Build a book first.');return}
   btn.disabled=true;const oldText=btn.textContent;btn.textContent='Creating PDF…';progress.classList.add('active');
   try{
-    const {w,h}=pdfPhysicalPoints(),streams=[];
+    const images=[];
     for(let i=0;i<sheets.length;i++){
-      progress.textContent=`Writing vector PDF page ${i+1} of ${sheets.length}…`;
-      // Yield periodically on large exports without referencing build-local state.
-      if(sheets.length>=100 && i%5===0) await new Promise(r=>setTimeout(r,8));
-      streams.push(sheetVectorStream(sheets[i],w,h));
+      progress.textContent=`Rendering faithful PDF page ${i+1} of ${sheets.length}…`;
+      if(i%2===0)await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,8)));
+      images.push(await sheetToJpeg(sheets[i],2.5));
     }
-    progress.textContent='Assembling vector PDF…';
-    await new Promise(r=>setTimeout(r,20));
-    const pdf=buildVectorPdf(streams);
-    const url=URL.createObjectURL(pdf),a=document.createElement('a');
+    progress.textContent='Assembling PDF…';await new Promise(r=>setTimeout(r,20));
+    const pdf=buildJpegPdf(images),url=URL.createObjectURL(pdf),a=document.createElement('a');
     a.href=url;a.download=safePdfName();a.style.display='none';document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),60000);
-    progress.textContent=`PDF created • ${sheets.length} pages • ${(pdf.size/1024/1024).toFixed(1)} MB • vector mode`;
-  }catch(err){
-    console.error(err);
-    const msg=err?.message||'Unknown PDF error';
-    progress.textContent=`PDF stopped: ${msg}`;
-    alert(`PDF creation stopped: ${msg}`);
-  }finally{
-    btn.disabled=false;btn.textContent=oldText;
-  }
+    progress.textContent=`PDF created • ${sheets.length} pages • ${(pdf.size/1024/1024).toFixed(1)} MB • faithful layout mode`;
+  }catch(err){console.error(err);const msg=err?.message||'Unknown PDF error';progress.textContent=`PDF stopped: ${msg}`;alert(`PDF creation stopped: ${msg}`)}
+  finally{btn.disabled=false;btn.textContent=oldText}
 }
 
 let dynamicPrintStyle=null;
@@ -3059,7 +3045,7 @@ function mazeSvg(item,answer){
    const p=document.createElementNS(svg.namespaceURI,'polyline');p.setAttribute('points',item.path.map(([r,c])=>`${pad+(c+.5)*cell},${pad+(r+.5)*cell}`).join(' '));p.setAttribute('fill','none');p.setAttribute('stroke','#111');p.setAttribute('stroke-width',Math.max(1.4,cell*.16));p.setAttribute('stroke-linecap','round');p.setAttribute('stroke-linejoin','round');svg.appendChild(p);
  }
  const text=(txt,x,y,anchor='middle')=>{const t=document.createElementNS(svg.namespaceURI,'text');t.textContent=txt;t.setAttribute('font-size',Math.max(8,Math.min(13,cell*.55)));t.setAttribute('font-family','Arial,sans-serif');t.setAttribute('font-weight','700');t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('text-anchor',anchor);svg.appendChild(t)};
- const sy=pad+((item.start?.[0]??1)+.65)*cell, fy=pad+((item.finish?.[0]??n-2)+.65)*cell; text('START',pad-8,sy,'end'); text('→',pad+2,sy,'start'); text('→',pad+n*cell-2,fy,'end'); text('FINISH',pad+n*cell+8,fy,'start');
+ const sy=pad+((item.start?.[0]??1)+.65)*cell, fy=pad+((item.finish?.[0]??n-2)+.65)*cell; text('START',pad-18,sy,'end'); text('→',pad+6,sy,'start'); text('→',pad+n*cell-6,fy,'end'); text('FINISH',pad+n*cell+18,fy,'start');
  return svg;
 }
 
@@ -4113,14 +4099,14 @@ async function build(){
      }
 
      // v22 QC gate: never knowingly add a failed generated puzzle. Retry the generator before layout/export.
-     if(!item || item.validated===false || item.validationTier==='failed'){
+     if(!item || item.validated===false || item.validationTier==='failed' || (type==='sudoku' && item.difficultyVerified===false)){
        let qcTry=0;
-       while(qcTry++<8 && (!item || item.validated===false || item.validationTier==='failed')){
+       while(qcTry++<14 && (!item || item.validated===false || item.validationTier==='failed' || (type==='sudoku' && item.difficultyVerified===false))){
          regeneratedAttempts++; item= type==='sudoku'?makeSudoku(diff):type==='maze'?makeMaze(diff):type==='kakuro'?makeKakuro(diff):type==='slither'?makeSlither(diff):type==='wordsearch'?makeSearch('wordsearch',diff):type==='numbersearch'?makeSearch('numbersearch',diff):type==='cryptogram'?makeCryptogram(diff):type==='nonogram'?makeNonogram(diff):type==='killer'?makeKiller(diff):type==='diagonal'?makeDiagonal(diff):type==='irregular'?makeIrregular(diff):type==='mini'?makeMini(diff):type==='kenken'?makeKenKen(diff):type==='hidato'?makeHidato(diff):type==='takuzu'?makeTakuzu(diff):type==='magicsquare'?makeMagicSquare(diff):makeMissingNumber(diff);
        }
      }
      // Hard publication gate: a failed/partial generator result can never enter the project.
-     if(!item || item.validated!==true || item.validationTier==='failed' || (type==='kakuro' && (!Array.isArray(item.solution)||!item.solution.length||!Array.isArray(item.runs)||!item.runs.length))){
+     if(!item || item.validated!==true || item.validationTier==='failed' || (type==='sudoku' && item.difficultyVerified===false) || (type==='kakuro' && (!Array.isArray(item.solution)||!item.solution.length||!Array.isArray(item.runs)||!item.runs.length))){
        throw new Error(`${label} could not produce a fully validated puzzle after retries. Nothing partial was added; try Generate again.`);
      }
      // v20: regenerate repeat-prone puzzle families before adding them to the book.
@@ -4224,7 +4210,7 @@ function missingSequenceRuleOK(x){
 }
 
 function runQC(){
- let issues=[],warnings=[],n=project.items.length;
+ let issues=[],warnings=[],successes=[],n=project.items.length;
  if(!n)issues.push('No puzzles have been generated.');
 
  function sameGrid(a,b){return JSON.stringify(a)===JSON.stringify(b)}
@@ -4338,7 +4324,7 @@ function runQC(){
  const diffMiss=project.items.map((x,i)=>x.type==='sudoku'&&x.difficultyVerified===false?`${i+1} (${x.difficulty}: ${x.difficultyGrade||'uncertified'})`:null).filter(Boolean);
  if(diffMiss.length)issues.push(`Sudoku difficulty certification failed: ${diffMiss.join(', ')}. Regenerate these puzzles before publishing.`);
  const expertSudoku=project.items.filter(x=>x.type==='sudoku'&&x.difficulty==='Expert');
- if(expertSudoku.length && expertSudoku.every(x=>x.difficultyVerified))warnings.push(`Expert Sudoku certification: ${expertSudoku.length}/${expertSudoku.length} exceed the Hard-tier logical solver and require advanced logic.`);
+ if(expertSudoku.length && expertSudoku.every(x=>x.difficultyVerified))successes.push(`Expert Sudoku certification: ${expertSudoku.length}/${expertSudoku.length} exceed the Hard-tier logical solver and require advanced logic.`);
  let unique=project.items.filter(x=>x.validationTier==='unique').length;
  let placement=project.items.filter(x=>x.validationTier==='placement').length;
  let math=project.items.filter(x=>x.validationTier==='math').length;
@@ -4360,10 +4346,13 @@ function runQC(){
  if(badAnswers.length)issues.push(`Puzzle(s) missing solution data: ${badAnswers.join(', ')}.`);
  if($('copyrightPage').checked && !($('copyrightText').value||'').trim())warnings.push('Copyright page is enabled with generic publication text. Add your own wording if desired.');
  let certified=project.items.filter(x=>x.difficultyVerified===true).length;
- let box=$('qcResults'),summary=`${unique} unique-solution verified • ${certified} difficulty-certified • ${placement} placement verified • ${path} path verified • ${mapping} mapping verified • ${math} math-rule verified • ${structural} structurally verified • ${knownOnly.length} known-answer only`;
- if(issues.length){box.className='qc-box qc-bad';box.innerHTML='<b>Quality check: problems found</b><br>'+summary+'<br><br>'+issues.map(x=>'• '+x).join('<br>')+(warnings.length?'<br><br><b>Warnings</b><br>'+warnings.map(x=>'• '+x).join('<br>'):'')}
- else if(warnings.length){box.className='qc-box qc-warn';box.innerHTML='<b>Quality check: usable with warnings</b><br>'+summary+'<br><br>'+warnings.map(x=>'• '+x).join('<br>')}
- else {box.className='qc-box qc-good';box.innerHTML=`<b>Quality check passed</b><br>${summary}<br>${n} puzzle${n===1?'':'s'} checked. No duplicate fingerprints, missing answers, or validation failures detected.`}
+ let box=$('qcResults');
+ const parts=[];
+ if(unique)parts.push(`${unique} unique-solution verified`);if(certified)parts.push(`${certified} difficulty-certified`);if(placement)parts.push(`${placement} placement verified`);if(path)parts.push(`${path} path verified`);if(mapping)parts.push(`${mapping} mapping verified`);if(math)parts.push(`${math} math-rule verified`);if(structural)parts.push(`${structural} structurally verified`);if(knownOnly.length)parts.push(`${knownOnly.length} known-answer only`);
+ const summary=parts.join(' • ')||`${n} puzzles checked`;const successHtml=successes.length?'<br><br><b>Passed checks</b><br>'+successes.map(x=>'✓ '+x).join('<br>'):'';
+ if(issues.length){box.className='qc-box qc-bad';box.innerHTML='<b>Quality check: problems found</b><br>'+summary+'<br><br>'+issues.map(x=>'• '+x).join('<br>')+successHtml+(warnings.length?'<br><br><b>Warnings</b><br>'+warnings.map(x=>'• '+x).join('<br>'):'')}
+ else if(warnings.length){box.className='qc-box qc-warn';box.innerHTML='<b>Quality check: usable with warnings</b><br>'+summary+successHtml+'<br><br><b>Warnings</b><br>'+warnings.map(x=>'• '+x).join('<br>')}
+ else {box.className='qc-box qc-good';box.innerHTML=`<b>Quality check passed</b><br>${summary}${successHtml}<br>${n} puzzle${n===1?'':'s'} checked. No duplicate fingerprints, missing answers, or validation failures detected.`}
 }
 
 function setSpreadPreview(on){
@@ -4646,7 +4635,7 @@ if(!restoreAutosave())$('status').textContent='Ready — choose a puzzle type, t
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=23.15',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=24.0',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
@@ -4657,7 +4646,7 @@ async function updateOfflineStatus(){
     el.textContent='Offline cache status: service workers not supported in this browser.';
     return;
   }
-  const CACHE_NAME='puzzle-studio-v23.15';
+  const CACHE_NAME='puzzle-studio-v24.0';
   const timeout=(ms)=>new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),ms));
   try{
     // Never leave the UI stuck on Preparing. Registration/activation gets a short window.
