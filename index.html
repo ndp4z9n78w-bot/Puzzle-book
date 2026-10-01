@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v23.8 — Adversarial QC Candidate</title>
+<title>Offline Puzzle Studio v23.9 — Adversarial QC Candidate</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -691,12 +691,12 @@ details summary{cursor:pointer;font-weight:700}
 .ht-kakuro-clue .d{left:3px!important;bottom:2px!important;right:auto!important;top:auto!important}.ht-kakuro-clue .a{right:3px!important;top:2px!important;left:auto!important;bottom:auto!important}
 .ht-ken-demo td{position:relative;border:3px solid #111!important;font-weight:700}.ht-ken-demo td small{position:absolute;top:1px;left:2px;font-size:7px;font-weight:800}.magic-target{font:800 15px/1.2 Arial,sans-serif;text-align:center;margin:0 0 8px}.magic-target small{font-size:10px;font-weight:700}
 
-/* v23.8 solution readability */
+/* v23.9 solution readability */
 .missing-solution-rule,.missing-rule,.solution-rule{max-width:100%;white-space:normal!important;overflow-wrap:anywhere;word-break:normal;line-height:1.25;text-align:center;font-size:11px;margin:4px auto 0}
 .solution-slot,.solution-item{min-width:0;overflow:hidden}
 .ht-cage-demo,.ht-region-demo{max-width:100%;text-align:center}
 
-/* v23.8 targeted layout/performance fixes */
+/* v23.9 targeted layout/performance fixes */
 .missing-sequence{display:flex!important;flex-direction:column!important;align-items:center!important;width:100%!important}
 .missing-number-line{display:flex;justify-content:center;align-items:center;flex-wrap:nowrap;width:100%}
 .missing-sequence .missing-rule{display:block!important;flex:0 0 100%!important;width:100%!important;max-width:100%!important;clear:both!important;margin:6px auto 0!important;text-align:center!important;white-space:normal!important}
@@ -706,8 +706,8 @@ details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v23.8</span></h1><div class="build-version">Exact build: v23.8 • Bug Squash + Adversarial QC • Verified How-To Integration</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v23.8</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v23.9</span></h1><div class="build-version">Exact build: v23.9 • Bug Squash + Adversarial QC • Verified How-To Integration</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v23.9</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -2306,31 +2306,14 @@ function textPdfCommands(sheet,pw,ph){
   return out;
 }
 function howToTextPdfCommands(sheet,pw,ph){
+  // v23.9: preserve the actual How-To layout in the vector PDF instead of
+  // reflowing every teaching block into a generic two-column template.
+  // These bounded DOM walkers only inspect the current single How-To sheet.
   let out='';
-  const put=(txt,x,y,size=9,bold=false)=>{txt=pdfAscii(String(txt||'').replace(/\s+/g,' ').trim());if(!txt)return;out+=`BT /${bold?'F2':'F1'} ${pdfN(size)} Tf ${pdfN(x)} ${pdfN(y)} Td (${pdfEsc(txt)}) Tj ET\n`;};
-  const center=(txt,cx,y,size=9,bold=false)=>put(txt,cx-approxTextWidth(pdfAscii(String(txt||'')),size)/2,y,size,bold);
-  const wrap=(txt,x,y,w,size=8.2,bold=false,max=5)=>{for(const l of wrapPdfText(pdfAscii(String(txt||'').replace(/\s+/g,' ').trim()),w,size).slice(0,max)){put(l,x,y,size,bold);y-=size*1.24;}return y;};
-  const box=(x,y,w,h,lw=.7)=>{out+=`${pdfN(lw)} w ${pdfRect(x,y,w,h,false,true)}`;};
-  const drawTable=(table,x,y,w,h)=>{
-    if(!table)return;const rows=[...table.rows],R=rows.length;if(!R)return;const C=Math.max(...rows.map(r=>r.cells.length));if(!C)return;const cell=Math.min(w/C,h/R),gw=cell*C,gh=cell*R,ox=x+(w-gw)/2,oy=y+(h-gh)/2;
-    for(let r=0;r<R;r++)for(let c=0;c<rows[r].cells.length;c++){const xx=ox+c*cell,yy=oy+(R-1-r)*cell;out+=`.45 w ${pdfRect(xx,yy,cell,cell,false,true)}`;const t=pdfAscii(rows[r].cells[c].textContent.trim());if(t){const fs=Math.min(8,cell*.42);put(t,xx+(cell-approxTextWidth(t,fs))/2,yy+cell*.34,fs,true);}}
-  };
-  const title=sheet.querySelector(':scope > h2')?.textContent||'How to Play';
-  box(24,ph-75,pw-48,48,1);center(title.toUpperCase(),pw/2,ph-58,17,true);
-  const page=sheet.querySelector('.howto-page');
-  const goal=page?.querySelector('.howto-goal')?.textContent?.replace(/^Goal:\s*/i,'')||'';
-  wrap(goal,38,ph-98,pw-76,8.8,false,3);
-  const blocks=[...(page?.querySelectorAll('.ht-card,.ht-section')||[])];
-  const gap=9, cols=2, cardW=(pw-58-gap)/2, top=ph-145, bottom=42, avail=top-bottom;
-  const count=Math.max(1,blocks.length), rows=Math.ceil(count/cols), cardH=Math.min(118,(avail-(rows-1)*gap)/rows);
-  blocks.forEach((b,i)=>{
-    const col=i%cols,row=Math.floor(i/cols),x=24+col*(cardW+gap),y=top-cardH-row*(cardH+gap);box(x,y,cardW,cardH,.6);
-    const h=b.querySelector('h3,h4')?.textContent||'';center(h,x+cardW/2,y+cardH-16,9.2,true);
-    const table=b.querySelector('table');
-    if(table){drawTable(table,x+8,y+8,cardW-16,cardH-34);return;}
-    const text=[...b.querySelectorAll('p,li,.ht-big')].map(n=>n.textContent).join(' • ') || b.textContent.replace(h,'');
-    wrap(text,x+9,y+cardH-34,cardW-18,7.8,false,8);
-  });
+  out+=borderPdfCommands(sheet,pw,ph);
+  out+=svgPdfCommands(sheet,pw,ph);
+  out+=textPdfCommands(sheet,pw,ph);
+  out+=fixedPageLabelsPdfCommands(sheet,pw,ph);
   return out;
 }
 
@@ -4320,7 +4303,7 @@ function countExpectedRenderedPages(){
         else pages+=items.length;
       }
     }else{
-      for(const g of ['Easy','Medium','Hard']){
+      for(const g of ['Easy','Medium','Hard','Expert']){
         const items=project.items.filter(x=>x.difficulty===g);
         if(!items.length)continue;
         if($('sectionPages').checked){
@@ -4336,7 +4319,9 @@ function countExpectedRenderedPages(){
       }
     }
   }else{
-    pages+=n;
+    const ppp=Math.max(1,+$('puzzlesPerPage').value||1);
+    if(ppp>1 && project.items.every(x=>supportsMultiPerPage(x.type))) pages+=Math.ceil(n/ppp);
+    else pages+=n;
   }
   if($('solutions').checked){
     if(isBook && $('solutionsTitlePage').checked)pages++;
@@ -4528,20 +4513,35 @@ async function updateOfflineStatus(){
     el.textContent='Offline cache status: service workers not supported in this browser.';
     return;
   }
+  const CACHE_NAME='puzzle-studio-v23.9';
+  const timeout=(ms)=>new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),ms));
   try{
-    await navigator.serviceWorker.ready;
-    const cache=await caches.open('offline-puzzle-studio-v23.8');
-    const cached=await cache.match('./index.html');
+    // Never leave the UI stuck on Preparing. Registration/activation gets a short window.
+    await Promise.race([navigator.serviceWorker.ready,timeout(8000)]);
+    const names=await caches.keys();
+    if(!names.includes(CACHE_NAME)){
+      el.textContent=navigator.onLine
+        ? 'Offline cache status: not ready yet — reload once while online.'
+        : 'Offline cache status: not ready — reconnect once to finish caching.';
+      return;
+    }
+    const cache=await caches.open(CACHE_NAME);
+    const cached=(await cache.match('./index.html')) || (await cache.match('index.html'));
     el.textContent=cached
       ? 'Offline ready — this version is cached on this device.'
-      : 'Offline cache status: preparing… keep this page open while online.';
+      : (navigator.onLine
+          ? 'Offline cache status: incomplete — reload once while online.'
+          : 'Offline cache status: incomplete — reconnect once to finish caching.');
   }catch(e){
-    el.textContent='Offline cache status: unavailable.';
+    el.textContent=navigator.onLine
+      ? 'Offline cache status: unavailable — reload to retry.'
+      : 'Offline cache status: unavailable while offline.';
   }
 }
 window.addEventListener('load',()=>{
-  setTimeout(updateOfflineStatus,800);
-  setTimeout(updateOfflineStatus,2500);
+  setTimeout(updateOfflineStatus,500);
+  setTimeout(updateOfflineStatus,3000);
+  setTimeout(updateOfflineStatus,8500);
 });
 window.addEventListener('online',()=>setTimeout(updateOfflineStatus,500));
 
