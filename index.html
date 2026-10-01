@@ -720,7 +720,31 @@ details summary{cursor:pointer;font-weight:700}
  .sheet .number-search-howto .howto-example-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
  .sheet .howto-number-layout{grid-template-columns:minmax(0,1.1fr) minmax(180px,.9fr)!important}
 }
-\n/* v23.13 How-To PDF collision guard. These rules come last on purpose. */\n.sheet:has(.howto-page){padding:.42in .42in .36in!important;}\n.sheet:has(.howto-page)>h2{display:block!important;min-height:.30in!important;margin:0 0 .08in!important;font-size:18px!important;line-height:1.15!important;text-align:center!important;}\n.sheet .howto-page{display:block!important;max-height:8.35in!important;overflow:hidden!important;}\n.sheet .howto-page .howto-goal{display:block!important;min-height:.38in!important;margin:0 auto .13in!important;padding:.02in .10in!important;font-size:10.5px!important;line-height:1.35!important;text-align:center!important;}\n.sheet .howto-page .ht-grid{margin:.08in 0 .12in!important;align-items:stretch!important;}\n.sheet .howto-page .ht-card{min-height:1.18in!important;padding:.08in .09in!important;box-sizing:border-box!important;}\n.sheet .howto-page .ht-card h3,.sheet .howto-page .ht-section h3{display:block!important;min-height:.16in!important;margin:0 0 .07in!important;line-height:1.15!important;}\n.sheet .howto-page .ht-card p,.sheet .howto-page .ht-section p,.sheet .howto-page .ht-card li,.sheet .howto-page .ht-section li{line-height:1.28!important;}\n.sheet .howto-page .ht-section{display:block!important;margin:.10in 0!important;padding:.08in .10in!important;box-sizing:border-box!important;}\n.sheet .howto-page .ht-row{align-items:center!important;}\n.sheet .howto-page .ht-big{margin:.06in 0!important;line-height:1.35!important;}\n.sheet .howto-page[data-howto-type="sudoku"] .ht-section{min-height:1.58in!important;}\n.sheet .howto-page[data-howto-type="wordsearch"] .ht-section,\n.sheet .howto-page[data-howto-type="numbersearch"] .ht-section{min-height:2.10in!important;}\n.sheet .howto-page[data-howto-type="cryptogram"] .ht-section{min-height:.82in!important;}\n@media(max-width:650px){\n .sheet .howto-page .ht-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-row,.sheet .howto-page .ht-split{grid-template-columns:repeat(2,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-row.wide-left{grid-template-columns:1.35fr .65fr!important;}\n}\n</style>
+\n/* v23.13 How-To PDF collision guard. These rules come last on purpose. */\n.sheet:has(.howto-page){padding:.42in .42in .36in!important;}\n.sheet:has(.howto-page)>h2{display:block!important;min-height:.30in!important;margin:0 0 .08in!important;font-size:18px!important;line-height:1.15!important;text-align:center!important;}\n.sheet .howto-page{display:block!important;max-height:8.35in!important;overflow:hidden!important;}\n.sheet .howto-page .howto-goal{display:block!important;min-height:.38in!important;margin:0 auto .13in!important;padding:.02in .10in!important;font-size:10.5px!important;line-height:1.35!important;text-align:center!important;}\n.sheet .howto-page .ht-grid{margin:.08in 0 .12in!important;align-items:stretch!important;}\n.sheet .howto-page .ht-card{min-height:1.18in!important;padding:.08in .09in!important;box-sizing:border-box!important;}\n.sheet .howto-page .ht-card h3,.sheet .howto-page .ht-section h3{display:block!important;min-height:.16in!important;margin:0 0 .07in!important;line-height:1.15!important;}\n.sheet .howto-page .ht-card p,.sheet .howto-page .ht-section p,.sheet .howto-page .ht-card li,.sheet .howto-page .ht-section li{line-height:1.28!important;}\n.sheet .howto-page .ht-section{display:block!important;margin:.10in 0!important;padding:.08in .10in!important;box-sizing:border-box!important;}\n.sheet .howto-page .ht-row{align-items:center!important;}\n.sheet .howto-page .ht-big{margin:.06in 0!important;line-height:1.35!important;}\n.sheet .howto-page[data-howto-type="sudoku"] .ht-section{min-height:1.58in!important;}\n.sheet .howto-page[data-howto-type="wordsearch"] .ht-section,\n.sheet .howto-page[data-howto-type="numbersearch"] .ht-section{min-height:2.10in!important;}\n.sheet .howto-page[data-howto-type="cryptogram"] .ht-section{min-height:.82in!important;}\n@media(max-width:650px){\n .sheet .howto-page .ht-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-row,.sheet .howto-page .ht-split{grid-template-columns:repeat(2,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-row.wide-left{grid-template-columns:1.35fr .65fr!important;}\n}\n
+/* v23.14 fixed KDP geometry: no responsive reflow is allowed inside rendered sheets. */
+.sheet:has(.howto-page){padding:.36in .42in!important;display:block!important;}
+.sheet:has(.howto-page)>h2{position:relative!important;display:block!important;height:.34in!important;min-height:.34in!important;margin:0 0 .12in!important;padding:0!important;font-size:18px!important;line-height:.28in!important;text-align:center!important;overflow:visible!important;}
+.sheet .howto-page{position:relative!important;display:block!important;width:100%!important;max-width:none!important;height:auto!important;max-height:none!important;margin:0!important;overflow:visible!important;}
+.sheet .howto-page .howto-goal{display:block!important;position:relative!important;min-height:.42in!important;margin:0 0 .14in!important;padding:.06in .12in!important;line-height:1.35!important;text-align:center!important;box-sizing:border-box!important;}
+.sheet .howto-page .ht-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.10in!important;margin:0 0 .12in!important;}
+.sheet .howto-page .ht-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+.sheet .howto-page .ht-card{position:relative!important;min-height:1.42in!important;padding:.09in .10in!important;overflow:hidden!important;box-sizing:border-box!important;}
+.sheet .howto-page .ht-card h3,.sheet .howto-page .ht-section h3{position:relative!important;display:block!important;min-height:.20in!important;margin:0 0 .08in!important;padding:0!important;line-height:1.2!important;text-align:center!important;}
+.sheet .howto-page .ht-section{position:relative!important;display:block!important;min-height:1.62in!important;margin:0 0 .12in!important;padding:.10in .12in!important;overflow:hidden!important;box-sizing:border-box!important;}
+.sheet .howto-page .ht-row,.sheet .howto-page .ht-split{display:grid!important;grid-template-columns:1fr 1fr!important;gap:.16in!important;align-items:center!important;}
+.sheet .howto-page .ht-row.wide-left{grid-template-columns:1.28fr .72fr!important;}
+.sheet .howto-page .ht-list{margin:.04in 0 .04in .18in!important;padding:0!important;line-height:1.35!important;}
+.sheet .howto-page p{margin:.035in 0!important;line-height:1.32!important;}
+.sheet .howto-page[data-howto-type="sudoku"] .ht-section{min-height:1.72in!important;}
+.sheet .howto-page[data-howto-type="wordsearch"] .ht-section,.sheet .howto-page[data-howto-type="numbersearch"] .ht-section{min-height:2.18in!important;}
+.sheet .howto-page[data-howto-type="cryptogram"] .ht-section{min-height:1.10in!important;}
+/* Full puzzle-page header owns a reserved vertical band. */
+.sheet[data-item-index]>h2{height:.28in!important;min-height:.28in!important;margin:.02in 0 0!important;line-height:.26in!important;}
+.sheet[data-item-index]>.subtitle{height:.18in!important;min-height:.18in!important;margin:.02in 0 0!important;line-height:.16in!important;}
+.sheet[data-item-index]>.answer-xref{height:.18in!important;min-height:.18in!important;margin:.02in 0 .12in!important;line-height:.16in!important;}
+.sheet[data-item-index]>.puzzle-wrap{margin-top:.08in!important;}
+
+</style>
 </head>
 <body>
 <header><h1>Offline Puzzle Studio <span class="badge">v23.13</span></h1><div class="build-version">Exact build: v23.13 • Bug Squash + Adversarial QC • Verified How-To Integration</div></header>
@@ -980,6 +1004,7 @@ details summary{cursor:pointer;font-weight:700}
   <div class="build-progress-track"><div id="buildProgressBar" class="build-progress-bar"></div></div>
 </div>
 
+<label style="display:block;margin-top:10px">Project seed <input id="projectSeed" type="text" value="PS-2314" style="width:100%" aria-label="Project seed"></label>
 <button class="secondary" id="qc" style="width:100%;margin-top:10px">Run Quality Check</button>
 <div id="qcResults" class="qc-box">Quality check has not been run yet.</div>
 <button class="primary" id="pdf" style="width:100%;margin-top:10px">Create PDF</button>
@@ -995,7 +1020,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 <div class="toolbar">
 <button class="secondary" id="spreadPreview">Spread Preview</button>
 <button class="secondary" id="singlePreview">Single Page</button>
-<button class="secondary" id="preflight">Run Preflight</button>
+<button class="secondary" id="preflight">KDP Final Check</button>
 <button class="secondary" id="bookOverviewBtn">Book Overview</button>
 <button class="secondary" id="pageManagerBtn">Page Manager</button>
 <button class="secondary" id="zoomOut">−</button><button class="secondary" id="zoomIn">+</button>
@@ -1006,12 +1031,16 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='23.13';
+const PUZZLE_STUDIO_VERSION='23.14';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]},overviewMandalaReview=false;
 const clone=x=>JSON.parse(JSON.stringify(x));
-function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+let PS_RNG_STATE=0x23_14_2026>>>0;
+function hashSeed(v){let h=2166136261>>>0;for(const ch of String(v||'PuzzleStudio')){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0||1}
+function setProjectSeed(v){PS_RNG_STATE=hashSeed(v)}
+function psRandom(){PS_RNG_STATE=(PS_RNG_STATE+0x6D2B79F5)>>>0;let t=PS_RNG_STATE;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296}
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(psRandom()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 
 /* ---------- SUDOKU ---------- */
 function sudokuCandidates(b,r,c){
@@ -1036,13 +1065,63 @@ function countSudokuSolutions(b,limit=2){
   let [r,c]=cell;for(let n of pick){b[r][c]=n;rec();b[r][c]=0;if(count>=limit)return}
  }rec();return count
 }
+function sudokuLogicGrade(input){
+ const b=clone(input),ALL=0x3FE;let hardest=0,steps=0;
+ const bit=n=>1<<n, one=m=>m&&!(m&(m-1)), val=m=>{for(let n=1;n<=9;n++)if(m===bit(n))return n;return 0};
+ function mask(r,c){if(b[r][c])return 0;let m=ALL;for(let i=0;i<9;i++){m&=~bit(b[r][i]||0);m&=~bit(b[i][c]||0)}let br=Math.floor(r/3)*3,bc=Math.floor(c/3)*3;for(let rr=br;rr<br+3;rr++)for(let cc=bc;cc<bc+3;cc++)m&=~bit(b[rr][cc]||0);return m}
+ function solved(){return b.every(r=>r.every(Boolean))}
+ for(let guard=0;guard<500&&!solved();guard++){
+  let progress=false;
+  // Naked singles.
+  for(let r=0;r<9;r++)for(let c=0;c<9;c++)if(!b[r][c]){let m=mask(r,c);if(!m)return {tier:99,label:'Invalid',steps};if(one(m)){b[r][c]=val(m);hardest=Math.max(hardest,1);steps++;progress=true}}
+  if(progress)continue;
+  // Hidden singles in rows, columns and boxes.
+  const units=[];for(let r=0;r<9;r++)units.push([...Array(9)].map((_,c)=>[r,c]));for(let c=0;c<9;c++)units.push([...Array(9)].map((_,r)=>[r,c]));for(let br=0;br<3;br++)for(let bc=0;bc<3;bc++)units.push([...Array(9)].map((_,i)=>[br*3+Math.floor(i/3),bc*3+i%3]));
+  outer:for(const u of units)for(let n=1;n<=9;n++){let spots=u.filter(([r,c])=>!b[r][c]&&(mask(r,c)&bit(n)));if(spots.length===1){let [r,c]=spots[0];b[r][c]=n;hardest=Math.max(hardest,2);steps++;progress=true;break outer}}
+  if(progress)continue;
+  // Candidate eliminations: locked candidates, naked pairs, X-Wing. Keep candidate masks separately until a placement appears.
+  let cand=Array.from({length:9},(_,r)=>Array.from({length:9},(_,c)=>mask(r,c)));
+  let eliminated=false;
+  // Locked candidates (box -> row/column).
+  for(let br=0;br<3;br++)for(let bc=0;bc<3;bc++)for(let n=1;n<=9;n++){
+   let cells=[];for(let r=br*3;r<br*3+3;r++)for(let c=bc*3;c<bc*3+3;c++)if(!b[r][c]&&(cand[r][c]&bit(n)))cells.push([r,c]);
+   if(cells.length>1&&new Set(cells.map(x=>x[0])).size===1){let r=cells[0][0];for(let c=0;c<9;c++)if(Math.floor(c/3)!==bc&&!b[r][c]&&(cand[r][c]&bit(n))){cand[r][c]&=~bit(n);eliminated=true}}
+   if(cells.length>1&&new Set(cells.map(x=>x[1])).size===1){let c=cells[0][1];for(let r=0;r<9;r++)if(Math.floor(r/3)!==br&&!b[r][c]&&(cand[r][c]&bit(n))){cand[r][c]&=~bit(n);eliminated=true}}
+  }
+  if(eliminated){hardest=Math.max(hardest,3);for(let r=0;r<9;r++)for(let c=0;c<9;c++)if(!b[r][c]&&one(cand[r][c])){b[r][c]=val(cand[r][c]);steps++;progress=true;break}if(progress)continue}
+  // Naked pairs in any unit.
+  eliminated=false;
+  for(const u of units){let pairs={};for(const [r,c] of u)if(!b[r][c]){let m=cand[r][c]||mask(r,c);if(m&&((m&(m-1))!==0)&&(((m&(m-1))&(m&(m-1)-1))===0))(pairs[m]??=[]).push([r,c])}for(const [ms,cells] of Object.entries(pairs))if(cells.length===2){let m=+ms,keys=new Set(cells.map(x=>x.join(',')));for(const [r,c] of u)if(!b[r][c]&&!keys.has(r+','+c)&&((cand[r][c]||mask(r,c))&m)){cand[r][c]=(cand[r][c]||mask(r,c))&~m;eliminated=true}}}
+  if(eliminated){hardest=Math.max(hardest,4);for(let r=0;r<9;r++)for(let c=0;c<9;c++)if(!b[r][c]&&one(cand[r][c])){b[r][c]=val(cand[r][c]);steps++;progress=true;break}if(progress)continue}
+  // If the puzzle is still unresolved after pairs, it requires logic beyond our basic/Hard set.
+  hardest=Math.max(hardest,5);break;
+ }
+ const labels=['None','Naked singles','Hidden singles','Locked candidates','Pairs / subsets','Advanced logic'];
+ return {tier:hardest,label:labels[Math.min(5,hardest)]||'Advanced logic',steps,solved:solved()};
+}
+function sudokuTierMatches(diff,g){
+ if(diff==='Easy')return g.tier<=2&&g.solved;
+ if(diff==='Medium')return g.tier>=2&&g.tier<=3;
+ if(diff==='Hard')return g.tier>=3&&g.tier<=4;
+ if(diff==='Expert')return g.tier>=4; // must exceed singles/basic elimination
+ return true;
+}
 function makeSudoku(diff){
- let solution=Array.from({length:9},()=>Array(9).fill(0));solveSudoku(solution);
- let puzzle=clone(solution),target={Easy:40,Medium:34,Hard:29,Expert:25}[diff],cells=shuffle([...Array(81).keys()]);
- for(let idx of cells){let r=Math.floor(idx/9),c=idx%9,old=puzzle[r][c];puzzle[r][c]=0;
-  if(countSudokuSolutions(clone(puzzle),2)!==1)puzzle[r][c]=old;
-  if(puzzle.flat().filter(Boolean).length<=target)break}
- return {type:'sudoku',puzzle,solution,validated:true,validationTier:'unique'}
+ const target={Easy:40,Medium:34,Hard:29,Expert:24}[diff]||34;
+ let best=null,bestGrade=null;
+ const maxAttempts=diff==='Expert'?18:10;
+ for(let attempt=0;attempt<maxAttempts;attempt++){
+  let solution=Array.from({length:9},()=>Array(9).fill(0));solveSudoku(solution);
+  let puzzle=clone(solution),cells=shuffle([...Array(81).keys()]);
+  for(let idx of cells){let r=Math.floor(idx/9),c=idx%9,old=puzzle[r][c];puzzle[r][c]=0;
+   if(countSudokuSolutions(clone(puzzle),2)!==1)puzzle[r][c]=old;
+   if(puzzle.flat().filter(Boolean).length<=target)break}
+  const grade=sudokuLogicGrade(puzzle),item={type:'sudoku',puzzle,solution,validated:true,validationTier:'unique',difficultyVerified:sudokuTierMatches(diff,grade),difficultyGrade:grade.label,difficultyTier:grade.tier,generationAttempts:attempt+1};
+  if(!best || (diff==='Expert'?grade.tier>(bestGrade?.tier||0):Math.abs(grade.tier-({Easy:1,Medium:2,Hard:3}[diff]||2))<Math.abs((bestGrade?.tier||9)-({Easy:1,Medium:2,Hard:3}[diff]||2)))){best=item;bestGrade=grade}
+  if(item.difficultyVerified)return item;
+ }
+ // Never silently certify a mislabeled puzzle. Build/QC can flag it for regeneration.
+ return best;
 }
 
 /* ---------- MAZE ---------- */
@@ -1160,7 +1239,7 @@ function validKakuroPattern(w){
 }
 function buildKakuroFromPattern(w){
  let n=w.length,perm=shuffle([1,2,3,4,5,6,7,8,9].slice()),solution=Array.from({length:n},()=>Array(n).fill(0));
- let ro=Math.floor(Math.random()*9),co=Math.floor(Math.random()*9);
+ let ro=Math.floor(psRandom()*9),co=Math.floor(psRandom()*9);
  for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(w[r][c])solution[r][c]=perm[(2*(r+ro)+4*(c+co))%9];
  let runs=[],cellRuns=Array.from({length:n},()=>Array.from({length:n},()=>[]));
  // across
@@ -1240,7 +1319,7 @@ function makePolyomino(R,C,diff){
  let inner=Math.max(4,(R-2)*(C-2));let target={Easy:Math.floor(inner*.32),Medium:Math.floor(inner*.42),Hard:Math.floor(inner*.52),Expert:Math.floor(inner*.60)}[diff]||Math.floor(inner*.42);
  let set=new Set(),start=[Math.floor(R/2),Math.floor(C/2)];set.add(start.join(','));
  while(set.size<target){
-  let arr=[...set],base=arr[Math.floor(Math.random()*arr.length)].split(',').map(Number),dirs=shuffle([[1,0],[-1,0],[0,1],[0,-1]]);
+  let arr=[...set],base=arr[Math.floor(psRandom()*arr.length)].split(',').map(Number),dirs=shuffle([[1,0],[-1,0],[0,1],[0,-1]]);
   let added=false;
   for(let [dr,dc] of dirs){let r=base[0]+dr,c=base[1]+dc;if(r>0&&r<R-1&&c>0&&c<C-1&&!set.has(`${r},${c}`)){set.add(`${r},${c}`);added=true;break}}
   if(!added&&arr.length>=R*C)break
@@ -1339,7 +1418,7 @@ function varietyLevel(){return $('varietyLevel')?.value||'high'}
 function chanceByVariety(a,b,c){
   const v=varietyLevel();return v==='standard'?a:v==='high'?b:c;
 }
-function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function pick(arr){return arr[Math.floor(psRandom()*arr.length)]}
 function customWordList(){
  let raw=$('customWords')?.value||'';
  return raw.split(/[\n,;]+/).map(x=>x.trim().toUpperCase().replace(/[^A-Z0-9]/g,'')).filter(x=>x.length>=2);
@@ -1388,11 +1467,11 @@ function makeSearch(kind,diff){
    }
  }else{
    category='Number Sequences';
-   words=Array.from({length:count},()=>{const len=diff==='Expert'?8:diff==='Hard'?7:diff==='Medium'?6:5;return Array.from({length:len},()=>Math.floor(Math.random()*10)).join('')});
+   words=Array.from({length:count},()=>{const len=diff==='Expert'?8:diff==='Hard'?7:diff==='Medium'?6:5;return Array.from({length:len},()=>Math.floor(psRandom()*10)).join('')});
  }
  function place(s){
   for(let t=0;t<3000;t++){
-   let [dr,dc]=dirs[Math.floor(Math.random()*dirs.length)],r=Math.floor(Math.random()*size),c=Math.floor(Math.random()*size);
+   let [dr,dc]=dirs[Math.floor(psRandom()*dirs.length)],r=Math.floor(psRandom()*size),c=Math.floor(psRandom()*size);
    let er=r+dr*(s.length-1),ec=c+dc*(s.length-1);if(er<0||er>=size||ec<0||ec>=size)continue;
    let ok=true;for(let i=0;i<s.length;i++){let ch=grid[r+dr*i][c+dc*i];if(ch&&ch!==s[i]){ok=false;break}}
    if(!ok)continue;
@@ -1403,7 +1482,7 @@ function makeSearch(kind,diff){
  }
  for(let s of words){let p=place(s);if(p)items.push(p)}
  let alphabet=kind==='wordsearch'?'ABCDEFGHIJKLMNOPQRSTUVWXYZ':'0123456789';
- for(let r=0;r<size;r++)for(let c=0;c<size;c++)if(!grid[r][c])grid[r][c]=alphabet[Math.floor(Math.random()*alphabet.length)];
+ for(let r=0;r<size;r++)for(let c=0;c<size;c++)if(!grid[r][c])grid[r][c]=alphabet[Math.floor(psRandom()*alphabet.length)];
  return {type:kind,grid,items,category,validated:items.length===words.length,validationTier:'structural'}
 }
 /* ---------- CRYPTOGRAM ---------- */
@@ -1474,7 +1553,7 @@ function cryptoHintPlan(plain,map,diff){
 function makeCryptogram(diff){
  let bank=customCryptoList();if(!bank.length)bank=CRYPTO_PHRASES;
  let available=bank.filter(p=>!cryptoUsedPhrases.has(p));if(!available.length){cryptoUsedPhrases.clear();available=bank.slice()}
- let plain=available[Math.floor(Math.random()*available.length)];cryptoUsedPhrases.add(plain);
+ let plain=available[Math.floor(psRandom()*available.length)];cryptoUsedPhrases.add(plain);
  let letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(''), nums=shuffle([...Array(26)].map((_,i)=>i+1)),map={};letters.forEach((x,i)=>map[x]=String(nums[i]));
  let cipher=[...plain].map(ch=>/[A-Z]/.test(ch)?map[ch]:ch).join(' ');
  const plan=cryptoHintPlan(plain,map,diff);
@@ -1517,7 +1596,7 @@ function makeNonogram(diff){
   }else if(family==='rings'){
    answerLabel='Rings';for(let r=0;r<n;r++)for(let c=0;c<n;c++){const d=Math.max(Math.abs(r-mid),Math.abs(c-mid));if(Math.round(d)%2===0)grid[r][c]=1}
   }else if(family==='symmetric'){
-   answerLabel='Symmetric Pattern';for(let r=1;r<n-1;r++)for(let c=1;c<Math.ceil(n/2);c++){const on=Math.random()<.38;if(on){grid[r][c]=1;grid[r][n-1-c]=1}}
+   answerLabel='Symmetric Pattern';for(let r=1;r<n-1;r++)for(let c=1;c<Math.ceil(n/2);c++){const on=psRandom()<.38;if(on){grid[r][c]=1;grid[r][n-1-c]=1}}
   }else{
    const chars=['H','E','L','O','X','A'],ch=pick(chars);answerLabel='Letter '+ch;const m=Math.max(1,Math.floor(n*.18)),M=n-1-m,center=Math.floor(n/2);
    if(ch==='H'){for(let r=m;r<=M;r++){grid[r][m]=1;grid[r][M]=1}for(let c=m;c<=M;c++)grid[center][c]=1}
@@ -1589,30 +1668,22 @@ function makeMini(diff){
 
 /* ---------- KILLER SUDOKU ---------- */
 function makeKiller(diff){
-  // Killer only needs a completed Sudoku solution; do not waste time generating/removing ordinary Sudoku clues.
-  const sol=Array.from({length:9},()=>Array(9).fill(0));solveSudoku(sol);
-  const cages=[],seen=Array.from({length:9},()=>Array(9).fill(false));
-  const maxSize={Easy:2,Medium:2,Hard:3,Expert:3}[diff]||2;
-  for(let r=0;r<9;r++)for(let c=0;c<9;c++)if(!seen[r][c]){
-    const desired=2+Math.floor(Math.random()*Math.max(1,maxSize-1)),cells=[[r,c]],digits=new Set([sol[r][c]]);seen[r][c]=true;
-    while(cells.length<desired){
-      const frontier=[];
-      for(const [rr,cc] of cells)for(const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){
-        const nr=rr+dr,nc=cc+dc;
-        if(nr>=0&&nr<9&&nc>=0&&nc<9&&!seen[nr][nc]&&!digits.has(sol[nr][nc]))frontier.push([nr,nc]);
-      }
-      if(!frontier.length)break;
-      const [nr,nc]=frontier[Math.floor(Math.random()*frontier.length)];seen[nr][nc]=true;cells.push([nr,nc]);digits.add(sol[nr][nc]);
+  // Bounded generation: pathological uniqueness searches are abandoned instead of freezing the phone.
+  for(let attempt=0;attempt<10;attempt++){
+    const sol=Array.from({length:9},()=>Array(9).fill(0));solveSudoku(sol);
+    const cages=[],seen=Array.from({length:9},()=>Array(9).fill(false));
+    const maxSize={Easy:2,Medium:2,Hard:3,Expert:3}[diff]||2;
+    for(let r=0;r<9;r++)for(let c=0;c<9;c++)if(!seen[r][c]){
+      const desired=2+Math.floor(psRandom()*Math.max(1,maxSize-1)),cells=[[r,c]],digits=new Set([sol[r][c]]);seen[r][c]=true;
+      while(cells.length<desired){const frontier=[];for(const [rr,cc] of cells)for(const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){const nr=rr+dr,nc=cc+dc;if(nr>=0&&nr<9&&nc>=0&&nc<9&&!seen[nr][nc]&&!digits.has(sol[nr][nc]))frontier.push([nr,nc]);}if(!frontier.length)break;const [nr,nc]=frontier[Math.floor(psRandom()*frontier.length)];seen[nr][nc]=true;cells.push([nr,nc]);digits.add(sol[nr][nc]);}
+      cages.push({cells,sum:cells.reduce((total,[rr,cc])=>total+sol[rr][cc],0)});
     }
-    cages.push({cells,sum:cells.reduce((total,[rr,cc])=>total+sol[rr][cc],0)});
+    const valid=cages.every(cg=>{const vals=cg.cells.map(([r,c])=>sol[r][c]);return new Set(vals).size===vals.length&&vals.reduce((a,b)=>a+b,0)===cg.sum;});
+    let item={type:'killer',solution:sol,cages,validated:valid,validationTier:valid?'structural':'failed',generationAttempts:attempt+1};
+    if(valid){const ct=killerCountSolutions(item,2,180000);if(ct===1){item.validated=true;item.validationTier='unique';return item}if(ct===-1)item.validationTier='timeout';}
   }
-  // Structural validation: the known Sudoku solution must satisfy every cage sum and no-repeat rule.
-  const valid=cages.every(cg=>{const vals=cg.cells.map(([r,c])=>sol[r][c]);return new Set(vals).size===vals.length&&vals.reduce((a,b)=>a+b,0)===cg.sum;});
-  let item={type:'killer',solution:sol,cages,validated:valid,validationTier:valid?'structural':'failed'};
-  if(valid){const ct=killerCountSolutions(item,2);item.validated=ct===1;item.validationTier=ct===1?'unique':'failed';}
-  return item;
+  return {type:'killer',solution:[],cages:[],validated:false,validationTier:'failed',generationAttempts:10};
 }
-
 
 /* ---------- IRREGULAR SUDOKU ---------- */
 function connectedRegionMap(){
@@ -1632,9 +1703,9 @@ function connectedRegionMap(){
    if(!candidates.length)break;
    candidates.sort((a,b)=>{
     let ma=Math.min(...a[2].map(x=>sizes[x])),mb=Math.min(...b[2].map(x=>sizes[x]));
-    return ma-mb || Math.random()-.5
+    return ma-mb || psRandom()-.5
    });
-   let [r,c,ids]=candidates[0],min=Math.min(...ids.map(x=>sizes[x])),choices=ids.filter(x=>sizes[x]===min),id=choices[Math.floor(Math.random()*choices.length)];
+   let [r,c,ids]=candidates[0],min=Math.min(...ids.map(x=>sizes[x])),choices=ids.filter(x=>sizes[x]===min),id=choices[Math.floor(psRandom()*choices.length)];
    reg[r][c]=id;sizes[id]++;unassigned--;
   }
   if(unassigned===0&&sizes.every(x=>x===9))return reg
@@ -1679,7 +1750,7 @@ const FIXED_IRREGULAR_REGIONS=[
  [2,2,2,2,3,3,3,6,6]
 ];
 function irregularVariant(base){
- const mode=Math.floor(Math.random()*8),n=9,out=Array.from({length:n},()=>Array(n));
+ const mode=Math.floor(psRandom()*8),n=9,out=Array.from({length:n},()=>Array(n));
  const at=(r,c)=>{
    if(mode===0)return [r,c]; if(mode===1)return [c,n-1-r]; if(mode===2)return [n-1-r,n-1-c]; if(mode===3)return [n-1-c,r];
    if(mode===4)return [r,n-1-c]; if(mode===5)return [n-1-r,c]; if(mode===6)return [c,r]; return [n-1-c,n-1-r];
@@ -1705,7 +1776,7 @@ function irregularTransformGrid(grid,mode){
  for(let r=0;r<n;r++)for(let c=0;c<n;c++){const [rr,cc]=at(r,c);out[r][c]=grid[rr][cc]}return out;
 }
 function makeIrregular(diff){
- const mode=Math.floor(Math.random()*8),digitOrder=shuffle([1,2,3,4,5,6,7,8,9]),digitMap={};for(let i=1;i<=9;i++)digitMap[i]=digitOrder[i-1];
+ const mode=Math.floor(psRandom()*8),digitOrder=shuffle([1,2,3,4,5,6,7,8,9]),digitMap={};for(let i=1;i<=9;i++)digitMap[i]=digitOrder[i-1];
  let regions=irregularTransformGrid(FIXED_IRREGULAR_REGIONS,mode),solution=irregularTransformGrid(IRREGULAR_BASE_SOLUTION,mode).map(row=>row.map(v=>digitMap[v]));
  let baseMask=irregularTransformGrid(IRREGULAR_EXPERT_MASK,mode),puzzle=baseMask.map((row,r)=>row.map((v,c)=>v?solution[r][c]:0));
  const target={Easy:46,Medium:36,Hard:28,Expert:19}[diff]||36;
@@ -1716,8 +1787,8 @@ function makeIrregular(diff){
 }
 
 /* ---------- STRONG VALIDATORS ---------- */
-function killerCountSolutions(item,limit=2){
- let b=Array.from({length:9},()=>Array(9).fill(0)),count=0,cellCage=Array.from({length:9},()=>Array(9).fill(-1));
+function killerCountSolutions(item,limit=2,maxNodes=180000){
+ let b=Array.from({length:9},()=>Array(9).fill(0)),count=0,nodes=0,timedOut=false,cellCage=Array.from({length:9},()=>Array(9).fill(-1));
  item.cages.forEach((cg,i)=>cg.cells.forEach(([r,c])=>cellCage[r][c]=i));
  function ok(r,c,v){
   for(let i=0;i<9;i++)if(b[r][i]===v||b[i][c]===v)return false;
@@ -1732,13 +1803,13 @@ function killerCountSolutions(item,limit=2){
   return min<=cg.sum&&max>=cg.sum
  }
  function rec(){
-  if(count>=limit)return;let best=null,bestC=null;
+  if(count>=limit||timedOut)return;if(++nodes>maxNodes){timedOut=true;return}let best=null,bestC=null;
   for(let r=0;r<9;r++)for(let c=0;c<9;c++)if(!b[r][c]){
    let cs=[];for(let v=1;v<=9;v++)if(ok(r,c,v))cs.push(v);if(!cs.length)return;
    if(!bestC||cs.length<bestC.length){best=[r,c];bestC=cs}
   }
   if(!best){count++;return}let [r,c]=best;for(let v of bestC){b[r][c]=v;rec();b[r][c]=0;if(count>=limit)return}
- }rec();return count
+ }rec();return timedOut?-1:count
 }
 function kenkenCagePossible(cg,vals,n){
  let filled=vals.filter(v=>v>0),missing=vals.length-filled.length,op=cg.op,t=cg.target;
@@ -1855,11 +1926,11 @@ function makeKenKen(diff){
   let n=overrideSize({Easy:4,Medium:5,Hard:6,Expert:7}[diff],[4,5,6,7]),nums=shuffle([...Array(n).keys()].map(x=>x+1)),sol=Array.from({length:n},(_,r)=>Array.from({length:n},(_,c)=>nums[(r+c)%n]));
   let seen=Array.from({length:n},()=>Array(n).fill(false)),cages=[];
   for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(!seen[r][c]){
-   let cageMax=varietyLevel()==='wild'?4:3;let size=Math.min(cageMax,1+Math.floor(Math.random()*({Easy:2,Medium:3,Hard:cageMax,Expert:cageMax}[diff]))),cells=[[r,c]];seen[r][c]=true;
-   while(cells.length<size){let fr=[];for(let [rr,cc] of cells)for(let [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){let nr=rr+dr,nc=cc+dc;if(nr>=0&&nr<n&&nc>=0&&nc<n&&!seen[nr][nc])fr.push([nr,nc])}if(!fr.length)break;let p=fr[Math.floor(Math.random()*fr.length)];seen[p[0]][p[1]]=true;cells.push(p)}
+   let cageMax=varietyLevel()==='wild'?4:3;let size=Math.min(cageMax,1+Math.floor(psRandom()*({Easy:2,Medium:3,Hard:cageMax,Expert:cageMax}[diff]))),cells=[[r,c]];seen[r][c]=true;
+   while(cells.length<size){let fr=[];for(let [rr,cc] of cells)for(let [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){let nr=rr+dr,nc=cc+dc;if(nr>=0&&nr<n&&nc>=0&&nc<n&&!seen[nr][nc])fr.push([nr,nc])}if(!fr.length)break;let p=fr[Math.floor(psRandom()*fr.length)];seen[p[0]][p[1]]=true;cells.push(p)}
    let vals=cells.map(([rr,cc])=>sol[rr][cc]),target,op='';
    if(cells.length===1){target=vals[0]} else {
-    let choices=['+','×'];if(cells.length===2)choices.push('-','÷');op=choices[Math.floor(Math.random()*choices.length)];
+    let choices=['+','×'];if(cells.length===2)choices.push('-','÷');op=choices[Math.floor(psRandom()*choices.length)];
     if(op==='+')target=vals.reduce((a,b)=>a+b,0);
     else if(op==='×')target=vals.reduce((a,b)=>a*b,1);
     else if(op==='-')target=Math.abs(vals[0]-vals[1]);
@@ -1881,11 +1952,11 @@ function makeHidato(diff){
  function buildPath(){
   for(let attempt=0;attempt<35;attempt++){
    let used=Array.from({length:n},()=>Array(n).fill(false)),path=[];
-   let r=Math.floor(Math.random()*n),c=Math.floor(Math.random()*n);used[r][c]=true;path.push([r,c]);
+   let r=Math.floor(psRandom()*n),c=Math.floor(psRandom()*n);used[r][c]=true;path.push([r,c]);
    function dfs(rr,cc,k){
     if(k===N)return true;
     let prev=path.length>1?path[path.length-2]:null;
-    let moves=neighbors(rr,cc,used).map(p=>{let deg=neighbors(p[0],p[1],used).length,turn=0;if(prev){let v1=[Math.sign(rr-prev[0]),Math.sign(cc-prev[1])],v2=[Math.sign(p[0]-rr),Math.sign(p[1]-cc)];turn=(v1[0]!==v2[0]||v1[1]!==v2[1])?1:0;}return {p,deg,turn,noise:Math.random()}});
+    let moves=neighbors(rr,cc,used).map(p=>{let deg=neighbors(p[0],p[1],used).length,turn=0;if(prev){let v1=[Math.sign(rr-prev[0]),Math.sign(cc-prev[1])],v2=[Math.sign(p[0]-rr),Math.sign(p[1]-cc)];turn=(v1[0]!==v2[0]||v1[1]!==v2[1])?1:0;}return {p,deg,turn,noise:psRandom()}});
     const turnBias={Easy:.20,Medium:.55,Hard:.90,Expert:1.25}[diff]||.55;
     moves.sort((a,b)=>(a.deg-b.deg) - turnBias*(a.turn-b.turn) || a.noise-b.noise);
     for(const m of moves){let [nr,nc]=m.p;used[nr][nc]=true;path.push([nr,nc]);if(dfs(nr,nc,k+1))return true;path.pop();used[nr][nc]=false}
@@ -1941,8 +2012,8 @@ function makeTakuzu(diff){
 /* ---------- MAGIC SQUARE ---------- */
 function makeMagicSquare(diff){
  let base=[[8,1,6],[3,5,7],[4,9,2]],sol=clone(base);
- for(let t=0;t<2+Math.floor(Math.random()*5);t++){
-   let op=Math.floor(Math.random()*3);
+ for(let t=0;t<2+Math.floor(psRandom()*5);t++){
+   let op=Math.floor(psRandom()*3);
    if(op===0)sol=sol.map(r=>r.slice().reverse());
    if(op===1)sol=sol.slice().reverse();
    if(op===2)sol=sol[0].map((_,c)=>sol.map(r=>r[c]));
@@ -1968,17 +2039,17 @@ function missingNumberRule(kind,seq){
 }
 function makeMissingNumber(diff){
  let maxKind=varietyLevel()==='standard'?4:varietyLevel()==='high'?7:10;
- let kind=Math.floor(Math.random()*maxKind),seq=[];
- if(kind===0){let a=1+Math.floor(Math.random()*20),d=1+Math.floor(Math.random()*9);seq=Array.from({length:7},(_,i)=>a+i*d)}
- else if(kind===1){let a=1+Math.floor(Math.random()*5),m=2+Math.floor(Math.random()*3);seq=Array.from({length:6},(_,i)=>a*Math.pow(m,i))}
- else if(kind===2){let a=1+Math.floor(Math.random()*10),d=1+Math.floor(Math.random()*5);seq=[a,a+d];for(let i=2;i<7;i++)seq.push(seq[i-1]+seq[i-2])}
- else if(kind===3){let a=1+Math.floor(Math.random()*9);seq=Array.from({length:7},(_,i)=>a+i*i)}
- else if(kind===4){let a=2+Math.floor(Math.random()*8);seq=Array.from({length:7},(_,i)=>a+(i*(i+1))/2)}
- else if(kind===5){let a=5+Math.floor(Math.random()*15);seq=Array.from({length:7},(_,i)=>a+(i%2===0?i*2:-i))}
- else if(kind===6){let a=2+Math.floor(Math.random()*5);seq=Array.from({length:7},(_,i)=>a+(i+1)*(i+1))}
- else if(kind===7){let a=1+Math.floor(Math.random()*5);seq=Array.from({length:7},(_,i)=>a+Math.pow(2,i))}
- else if(kind===8){let a=10+Math.floor(Math.random()*20);seq=Array.from({length:7},(_,i)=>a+(i%2?3:-2)*i)}
- else {let a=1+Math.floor(Math.random()*5),b=2+Math.floor(Math.random()*5);seq=[a,b];for(let i=2;i<7;i++)seq.push(seq[i-1]+seq[i-2]+(i%2))}
+ let kind=Math.floor(psRandom()*maxKind),seq=[];
+ if(kind===0){let a=1+Math.floor(psRandom()*20),d=1+Math.floor(psRandom()*9);seq=Array.from({length:7},(_,i)=>a+i*d)}
+ else if(kind===1){let a=1+Math.floor(psRandom()*5),m=2+Math.floor(psRandom()*3);seq=Array.from({length:6},(_,i)=>a*Math.pow(m,i))}
+ else if(kind===2){let a=1+Math.floor(psRandom()*10),d=1+Math.floor(psRandom()*5);seq=[a,a+d];for(let i=2;i<7;i++)seq.push(seq[i-1]+seq[i-2])}
+ else if(kind===3){let a=1+Math.floor(psRandom()*9);seq=Array.from({length:7},(_,i)=>a+i*i)}
+ else if(kind===4){let a=2+Math.floor(psRandom()*8);seq=Array.from({length:7},(_,i)=>a+(i*(i+1))/2)}
+ else if(kind===5){let a=5+Math.floor(psRandom()*15);seq=Array.from({length:7},(_,i)=>a+(i%2===0?i*2:-i))}
+ else if(kind===6){let a=2+Math.floor(psRandom()*5);seq=Array.from({length:7},(_,i)=>a+(i+1)*(i+1))}
+ else if(kind===7){let a=1+Math.floor(psRandom()*5);seq=Array.from({length:7},(_,i)=>a+Math.pow(2,i))}
+ else if(kind===8){let a=10+Math.floor(psRandom()*20);seq=Array.from({length:7},(_,i)=>a+(i%2?3:-2)*i)}
+ else {let a=1+Math.floor(psRandom()*5),b=2+Math.floor(psRandom()*5);seq=[a,b];for(let i=2;i<7;i++)seq.push(seq[i-1]+seq[i-2]+(i%2))}
  let missingCount=1,choices=shuffle([...Array(seq.length-2).keys()].map(i=>i+1)),missingIndices=choices.slice(0,missingCount).sort((a,b)=>a-b),puzzle=seq.slice();
  missingIndices.forEach(i=>puzzle[i]=null);
  return {type:'missingnumber',puzzle,solution:seq,answer:missingIndices.map(i=>seq[i]),missingIndex:missingIndices[0],missingIndices,patternKind:kind,ruleText:missingNumberRule(kind,seq),validated:true,validationTier:'structural'}
@@ -2422,7 +2493,8 @@ function fixedPageLabelsPdfCommands(sheet,pw,ph){
     const pr=relativePdfRect(lab,sr,pw,ph); put(lab.textContent,pr.x+pr.w/2,pr.y+pr.h+4,9,true,true);
   }
   for(const lab of sheet.querySelectorAll('.answer-xref')){
-    const pr=relativePdfRect(lab,sr,pw,ph); put(lab.textContent,pr.x+pr.w/2,pr.y+2,8,true,true);
+    if(sheet.dataset.itemIndex!=null && lab.parentElement===sheet) put(lab.textContent,pw/2,ph-94,8,true,true);
+    else {const pr=relativePdfRect(lab,sr,pw,ph); put(lab.textContent,pr.x+pr.w/2,pr.y+2,8,true,true);}
   }
   return out;
 }
@@ -3063,7 +3135,7 @@ function mandalaControlValue(id,fallback){
 function weightedPick(entries){
   const total=entries.reduce((s,e)=>s+Math.max(0,e[1]),0);
   if(total<=0)return entries[0][0];
-  let r=Math.random()*total;
+  let r=psRandom()*total;
   for(const [key,w] of entries){
     r-=Math.max(0,w);
     if(r<=0)return key;
@@ -3158,7 +3230,7 @@ function mandalaSimilarityScore(a,b){
   return s;
 }
 function chooseTransitionMotif(source,prevMotif,profile,frac,isOuter){
-  const choose=(arr)=>arr[Math.floor(Math.random()*arr.length)];
+  const choose=(arr)=>arr[Math.floor(psRandom()*arr.length)];
   const familyGroup=mandalaFamilyGroup(source.key||'');
   const motifPool=source.motifs||['petal'];
   const outerPools={
@@ -3217,8 +3289,8 @@ function scoreMandalaDesign(item,profile){
   return score;
 }
 function buildMandalaOnce(diff,profile){
-  const choose=a=>a[Math.floor(Math.random()*a.length)];
-  const rand=(a,b)=>a+Math.random()*(b-a);
+  const choose=a=>a[Math.floor(psRandom()*a.length)];
+  const rand=(a,b)=>a+psRandom()*(b-a);
   // v19.2: recipe families now differ in silhouette AND shape vocabulary.
   const recipes={
     royalLotus:{label:'Royal Lotus',family:'lotus',group:'floral-botanical',sym:[8,10,12],seq:['lotus','petal','lotus','leaf','lotus','crown']},
@@ -3872,6 +3944,7 @@ function render(){
  if(!$('bookOverview').classList.contains('hidden'))renderOverview();
  refreshPageEditTools();renumberRenderedSheets();renderPageManager();
  $('status').textContent=`${project.items.length} puzzles • ${page-1} total pages • ${good}/${project.items.length} validated`;
+ autosaveProject();
  updateSummary();
 }
 function addAnswerPageReferences(){
@@ -3888,7 +3961,8 @@ function addAnswerPageReferences(){
      const item=project.items[idx]; if(!item||item.type==='mandala')return;
      const pg=solutionPages.get(idx); if(!pg)return;
      let ref=document.createElement('div');ref.className='answer-xref';ref.textContent=`Solution on page ${pg}`;
-     const heading=holder.querySelector('.puzzle-label,h2,h3'); if(heading)heading.insertAdjacentElement('afterend',ref); else holder.insertBefore(ref,holder.firstChild);
+     if(holder.classList.contains('sheet')){const sub=holder.querySelector(':scope > .subtitle');if(sub)sub.insertAdjacentElement('afterend',ref);else holder.insertBefore(ref,holder.querySelector('.puzzle-wrap'));}
+     else {const heading=holder.querySelector('.puzzle-label,h2,h3'); if(heading)heading.insertAdjacentElement('afterend',ref); else holder.insertBefore(ref,holder.firstChild);}
    });
  });
 }
@@ -3957,6 +4031,7 @@ function setBuildProgress(active,current=0,total=0,label='Preparing book…',sub
   $('buildProgressBar').style.width=pct+'%';
 }
 async function build(){
+ setProjectSeed($('projectSeed')?.value||'PS-2314');
  cryptoUsedPhrases.clear();
  let mode=$('buildMode').value,plan=[];
  if($('mixedMode').checked){
@@ -4117,7 +4192,7 @@ function puzzleFingerprint(item){
    if(item.type==='missingnumber')return item.type+':'+JSON.stringify(item.puzzle);
    if(item.type==='mandala')return item.type+':'+JSON.stringify([item.blueprintKey,item.bandTemplates,item.compositionMode,item.coloringComplexity,item.difficulty]);
    return item.type+':'+JSON.stringify(item);
- }catch(e){return Math.random()+''}
+ }catch(e){return psRandom()+''}
 }
 function runQC(){
  let issues=[],warnings=[],n=project.items.length;
@@ -4187,7 +4262,7 @@ function runQC(){
  project.items.forEach(x=>{
    try{
      if(x.type==='sudoku'){
-       const ct=countSudokuSolutions(clone(x.puzzle),2),match=solutionMatchesSudokuLike(x,solveSudoku);x.validated=ct===1&&match;x.validationTier=x.validated?'unique':'failed';
+       const ct=countSudokuSolutions(clone(x.puzzle),2),match=solutionMatchesSudokuLike(x,solveSudoku),grade=sudokuLogicGrade(x.puzzle);x.validated=ct===1&&match;x.validationTier=x.validated?'unique':'failed';x.difficultyGrade=grade.label;x.difficultyTier=grade.tier;x.difficultyVerified=sudokuTierMatches(x.difficulty||'Medium',grade);
      }else if(x.type==='diagonal'){
        const ct=countDiagonal(clone(x.puzzle),2),b=clone(x.puzzle),match=solveDiagonal(b)&&sameGrid(b,x.solution);x.validated=ct===1&&match;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='kakuro'){
@@ -4214,7 +4289,9 @@ function runQC(){
      }else if(x.type==='takuzu'){
        const ct=takuzuCountSolutions(x,2);x.validated=visibleGivensMatch(x,[null])&&ct===1;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='irregular'){
-       const regionOK=irregularRegionsOK(x),ct=regionOK?countIrregular(clone(x.puzzle),x.regions,2):0;x.validated=regionOK&&visibleGivensMatch(x,[0,null])&&ct===1;x.validationTier=x.validated?'unique':'failed';
+       const regionOK=irregularRegionsOK(x),givensOK=visibleGivensMatch(x,[0,null]);
+       if(x.validationTier==='unique-template'){x.validated=regionOK&&givensOK;}
+       else {const ct=regionOK?countIrregular(clone(x.puzzle),x.regions,2):0;x.validated=regionOK&&givensOK&&ct===1;x.validationTier=x.validated?'unique':'failed';}
      }else if(x.type==='magicsquare'){
        const a=x.solution||[],m=x.magic,ok=a.length===3&&visibleGivensMatch(x,[0,null])&&a.every(r=>r.reduce((q,v)=>q+v,0)===m)&&[0,1,2].every(c=>a.reduce((q,r)=>q+r[c],0)===m)&&a[0][0]+a[1][1]+a[2][2]===m&&a[0][2]+a[1][1]+a[2][0]===m;
        x.validated=ok;x.validationTier=ok?'math':'failed';
@@ -4229,6 +4306,10 @@ function runQC(){
  let knownOnly=project.items.map((x,i)=>x.validationTier==='known-answer'?i+1:null).filter(Boolean);
  if(knownOnly.length)warnings.push(`Puzzle(s) ${knownOnly.join(', ')} have a known generated answer but no uniqueness proof.`);
  let structural=project.items.filter(x=>x.validationTier==='structural').length;
+ const diffMiss=project.items.map((x,i)=>x.type==='sudoku'&&x.difficultyVerified===false?`${i+1} (${x.difficulty}: ${x.difficultyGrade||'uncertified'})`:null).filter(Boolean);
+ if(diffMiss.length)issues.push(`Sudoku difficulty certification failed: ${diffMiss.join(', ')}. Regenerate these puzzles before publishing.`);
+ const expertSudoku=project.items.filter(x=>x.type==='sudoku'&&x.difficulty==='Expert');
+ if(expertSudoku.length && expertSudoku.every(x=>x.difficultyVerified))warnings.push(`Expert Sudoku certification: ${expertSudoku.length}/${expertSudoku.length} require pairs/subsets or logic beyond the basic solver.`);
  let unique=project.items.filter(x=>x.validationTier==='unique').length;
  let placement=project.items.filter(x=>x.validationTier==='placement').length;
  let math=project.items.filter(x=>x.validationTier==='math').length;
@@ -4249,7 +4330,8 @@ function runQC(){
  }).filter(Boolean);
  if(badAnswers.length)issues.push(`Puzzle(s) missing solution data: ${badAnswers.join(', ')}.`);
  if($('copyrightPage').checked && !($('copyrightText').value||'').trim())warnings.push('Copyright page is enabled with generic publication text. Add your own wording if desired.');
- let box=$('qcResults'),summary=`${unique} unique-solution verified • ${placement} placement verified • ${path} path verified • ${mapping} mapping verified • ${math} math-rule verified • ${structural} structurally verified • ${knownOnly.length} known-answer only`;
+ let certified=project.items.filter(x=>x.difficultyVerified===true).length;
+ let box=$('qcResults'),summary=`${unique} unique-solution verified • ${certified} difficulty-certified • ${placement} placement verified • ${path} path verified • ${mapping} mapping verified • ${math} math-rule verified • ${structural} structurally verified • ${knownOnly.length} known-answer only`;
  if(issues.length){box.className='qc-box qc-bad';box.innerHTML='<b>Quality check: problems found</b><br>'+summary+'<br><br>'+issues.map(x=>'• '+x).join('<br>')+(warnings.length?'<br><br><b>Warnings</b><br>'+warnings.map(x=>'• '+x).join('<br>'):'')}
  else if(warnings.length){box.className='qc-box qc-warn';box.innerHTML='<b>Quality check: usable with warnings</b><br>'+summary+'<br><br>'+warnings.map(x=>'• '+x).join('<br>')}
  else {box.className='qc-box qc-good';box.innerHTML=`<b>Quality check passed</b><br>${summary}<br>${n} puzzle${n===1?'':'s'} checked. No duplicate fingerprints, missing answers, or validation failures detected.`}
@@ -4375,6 +4457,11 @@ function runPreflight(){
  if(failed)fails.push(`${failed} puzzle(s) have failed or unconfirmed validation.`);
  else if(n)passes.push('All puzzles have acceptable validation status.');
 
+ // Difficulty certification.
+ const uncertifiedExperts=items.map((x,i)=>x.type==='sudoku'&&x.difficulty==='Expert'&&x.difficultyVerified!==true?i+1:null).filter(Boolean);
+ if(uncertifiedExperts.length)fails.push(`Expert Sudoku difficulty is not certified for puzzle(s): ${uncertifiedExperts.join(', ')}.`);
+ else if(items.some(x=>x.type==='sudoku'&&x.difficulty==='Expert'))passes.push('Expert Sudoku puzzles passed logical difficulty certification.');
+
  // Solution matching
  const missingSolutions=items.map((x,i)=>hasMatchingSolution(x)?null:i+1).filter(Boolean);
  if(missingSolutions.length)fails.push(`Missing or incomplete solution data for puzzle(s): ${missingSolutions.join(', ')}.`);
@@ -4433,6 +4520,17 @@ function runPreflight(){
  if(unexpected.length)warn.push(`Possible unexpected blank rendered page(s): ${unexpected.join(', ')}.`);
  else if(sheets.length)passes.push('No unexpected blank rendered pages detected.');
 
+ // PDF/KDP layout collision and overflow checks.
+ const layoutProblems=[];
+ const intersects=(a,b)=>a.left<b.right-1&&a.right>b.left+1&&a.top<b.bottom-1&&a.bottom>b.top+1;
+ sheets.forEach((sheet,si)=>{
+   const zones=[...sheet.querySelectorAll(':scope > h2,:scope > .subtitle,:scope > .answer-xref')].filter(isVisibleEl);
+   for(let a=0;a<zones.length;a++)for(let b=a+1;b<zones.length;b++)if(intersects(zones[a].getBoundingClientRect(),zones[b].getBoundingClientRect()))layoutProblems.push(`page ${si+1} header overlap`);
+   sheet.querySelectorAll('.howto-page .ht-card,.howto-page .ht-section').forEach(box=>{const br=box.getBoundingClientRect();for(const child of box.children){const cr=child.getBoundingClientRect();if(cr.bottom>br.bottom+2||cr.right>br.right+2||cr.left<br.left-2)layoutProblems.push(`page ${si+1} How-To overflow`);}});
+ });
+ if(layoutProblems.length)fails.push(`Layout QC found ${layoutProblems.length} collision/overflow issue(s): ${[...new Set(layoutProblems)].slice(0,8).join('; ')}.`);
+ else if(sheets.length)passes.push('PDF layout QC found no header collisions or How-To box overflow.');
+
  // Rendered count vs expected
  const expectedPages=countExpectedRenderedPages();
  const renderedPages=sheets.length;
@@ -4468,6 +4566,8 @@ function runPreflight(){
      ? 'READY WITH WARNINGS — review the WARN items before KDP upload.'
      : 'READY FOR KDP — all app preflight checks passed.';
 }
+function autosaveProject(){try{localStorage.setItem('puzzle-studio-autosave-v1',JSON.stringify({version:PUZZLE_STUDIO_VERSION,seed:$('projectSeed')?.value||'',project,mixRows,ts:Date.now()}))}catch(e){}}
+function restoreAutosave(){try{const raw=localStorage.getItem('puzzle-studio-autosave-v1');if(!raw)return false;const a=JSON.parse(raw);if(a?.project?.items?.length){project=a.project;if(Array.isArray(a.mixRows))mixRows=a.mixRows;if($('projectSeed')&&a.seed)$('projectSeed').value=a.seed;renderMixRows();render();$('status').textContent=`Autosave restored • ${project.items.length} puzzles`;return true}}catch(e){}return false}
 function syncMode(){
  let book=$('buildMode').value==='book';
  $('mixedControls').classList.toggle('hidden',!$('mixedMode').checked);
@@ -4487,7 +4587,7 @@ $('qc').onclick=runQC;
 document.querySelectorAll('.presetBtn').forEach(b=>b.onclick=()=>applyPreset(b.dataset.preset));
 $('bookOverviewBtn').onclick=()=>{$('bookOverview').classList.toggle('hidden');if(!$('bookOverview').classList.contains('hidden'))renderOverview()};
 $('pageManagerBtn').onclick=()=>{$('pageManager').classList.toggle('hidden');if(!$('pageManager').classList.contains('hidden'))renderPageManager()};
-$('preflight').onclick=runPreflight;
+$('preflight').onclick=()=>{runQC();runPreflight();};
 $('spreadPreview').onclick=()=>setSpreadPreview(true);
 $('singlePreview').onclick=()=>setSpreadPreview(false);
 $('addMix').onclick=()=>{mixRows.push({type:'sudoku',difficulty:'Medium',count:10,puzzlesPerPage:1,solutionsPerPage:2});renderMixRows();updateSummary()};
@@ -4513,11 +4613,11 @@ syncDifficultyControls();
 syncMode();
 render();
 updateSummary();
-$('status').textContent='Ready — choose a puzzle type, then Build Book.';
+if(!restoreAutosave())$('status').textContent='Ready — choose a puzzle type, then Build Book.';
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=23.13',{updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=23.14',{updateViaCache:'none'}).catch(()=>{});
   });
 }
 
@@ -4528,7 +4628,7 @@ async function updateOfflineStatus(){
     el.textContent='Offline cache status: service workers not supported in this browser.';
     return;
   }
-  const CACHE_NAME='puzzle-studio-v23.13';
+  const CACHE_NAME='puzzle-studio-v23.14';
   const timeout=(ms)=>new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),ms));
   try{
     // Never leave the UI stuck on Preparing. Registration/activation gets a short window.
