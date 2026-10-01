@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v23.11 — Adversarial QC Candidate</title>
+<title>Offline Puzzle Studio v23.12 — Adversarial QC Candidate</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -691,12 +691,12 @@ details summary{cursor:pointer;font-weight:700}
 .ht-kakuro-clue .d{left:3px!important;bottom:2px!important;right:auto!important;top:auto!important}.ht-kakuro-clue .a{right:3px!important;top:2px!important;left:auto!important;bottom:auto!important}
 .ht-ken-demo td{position:relative;border:3px solid #111!important;font-weight:700}.ht-ken-demo td small{position:absolute;top:1px;left:2px;font-size:7px;font-weight:800}.magic-target{font:800 15px/1.2 Arial,sans-serif;text-align:center;margin:0 0 8px}.magic-target small{font-size:10px;font-weight:700}
 
-/* v23.11 solution readability */
+/* v23.12 solution readability */
 .missing-solution-rule,.missing-rule,.solution-rule{max-width:100%;white-space:normal!important;overflow-wrap:anywhere;word-break:normal;line-height:1.25;text-align:center;font-size:11px;margin:4px auto 0}
 .solution-slot,.solution-item{min-width:0;overflow:hidden}
 .ht-cage-demo,.ht-region-demo{max-width:100%;text-align:center}
 
-/* v23.11 targeted layout/performance fixes */
+/* v23.12 targeted layout/performance fixes */
 .missing-sequence{display:flex!important;flex-direction:column!important;align-items:center!important;width:100%!important}
 .missing-number-line{display:flex;justify-content:center;align-items:center;flex-wrap:nowrap;width:100%}
 .missing-sequence .missing-rule{display:block!important;flex:0 0 100%!important;width:100%!important;max-width:100%!important;clear:both!important;margin:6px auto 0!important;text-align:center!important;white-space:normal!important}
@@ -704,7 +704,7 @@ details summary{cursor:pointer;font-weight:700}
 .crypto-word{display:inline-block;white-space:nowrap;border-bottom:1px solid #bbb;padding:0 .08em .05em;margin:0 .12em}
 .crypto-punct{display:inline-block;margin-left:-.28em;margin-right:.1em}
 
-/* v23.11 PDF How-To repair: fixed KDP geometry independent of phone viewport. */
+/* v23.12 PDF How-To repair: fixed KDP geometry independent of phone viewport. */
 .sheet .howto-page .ht-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.075in!important}
 .sheet .howto-page .ht-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 .sheet .howto-page .ht-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:.08in!important}
@@ -720,11 +720,11 @@ details summary{cursor:pointer;font-weight:700}
  .sheet .number-search-howto .howto-example-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
  .sheet .howto-number-layout{grid-template-columns:minmax(0,1.1fr) minmax(180px,.9fr)!important}
 }
-</style>
+\n/* v23.12 How-To PDF collision guard. These rules come last on purpose. */\n.sheet:has(.howto-page){padding:.42in .42in .36in!important;}\n.sheet:has(.howto-page)>h2{display:block!important;min-height:.30in!important;margin:0 0 .08in!important;font-size:18px!important;line-height:1.15!important;text-align:center!important;}\n.sheet .howto-page{display:block!important;max-height:8.35in!important;overflow:hidden!important;}\n.sheet .howto-page .howto-goal{display:block!important;min-height:.38in!important;margin:0 auto .13in!important;padding:.02in .10in!important;font-size:10.5px!important;line-height:1.35!important;text-align:center!important;}\n.sheet .howto-page .ht-grid{margin:.08in 0 .12in!important;align-items:stretch!important;}\n.sheet .howto-page .ht-card{min-height:1.18in!important;padding:.08in .09in!important;box-sizing:border-box!important;}\n.sheet .howto-page .ht-card h3,.sheet .howto-page .ht-section h3{display:block!important;min-height:.16in!important;margin:0 0 .07in!important;line-height:1.15!important;}\n.sheet .howto-page .ht-card p,.sheet .howto-page .ht-section p,.sheet .howto-page .ht-card li,.sheet .howto-page .ht-section li{line-height:1.28!important;}\n.sheet .howto-page .ht-section{display:block!important;margin:.10in 0!important;padding:.08in .10in!important;box-sizing:border-box!important;}\n.sheet .howto-page .ht-row{align-items:center!important;}\n.sheet .howto-page .ht-big{margin:.06in 0!important;line-height:1.35!important;}\n.sheet .howto-page[data-howto-type="sudoku"] .ht-section{min-height:1.58in!important;}\n.sheet .howto-page[data-howto-type="wordsearch"] .ht-section,\n.sheet .howto-page[data-howto-type="numbersearch"] .ht-section{min-height:2.10in!important;}\n.sheet .howto-page[data-howto-type="cryptogram"] .ht-section{min-height:.82in!important;}\n@media(max-width:650px){\n .sheet .howto-page .ht-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-row,.sheet .howto-page .ht-split{grid-template-columns:repeat(2,minmax(0,1fr))!important;}\n .sheet .howto-page .ht-row.wide-left{grid-template-columns:1.35fr .65fr!important;}\n}\n</style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v23.11</span></h1><div class="build-version">Exact build: v23.11 • Bug Squash + Adversarial QC • Verified How-To Integration</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v23.11</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v23.12</span></h1><div class="build-version">Exact build: v23.12 • Bug Squash + Adversarial QC • Verified How-To Integration</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v23.12</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -989,9 +989,6 @@ details summary{cursor:pointer;font-weight:700}
 Load Project<input id="load" type="file" accept=".json" style="display:none">
 </label>
 
-<p class="small"><b>Offline:</b> no internet, server, account, or installation is required.</p><p class="small"><b>KDP Book Builder:</b> mix Easy, Medium, Hard, and Expert puzzles in one interior, add front matter and section dividers, and send all answer keys to the back automatically.</p><p class="small"><b>Expanded library:</b> word, number, logic, Sudoku-variant, and math puzzle generators.</p><p class="small"><b>Quality tools:</b> validation still runs behind the scenes for Quality Check and Preflight, but verification labels are no longer printed on puzzle pages.</p><p class="small"><b>Difficulty:</b> Book difficulty is controlled by the Easy / Medium / Hard / Expert puzzle counts, or per-row difficulty in Mixed Puzzle Book. The old standalone difficulty selector has been removed.</p><p class="small"><b>Editing:</b> use Large Print, open Book Overview, regenerate individual puzzles, delete them, or move them up/down without rebuilding the whole book.</p><p class="small"><b>Variety:</b> High/Maximum variety changes pattern families, sequence rules, cage layouts, path styles, search directions, and cryptogram mappings so large books feel less repetitive.</p><p class="small"><b>KDP readiness:</b> Preflight now checks puzzle/solution matching, mixed-book counts, page-count consistency, frames/safe-area heuristics, blank pages, section starts, and export readiness.</p><p class="small"><b>Mixed books:</b> choose puzzle type, difficulty, and quantity for every mixed-book row. <b>Design:</b> frame templates, page typography, multi-puzzle layouts, mirrored page numbers, right-hand section starts, spread preview, and final preflight checks.</p>
-<p class="small"><b>Validation:</b> Solver-based puzzle types are independently rechecked by Quality Check for a single valid solution. Search placements, maze paths, cryptogram mappings, and math-rule puzzles are verified against their own correctness rules.</p>
-<p class="small"><b>v12.2 tested fix:</b> Mixed Book controls are present and wired, and visible Book Title / Subtitle fields are removed.</p><p class="small"><b>v11 print cleanup:</b> Printed puzzle and answer pages no longer repeat the book title or Easy/Medium/Hard labels. Smart answers use at most two well-separated solutions per page. Kakuro and Slitherlink use reliable structural validation, Takuzu displays both 0 and 1, and generation limits are raised to 500 puzzles per selection.</p><p class="small"><b>Page editing:</b> Every rendered page can now be removed individually. Page numbers update automatically and removed pages are excluded from PDF export until you rebuild the book.</p><p class="small"><b>Smart assembly:</b> tiny sections avoid wasteful divider pages, larger section dividers stay right-page aligned, solution pages adapt their density to each puzzle type, and PDF/JSON exports receive organized filenames automatically.</p><p class="small"><b>How-to pages:</b> Each puzzle type now gets a visual instruction page with mini grids, arrows, highlighted cells, and worked examples.<br><b>PDF:</b> choose “Create PDF,” then select <b>Save as PDF</b>. For KDP interiors, keep browser scaling at 100% and margins set to none/default as appropriate.</p>
 </section>
 
 <section class="panel preview">
@@ -1009,7 +1006,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='23.11';
+const PUZZLE_STUDIO_VERSION='23.12';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]},overviewMandalaReview=false;
@@ -2323,7 +2320,7 @@ function textPdfCommands(sheet,pw,ph){
   return out;
 }
 function howToTextPdfCommands(sheet,pw,ph){
-  // v23.11: preserve the actual How-To layout in the vector PDF instead of
+  // v23.12: preserve the actual How-To layout in the vector PDF instead of
   // reflowing every teaching block into a generic two-column template.
   // These bounded DOM walkers only inspect the current single How-To sheet.
   let out='';
@@ -2441,6 +2438,8 @@ function sheetVectorStream(sheet,pw,ph){
   // border/SVG/text DOM walkers on these pages; Safari could stall on page 1.
   if(isHowTo){
     out+=howToTextPdfCommands(sheet,pw,ph);
+    // H2/subtitle are intentionally excluded from textPdfCommands, so draw them once here.
+    out+=fixedPageLabelsPdfCommands(sheet,pw,ph);
     out+=pageNumberPdfCommand(sheet,pw,ph);
     return out;
   }
@@ -4529,7 +4528,7 @@ async function updateOfflineStatus(){
     el.textContent='Offline cache status: service workers not supported in this browser.';
     return;
   }
-  const CACHE_NAME='puzzle-studio-v23.11';
+  const CACHE_NAME='puzzle-studio-v23.12';
   const timeout=(ms)=>new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),ms));
   try{
     // Never leave the UI stuck on Preparing. Registration/activation gets a short window.
