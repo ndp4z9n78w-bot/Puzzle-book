@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v23.9 — Adversarial QC Candidate</title>
+<title>Offline Puzzle Studio v23.10 — Adversarial QC Candidate</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -691,23 +691,40 @@ details summary{cursor:pointer;font-weight:700}
 .ht-kakuro-clue .d{left:3px!important;bottom:2px!important;right:auto!important;top:auto!important}.ht-kakuro-clue .a{right:3px!important;top:2px!important;left:auto!important;bottom:auto!important}
 .ht-ken-demo td{position:relative;border:3px solid #111!important;font-weight:700}.ht-ken-demo td small{position:absolute;top:1px;left:2px;font-size:7px;font-weight:800}.magic-target{font:800 15px/1.2 Arial,sans-serif;text-align:center;margin:0 0 8px}.magic-target small{font-size:10px;font-weight:700}
 
-/* v23.9 solution readability */
+/* v23.10 solution readability */
 .missing-solution-rule,.missing-rule,.solution-rule{max-width:100%;white-space:normal!important;overflow-wrap:anywhere;word-break:normal;line-height:1.25;text-align:center;font-size:11px;margin:4px auto 0}
 .solution-slot,.solution-item{min-width:0;overflow:hidden}
 .ht-cage-demo,.ht-region-demo{max-width:100%;text-align:center}
 
-/* v23.9 targeted layout/performance fixes */
+/* v23.10 targeted layout/performance fixes */
 .missing-sequence{display:flex!important;flex-direction:column!important;align-items:center!important;width:100%!important}
 .missing-number-line{display:flex;justify-content:center;align-items:center;flex-wrap:nowrap;width:100%}
 .missing-sequence .missing-rule{display:block!important;flex:0 0 100%!important;width:100%!important;max-width:100%!important;clear:both!important;margin:6px auto 0!important;text-align:center!important;white-space:normal!important}
 .crypto-main{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;column-gap:.38em;row-gap:.15em}
 .crypto-word{display:inline-block;white-space:nowrap;border-bottom:1px solid #bbb;padding:0 .08em .05em;margin:0 .12em}
 .crypto-punct{display:inline-block;margin-left:-.28em;margin-right:.1em}
+
+/* v23.10 PDF How-To repair: fixed KDP geometry independent of phone viewport. */
+.sheet .howto-page .ht-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.075in!important}
+.sheet .howto-page .ht-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.sheet .howto-page .ht-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:.08in!important}
+.sheet .howto-page .ht-row.wide-left{grid-template-columns:1.35fr .65fr!important}
+.sheet .howto-page .ht-split{display:grid!important;grid-template-columns:1fr 1fr!important;gap:.07in!important}
+.sheet .number-search-howto .howto-example-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.sheet .howto-number-layout{grid-template-columns:minmax(0,1.1fr) minmax(180px,.9fr)!important}
+@media print{
+ .sheet .howto-page .ht-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .sheet .howto-page .ht-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .sheet .howto-page .ht-row,.sheet .howto-page .ht-split{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .sheet .howto-page .ht-row.wide-left{grid-template-columns:1.35fr .65fr!important}
+ .sheet .number-search-howto .howto-example-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .sheet .howto-number-layout{grid-template-columns:minmax(0,1.1fr) minmax(180px,.9fr)!important}
+}
 </style>
 </head>
 <body>
-<header><h1>Offline Puzzle Studio <span class="badge">v23.9</span></h1><div class="build-version">Exact build: v23.9 • Bug Squash + Adversarial QC • Verified How-To Integration</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v23.9</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v23.10</span></h1><div class="build-version">Exact build: v23.10 • Bug Squash + Adversarial QC • Verified How-To Integration</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v23.10</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -2306,20 +2323,19 @@ function textPdfCommands(sheet,pw,ph){
   return out;
 }
 function howToTextPdfCommands(sheet,pw,ph){
-  // v23.9: preserve the actual How-To layout in the vector PDF instead of
+  // v23.10: preserve the actual How-To layout in the vector PDF instead of
   // reflowing every teaching block into a generic two-column template.
   // These bounded DOM walkers only inspect the current single How-To sheet.
   let out='';
   out+=borderPdfCommands(sheet,pw,ph);
   out+=svgPdfCommands(sheet,pw,ph);
   out+=textPdfCommands(sheet,pw,ph);
-  out+=fixedPageLabelsPdfCommands(sheet,pw,ph);
   return out;
 }
 
 function borderPdfCommands(sheet,pw,ph){
   const sr=sheet.getBoundingClientRect();let out='';
-  const els=[...sheet.querySelectorAll('td,th,.howto-step,.howto-example,.crypto-box,.sequence,.missing-mark,.puzzle-card')].filter(el=>!el.closest('.page-edit-tools'));
+  const els=[...sheet.querySelectorAll('td,th,.howto-step,.howto-example,.ht-card,.ht-section,.crypto-box,.sequence,.missing-mark,.puzzle-card')].filter(el=>!el.closest('.page-edit-tools'));
   for(const el of els){
     if(!isVisibleEl(el))continue;
     const pr=relativePdfRect(el,sr,pw,ph),cs=getComputedStyle(el);
@@ -4513,7 +4529,7 @@ async function updateOfflineStatus(){
     el.textContent='Offline cache status: service workers not supported in this browser.';
     return;
   }
-  const CACHE_NAME='puzzle-studio-v23.9';
+  const CACHE_NAME='puzzle-studio-v23.10';
   const timeout=(ms)=>new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),ms));
   try{
     // Never leave the UI stuck on Preparing. Registration/activation gets a short window.
