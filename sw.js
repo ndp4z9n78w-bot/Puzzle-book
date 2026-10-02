@@ -1,4 +1,4 @@
-const CACHE_NAME='puzzle-studio-v24.6';
+const CACHE_NAME='puzzle-studio-v24.7';
 const CORE=['./','./index.html'];
 self.addEventListener('install',event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(CORE)).catch(()=>{}));});
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{for(const k of await caches.keys())if(k!==CACHE_NAME&&/puzzle-studio/i.test(k))await caches.delete(k);await self.clients.claim();})());});
