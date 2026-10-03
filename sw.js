@@ -1,5 +1,13 @@
-const CACHE_NAME='puzzle-studio-v25.4';
-const APP_SHELL=['./','./index.html'];
-self.addEventListener('install',event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(APP_SHELL)).catch(()=>{}));});
-self.addEventListener('activate',event=>{event.waitUntil((async()=>{for(const k of await caches.keys())if(k!==CACHE_NAME&&k.startsWith('puzzle-studio-v'))await caches.delete(k);await self.clients.claim();})());});
-self.addEventListener('fetch',event=>{if(event.request.method!=='GET')return;const u=new URL(event.request.url);if(event.request.mode==='navigate'||u.pathname.endsWith('/index.html')||u.pathname.endsWith('/')){event.respondWith((async()=>{try{const fresh=await fetch(event.request,{cache:'no-store'});const c=await caches.open(CACHE_NAME);c.put(event.request,fresh.clone());return fresh}catch(e){return (await caches.match(event.request))||(await caches.match('./index.html'))}})());return;}event.respondWith((async()=>{const cached=await caches.match(event.request);if(cached)return cached;try{const fresh=await fetch(event.request);const c=await caches.open(CACHE_NAME);c.put(event.request,fresh.clone());return fresh}catch(e){return Response.error()}})());});
+'use strict';
+const CACHE_NAME='puzzle-studio-v28.3';
+const ASSETS=['./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
+self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(names=>Promise.all(names.filter(name=>name.startsWith('puzzle-studio-')&&name!==CACHE_NAME).map(name=>caches.delete(name)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',event=>{
+ const request=event.request,url=new URL(request.url);
+ if(request.method!=='GET'||url.origin!==self.location.origin)return;
+ if(request.mode==='navigate'){
+   event.respondWith(fetch(request).then(async response=>{if(response.ok){const cache=await caches.open(CACHE_NAME);await cache.put('./index.html',response.clone())}return response}).catch(()=>caches.match('./index.html')));return;
+ }
+ if(ASSETS.some(asset=>new URL(asset,self.location.href).pathname===url.pathname))event.respondWith(caches.open(CACHE_NAME).then(async cache=>(await cache.match(request,{ignoreSearch:true}))||fetch(request)));
+});
