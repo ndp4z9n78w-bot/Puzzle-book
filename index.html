@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline Puzzle Studio v25.3 — New Puzzle Production Repair</title>
+<title>Offline Puzzle Studio v25.4 — Logic & Diversity Repair</title>
 <style>
 :root{--bg:#f3f3f3;--panel:#fff;--ink:#111;--muted:#666}
 *{box-sizing:border-box}
@@ -756,6 +756,9 @@ details summary{cursor:pointer;font-weight:700}
 .sheet[data-item-index]>.puzzle-wrap{margin-top:.08in!important;}
 
 .logic-clues{max-width:6.2in;margin:.14in auto 0;font-size:11px;line-height:1.5;text-align:center}.sky-table{border-collapse:collapse;margin:.2in auto}.sky-table td{width:.48in;height:.48in;text-align:center;font-size:18px}.sky-table .cell{border:2px solid #111}.sky-table .edge{font-weight:800}.hashi-svg{display:block;width:min(100%,5.6in);height:auto;margin:.15in auto}.futoshiki-block table{margin:auto}
+
+.howto-goal{border:2px solid #222;border-radius:10px;padding:10px 14px;text-align:center;font-weight:700;margin:8px auto 14px;max-width:92%;background:#fff}
+.howto-goal strong{display:block;text-align:center;font-size:1.05em;letter-spacing:.04em;margin-bottom:3px}
 </style>
 \n<style id="v240-consolidated-layout">\n/* v25.2: fixed KDP geometry. These rules intentionally come last. */\n.sheet:has(.howto-page){padding:.38in .42in!important;}\n.sheet:has(.howto-page)>h2{height:auto!important;min-height:.30in!important;margin:0 0 .10in!important;line-height:1.15!important;}\n.sheet .howto-page{display:block!important;height:auto!important;max-height:none!important;overflow:visible!important;font-size:10px!important;line-height:1.35!important;}\n.sheet .howto-page .howto-goal{display:block!important;height:auto!important;min-height:.34in!important;margin:0 0 .12in!important;padding:.04in .10in!important;line-height:1.35!important;}\n.sheet .howto-page .ht-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.10in!important;margin:0 0 .12in!important;}\n.sheet .howto-page .ht-card{display:block!important;height:auto!important;min-height:1.38in!important;padding:.10in!important;overflow:visible!important;}\n.sheet .howto-page .ht-card h3,.sheet .howto-page .ht-section h3{display:block!important;height:auto!important;min-height:.20in!important;margin:0 0 .08in!important;line-height:1.2!important;}\n.sheet .howto-page .ht-card p,.sheet .howto-page .ht-section p{display:block!important;position:static!important;height:auto!important;margin:.06in 0!important;line-height:1.38!important;}\n.sheet .howto-page .ht-big{display:block!important;position:static!important;height:auto!important;min-height:.30in!important;margin:.08in 0!important;line-height:1.55!important;white-space:normal!important;}\n.sheet .howto-page .ht-section{display:block!important;height:auto!important;min-height:1.52in!important;margin:0 0 .12in!important;padding:.11in .12in!important;overflow:visible!important;}\n.sheet .howto-page .ht-row,.sheet .howto-page .ht-split{display:grid!important;grid-template-columns:1fr 1fr!important;gap:.18in!important;align-items:center!important;}\n.sheet .howto-page table{margin:.08in auto!important;}\n.sheet .howto-page[data-howto-type="missingnumber"] .ht-section{min-height:1.30in!important;}\n.sheet .howto-page[data-howto-type="takuzu"] .ht-section{min-height:1.48in!important;}\n.sheet .howto-page[data-howto-type="kenken"] .ht-section{min-height:1.42in!important;}\n.ht-logic-cell{border:3px solid #111!important;} .ht-logic-cell.two{border-top:7px solid #111!important;border-right:7px solid #111!important;}\n.puzzle-wrap{padding-top:.16in!important;} .sheet>h2{margin-bottom:.06in!important;} .sheet>.subtitle{margin-top:.04in!important;margin-bottom:.12in!important;line-height:1.35!important;}\n.magic-target{margin-bottom:.16in!important;line-height:1.35!important}.magic-target .magic-lines{display:block!important;margin-top:.08in!important;line-height:1.55!important}.magic-target .magic-lines span{display:block!important;margin:.035in 0!important}.magic-square-block table{transform:scale(1.18);transform-origin:top center;margin-top:.12in!important;margin-bottom:.22in!important}\n.missing-sequence{display:flex!important;flex-direction:column!important;align-items:center!important;gap:.10in!important}.missing-number-line{display:flex!important;position:static!important;gap:.055in!important;line-height:1.4!important}.missing-rule{display:block!important;position:static!important;margin:.10in auto 0!important;line-height:1.4!important;}\n.solution-mini .missing-sequence{gap:.12in!important}.solution-mini .missing-rule{font-size:11px!important;margin-top:.12in!important;}\n.word-grid-svg{width:min(100%,6.35in)!important}.solution-grid.one .word-grid-svg{width:min(100%,6.0in)!important}.solution-grid.one .solution-mini{height:auto!important;min-height:8.2in!important}.word-list{font-size:11px!important;line-height:1.35!important;}\n</style>\n
 <style id="v240-acceptance-layout">
@@ -845,8 +848,8 @@ details summary{cursor:pointer;font-weight:700}
 .futo-table .fcell{width:.52in!important;height:.52in!important}.futo-table .hrel{width:.20in!important;font-size:0!important}.futo-table .vrow td{height:.20in!important}.futo-table .vrel{font-size:0!important}.futo-sign{display:inline-block;width:.16in;height:.16in;vertical-align:middle}.futo-sign svg{display:block;width:100%;height:100%;overflow:visible}.futo-sign path{fill:none;stroke:#111;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .ht-sky{border-collapse:collapse;margin:.06in auto}.ht-sky td{width:.31in;height:.31in;text-align:center;font-size:12px}.ht-sky .b{border:1.5px solid #111}.ht-sky .e{font-weight:800}.ht-hashi{display:block;width:2.5in;height:auto;margin:.05in auto}.ht-hitori{border-collapse:collapse;margin:.06in auto}.ht-hitori td{width:.32in;height:.32in;border:1.5px solid #111;text-align:center;font-weight:700}.ht-hitori .blk{background:#111;color:#fff}
 </style>
-<header><h1>Offline Puzzle Studio <span class="badge">v25.3</span></h1><div class="build-version">Exact build: v25.3 • New Puzzle Production Repair</div></header>
-<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v25.3</div>
+<header><h1>Offline Puzzle Studio <span class="badge">v25.4</span></h1><div class="build-version">Exact build: v25.4 • Logic & Diversity Repair</div></header>
+<div id="versionStatus" class="small" style="padding:6px 12px;background:#f3f3f3;border-bottom:1px solid #ddd">Running v25.4</div>
 <div id="offlineStatus" class="small" style="padding:6px 12px;background:#eef7ee;border-bottom:1px solid #cfd8cf">Offline cache status: checking…</div>
 <div class="wrap">
 <section class="panel controls">
@@ -1138,7 +1141,7 @@ Load Project<input id="load" type="file" accept=".json" style="display:none">
 </div>
 
 <script>
-const PUZZLE_STUDIO_VERSION='25.3';
+const PUZZLE_STUDIO_VERSION='25.4';
 
 const $=id=>document.getElementById(id);
 let zoom=1,project={items:[]},overviewMandalaReview=false;
@@ -1438,7 +1441,7 @@ function makeKakuro(diff){
  const n=(diff==='Hard'||diff==='Expert')?6:5,pool=KAKURO_VERIFIED_TEMPLATES.filter(x=>x.w.length===n);
  // These source templates were solver-proved unique. Square symmetries preserve every
  // run sum, no-repeat rule and uniqueness, so a 40-puzzle batch never depends on luck.
- const src=pool[Math.floor(psRandom()*pool.length)],mode=Math.floor(psRandom()*8),w=kakuroTransform(src.w,mode),solution=kakuroTransform(src.s,mode),core=buildKakuroKnown(w,solution);
+ const src=pool[Math.floor(psRandom()*pool.length)],mode=Math.floor(psRandom()*8),w=kakuroTransform(src.w,mode),digitMap=shuffle([1,2,3,4,5,6,7,8,9]),remapped=src.s.map(row=>row.map(v=>v?digitMap[v-1]:0)),solution=kakuroTransform(remapped,mode),core=buildKakuroKnown(w,solution);
  const item={type:'kakuro',...core,clues:null,validated:true,validationTier:'unique-template',difficultyVerified:true,difficultyGrade:n===5?'compact verified template':'larger verified template'};item.clues=kakuroClues(item);return item;
 }
 
@@ -1838,9 +1841,24 @@ function makeMini(diff){
 }
 
 /* ---------- KILLER SUDOKU ---------- */
+function killerLogicalSolve(item){
+ const b=Array.from({length:9},()=>Array(9).fill(0)),cands=Array.from({length:9},()=>Array.from({length:9},()=>new Set([1,2,3,4,5,6,7,8,9])));let rounds=0,highest='cage candidates';
+ const peersUsed=(r,c)=>{const u=new Set();for(let i=0;i<9;i++){if(b[r][i])u.add(b[r][i]);if(b[i][c])u.add(b[i][c])}const br=Math.floor(r/3)*3,bc=Math.floor(c/3)*3;for(let rr=br;rr<br+3;rr++)for(let cc=bc;cc<bc+3;cc++)if(b[rr][cc])u.add(b[rr][cc]);return u};
+ function cageAssignments(cg){const out=[],cells=cg.cells;function rec(i,sum,used,a){if(sum>cg.sum)return;if(i===cells.length){if(sum===cg.sum)out.push(a.slice());return}const [r,c]=cells[i];for(const v of cands[r][c])if(!used.has(v)){used.add(v);a.push(v);rec(i+1,sum+v,used,a);a.pop();used.delete(v)}}rec(0,0,new Set(),[]);return out}
+ for(let guard=0;guard<160;guard++){rounds++;let changed=false;
+  for(let r=0;r<9;r++)for(let c=0;c<9;c++)if(!b[r][c]){const used=peersUsed(r,c);for(const v of [...cands[r][c]])if(used.has(v)){cands[r][c].delete(v);changed=true}if(!cands[r][c].size)return {solved:false,rounds,highest:'contradiction'}}
+  for(const cg of item.cages){const as=cageAssignments(cg);if(!as.length)return {solved:false,rounds,highest:'contradiction'};cg.cells.forEach(([r,c],i)=>{const allow=new Set(as.map(a=>a[i]));for(const v of [...cands[r][c]])if(!allow.has(v)){cands[r][c].delete(v);changed=true}})}
+  for(let r=0;r<9;r++)for(let c=0;c<9;c++)if(!b[r][c]&&cands[r][c].size===1){b[r][c]=[...cands[r][c]][0];changed=true;highest='naked/cage single'}
+  const units=[];for(let r=0;r<9;r++)units.push(Array.from({length:9},(_,c)=>[r,c]));for(let c=0;c<9;c++)units.push(Array.from({length:9},(_,r)=>[r,c]));for(let br=0;br<9;br+=3)for(let bc=0;bc<9;bc+=3)units.push(Array.from({length:9},(_,k)=>[br+Math.floor(k/3),bc+k%3]));
+  for(const u of units)for(let v=1;v<=9;v++){if(u.some(([r,c])=>b[r][c]===v))continue;const spots=u.filter(([r,c])=>!b[r][c]&&cands[r][c].has(v));if(spots.length===1){const [r,c]=spots[0];b[r][c]=v;cands[r][c]=new Set([v]);changed=true;highest='hidden single + cage elimination'}}
+  if(b.every(row=>row.every(Boolean)))return {solved:validLatinGrid(b,9)&&sameGridLocal(b,item.solution),rounds,highest};if(!changed)return {solved:false,rounds,highest};
+ }
+ return {solved:false,rounds,highest};
+}
+function sameGridLocal(a,b){return JSON.stringify(a)===JSON.stringify(b)}
 function makeKiller(diff){
   // Bounded generation: pathological uniqueness searches are abandoned instead of freezing the phone.
-  for(let attempt=0;attempt<10;attempt++){
+  for(let attempt=0;attempt<18;attempt++){
     const sol=Array.from({length:9},()=>Array(9).fill(0));solveSudoku(sol);
     const cages=[],seen=Array.from({length:9},()=>Array(9).fill(false));
     const maxSize={Easy:2,Medium:2,Hard:3,Expert:3}[diff]||2;
@@ -1850,10 +1868,10 @@ function makeKiller(diff){
       cages.push({cells,sum:cells.reduce((total,[rr,cc])=>total+sol[rr][cc],0)});
     }
     const valid=cages.every(cg=>{const vals=cg.cells.map(([r,c])=>sol[r][c]);return new Set(vals).size===vals.length&&vals.reduce((a,b)=>a+b,0)===cg.sum;});
-    let item={type:'killer',solution:sol,cages,validated:valid,validationTier:valid?'structural':'failed',generationAttempts:attempt+1};
-    if(valid){const ct=killerCountSolutions(item,2,180000);if(ct===1){item.validated=true;item.validationTier='unique';item.validationCached=true;return item}if(ct===-1)item.validationTier='timeout';}
+    let item={type:'killer',solution:sol,cages,validated:false,validationTier:valid?'structural':'failed',generationAttempts:attempt+1};
+    if(valid){let lg=killerLogicalSolve(item),singletons=0,maxSingles={Easy:8,Medium:7,Hard:6,Expert:5}[diff]||6;while(!lg.solved&&singletons<maxSingles){const choices=item.cages.map((cg,i)=>cg.cells.length>1?i:-1).filter(i=>i>=0);if(!choices.length)break;const ci=choices[Math.floor(psRandom()*choices.length)],cg=item.cages[ci],pick=Math.floor(psRandom()*cg.cells.length),cell=cg.cells.splice(pick,1)[0];cg.sum=cg.cells.reduce((q,[r,c])=>q+sol[r][c],0);item.cages.push({cells:[cell],sum:sol[cell[0]][cell[1]]});singletons++;lg=killerLogicalSolve(item)}item.logicalCertified=!!lg.solved;item.logicalRounds=lg.rounds;item.logicalTechnique=lg.highest;item.singletonCages=singletons;if(lg.solved){item.validated=true;item.validationTier='unique';item.validationCached=true;item.difficultyVerified=true;item.difficultyGrade=`logic-only forced deductions • ${lg.highest} • ${lg.rounds} rounds • ${singletons} single-cell cages`;return item}}
   }
-  return {type:'killer',solution:[],cages:[],validated:false,validationTier:'failed',generationAttempts:10};
+  return {type:'killer',solution:[],cages:[],validated:false,validationTier:'failed',generationAttempts:18};
 }
 
 /* ---------- IRREGULAR SUDOKU ---------- */
@@ -2245,34 +2263,27 @@ function futoshikiCountSolutions(puzzle,relations,limit=2){
   for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(!g[r][c]){let vals=[];for(let v=1;v<=n;v++)if(!g[r].includes(v)&&!g.some(row=>row[c]===v)&&relOK(r,c,v))vals.push(v);if(!vals.length)return;if(!best||vals.length<best.length){best=vals;br=r;bc=c;if(vals.length===1)break}}if(!best){count++;if(!first)first=g.map(r=>r.slice());return}for(const v of best){g[br][bc]=v;rec();g[br][bc]=0;if(count>=limit)return}}
  rec();return {count,solution:first};
 }
+function validLatinGrid(g,n=g?.length||0){return n>0&&Array.isArray(g)&&g.length===n&&g.every(row=>Array.isArray(row)&&row.length===n&&row.every(v=>Number.isInteger(v)&&v>=1&&v<=n)&&new Set(row).size===n)&&[...Array(n).keys()].every(c=>new Set(g.map(r=>r[c])).size===n)}
+function allFutoRelationsTrue(sol,rel){return validLatinGrid(sol)&&Array.isArray(rel)&&rel.every(q=>{const a=sol[q.r]?.[q.c],b=sol[q.r2]?.[q.c2];return Number.isInteger(a)&&Number.isInteger(b)&&(q.op==='<'?a<b:a>b)})}
 function makeFutoshiki(diff){
  const n=5,targets={Easy:{giv:13,rel:15},Medium:{giv:10,rel:13},Hard:{giv:7,rel:12},Expert:{giv:5,rel:11}}[diff]||{giv:10,rel:13};
  for(let attempt=0;attempt<90;attempt++){
   const sol=latinSquareN(n),pairs=[];for(let r=0;r<n;r++)for(let c=0;c<n;c++){if(c<n-1)pairs.push([r,c,r,c+1]);if(r<n-1)pairs.push([r,c,r+1,c])}
   const rel=shuffle(pairs).slice(0,targets.rel).map(([r,c,r2,c2])=>({r,c,r2,c2,op:sol[r][c]<sol[r2][c2]?'<':'>'}));
   const puz=sol.map(r=>r.slice());for(const k of shuffle([...Array(n*n).keys()]).slice(targets.giv))puz[Math.floor(k/n)][k%n]=0;
-  const chk=futoshikiCountSolutions(puz,rel,2);if(chk.count===1)return {type:'futoshiki',puzzle:puz,solution:chk.solution,relations:rel,validated:true,validationTier:'unique',difficulty:diff,difficultyVerified:true,difficultyGrade:`${targets.giv} givens • ${targets.rel} inequalities`} ;
+  const chk=futoshikiCountSolutions(puz,rel,2);if(chk.count===1&&validLatinGrid(chk.solution,n)&&allFutoRelationsTrue(chk.solution,rel))return {type:'futoshiki',puzzle:puz,solution:chk.solution,relations:rel,validated:true,validationTier:'unique',difficulty:diff,difficultyVerified:true,difficultyGrade:`${targets.giv} givens • ${targets.rel} inequalities`} ;
  }
  // Safe unique fallback: retain more givens rather than ever publish an uncertified puzzle.
  const sol=latinSquareN(n),puz=sol.map(r=>r.slice()),rel=[];for(let r=0;r<n;r++)for(let c=0;c<n-1;c++)rel.push({r,c,r2:r,c2:c+1,op:sol[r][c]<sol[r][c+1]?'<':'>'});
  for(const k of shuffle([...Array(n*n).keys()]).slice(0,6)){const r=Math.floor(k/n),c=k%n,old=puz[r][c];puz[r][c]=0;if(futoshikiCountSolutions(puz,rel,2).count!==1)puz[r][c]=old}
- return {type:'futoshiki',puzzle:puz,solution:sol,relations:rel,validated:true,validationTier:'unique-fallback',difficulty:diff};
+ return {type:'futoshiki',puzzle:puz,solution:sol,relations:rel,validated:true,validationTier:'unique-fallback',difficulty:diff,difficultyVerified:true,difficultyGrade:'verified fallback • full Latin solution • inequalities checked'};
 }
+function randomLatinN(n){const g=Array.from({length:n},()=>Array(n).fill(0));function rec(pos){if(pos===n*n)return true;const r=Math.floor(pos/n),c=pos%n,vals=shuffle(Array.from({length:n},(_,i)=>i+1));for(const v of vals){let ok=true;for(let i=0;i<n;i++)if(g[r][i]===v||g[i][c]===v){ok=false;break}if(ok){g[r][c]=v;if(rec(pos+1))return true;g[r][c]=0}}return false}return rec(0)?g:latinSquareN(n)}
 function visibleCount(a){let m=0,k=0;for(const v of a){if(v>m){m=v;k++}}return k}
-const SKY_PERMS5=(()=>{const out=[];function rec(a,left){if(!left.length){out.push(a);return}for(let i=0;i<left.length;i++)rec(a.concat(left[i]),left.slice(0,i).concat(left.slice(i+1)))}rec([], [1,2,3,4,5]);return out})();
-function skyscraperCountSolutions(clues,limit=2){const n=5,rows=Array(n),count={v:0},first={v:null};const cand=[];for(let r=0;r<n;r++)cand[r]=SKY_PERMS5.filter(p=>(!clues.left[r]||visibleCount(p)===clues.left[r])&&(!clues.right[r]||visibleCount([...p].reverse())===clues.right[r]));
- function rec(r){if(count.v>=limit)return;if(r===n){for(let c=0;c<n;c++){const col=rows.map(x=>x[c]);if((clues.top[c]&&visibleCount(col)!==clues.top[c])||(clues.bottom[c]&&visibleCount([...col].reverse())!==clues.bottom[c]))return}count.v++;if(!first.v)first.v=rows.map(x=>x.slice());return}for(const p of cand[r]){let ok=true;for(let c=0;c<n;c++)for(let rr=0;rr<r;rr++)if(rows[rr][c]===p[c])ok=false;if(!ok)continue;rows[r]=p;rec(r+1);if(count.v>=limit)return}}
- rec(0);return {count:count.v,solution:first.v};}
-function makeSkyscrapers(diff){
- const n=5,want={Easy:18,Medium:15,Hard:12,Expert:10}[diff]||15;
- for(let attempt=0;attempt<100;attempt++){
-  const sol=latinSquareN(n),full={top:[],bottom:[],left:[],right:[]};for(let c=0;c<n;c++){let col=sol.map(r=>r[c]);full.top[c]=visibleCount(col);full.bottom[c]=visibleCount([...col].reverse())}for(let r=0;r<n;r++){full.left[r]=visibleCount(sol[r]);full.right[r]=visibleCount([...sol[r]].reverse())}
-  const clues={top:[...full.top],bottom:[...full.bottom],left:[...full.left],right:[...full.right]},refs=shuffle(['top','bottom','left','right'].flatMap(side=>[0,1,2,3,4].map(i=>[side,i])));
-  for(const [side,i] of refs){const old=clues[side][i];clues[side][i]=0;const remaining=Object.values(clues).flat().filter(Boolean).length;if(remaining<want||skyscraperCountSolutions(clues,2).count!==1)clues[side][i]=old}
-  const chk=skyscraperCountSolutions(clues,2);if(chk.count===1)return {type:'skyscrapers',puzzle:Array.from({length:n},()=>Array(n).fill(0)),solution:chk.solution,clues,validated:true,validationTier:'unique',difficulty:diff,difficultyVerified:true,difficultyGrade:`${Object.values(clues).flat().filter(Boolean).length} edge clues`} ;
- }
- throw new Error('Could not certify a unique Skyscrapers puzzle. Please generate again.');
-}
+const SKY_PERM_CACHE={};
+function skyPerms(n){if(SKY_PERM_CACHE[n])return SKY_PERM_CACHE[n];const out=[];function rec(a,left){if(!left.length){out.push(a);return}for(let i=0;i<left.length;i++)rec(a.concat(left[i]),left.slice(0,i).concat(left.slice(i+1)))}rec([],Array.from({length:n},(_,i)=>i+1));return SKY_PERM_CACHE[n]=out}
+function skyscraperCountSolutions(clues,limit=2){const n=clues.top.length,perms=skyPerms(n),rows=Array(n),count={v:0},first={v:null},stats={nodes:0};const cand=[];for(let r=0;r<n;r++)cand[r]=perms.filter(p=>(!clues.left[r]||visibleCount(p)===clues.left[r])&&(!clues.right[r]||visibleCount([...p].reverse())===clues.right[r]));function rec(r){stats.nodes++;if(count.v>=limit)return;if(r===n){for(let c=0;c<n;c++){const col=rows.map(x=>x[c]);if((clues.top[c]&&visibleCount(col)!==clues.top[c])||(clues.bottom[c]&&visibleCount([...col].reverse())!==clues.bottom[c]))return}count.v++;if(!first.v)first.v=rows.map(x=>x.slice());return}for(const p of cand[r]){let ok=true;for(let c=0;c<n;c++)for(let rr=0;rr<r;rr++)if(rows[rr][c]===p[c]){ok=false;break}if(!ok)continue;rows[r]=p;rec(r+1);if(count.v>=limit)return}}rec(0);return {count:count.v,solution:first.v,nodes:stats.nodes}}
+function makeSkyscrapers(diff){const n={Easy:4,Medium:5,Hard:6,Expert:6}[diff]||5,minNodes={Easy:0,Medium:0,Hard:0,Expert:200}[diff]||0;for(let attempt=0;attempt<120;attempt++){const sol=randomLatinN(n),clues={top:[],bottom:[],left:[],right:[]};for(let c=0;c<n;c++){const col=sol.map(r=>r[c]);clues.top[c]=visibleCount(col);clues.bottom[c]=visibleCount([...col].reverse())}for(let r=0;r<n;r++){clues.left[r]=visibleCount(sol[r]);clues.right[r]=visibleCount([...sol[r]].reverse())}const chk=skyscraperCountSolutions(clues,2);if(chk.count===1&&chk.nodes>=minNodes){const grade=diff==='Expert'?`6×6 full clues • deeper search profile (${chk.nodes} nodes)`:`${n}×${n} full outside clues`;return {type:'skyscrapers',n,puzzle:Array.from({length:n},()=>Array(n).fill(0)),solution:chk.solution,clues,validated:true,validationTier:'unique',difficulty:diff,difficultyVerified:true,difficultyGrade:grade,logicNodes:chk.nodes}}}throw new Error('Could not certify a unique Skyscrapers puzzle at this difficulty. Please generate again.')}
 function hashiCandidates(islands){const E=[];for(let i=0;i<islands.length;i++)for(let j=i+1;j<islands.length;j++){const a=islands[i],b=islands[j];if(a.r!==b.r&&a.c!==b.c)continue;let blocked=false;for(let k=0;k<islands.length;k++)if(k!==i&&k!==j){const q=islands[k];if(a.r===b.r&&q.r===a.r&&q.c>Math.min(a.c,b.c)&&q.c<Math.max(a.c,b.c))blocked=true;if(a.c===b.c&&q.c===a.c&&q.r>Math.min(a.r,b.r)&&q.r<Math.max(a.r,b.r))blocked=true}if(!blocked)E.push([i,j])}return E}
 function hashiCross(a,b,c,d,islands){const A=islands[a],B=islands[b],C=islands[c],D=islands[d];if(A.r===B.r&&C.c===D.c){return C.c>Math.min(A.c,B.c)&&C.c<Math.max(A.c,B.c)&&A.r>Math.min(C.r,D.r)&&A.r<Math.max(C.r,D.r)}if(A.c===B.c&&C.r===D.r)return hashiCross(c,d,a,b,islands);return false}
 function hashiCountSolutions(islands,limit=2){const E=hashiCandidates(islands),vals=Array(E.length).fill(0),rem=islands.map(x=>x.n),sols=[];
@@ -2284,8 +2295,10 @@ const HASHI_BANK={
  Hard:[{pts:[[1,1],[1,4],[3,4],[3,2],[5,2],[5,5],[3,5],[3,1]],edges:[[0,1,1],[1,2,2],[2,3,1],[3,4,1],[4,5,2],[5,6,1],[6,2,1],[7,0,1]]}],
  Expert:[{pts:[[1,1],[1,3],[1,5],[3,5],[5,5],[5,3],[5,1],[3,1],[3,3]],edges:[[0,7,1],[1,2,2],[1,8,1],[3,4,1],[4,5,2],[5,8,1],[6,7,1],[7,8,2]]}]
 };
-function hashiTransformPts(pts){const mode=Math.floor(psRandom()*8);return pts.map(([r,c])=>{let x=r-3,y=c-3;if(mode>=4)y=-y;for(let k=0;k<(mode%4);k++)[x,y]=[y,-x];return [x+3,y+3]})}
-function makeHashi(diff){const bank=HASHI_BANK[diff]||HASHI_BANK.Medium;for(const t of shuffle(bank)){const pts=hashiTransformPts(t.pts),deg=t.pts.map(()=>0);t.edges.forEach(([a,b,k])=>{deg[a]+=k;deg[b]+=k});const islands=pts.map((p,i)=>({r:p[0],c:p[1],n:deg[i]})),chk=hashiCountSolutions(islands,2);if(chk.count===1){const grade={Easy:'forced endpoints and direct counts',Medium:'competing bridge capacities',Hard:'multi-island capacity + connectivity',Expert:'deep connectivity and double-bridge chains'}[diff];return {type:'hashi',islands,edges:chk.edges,validated:true,validationTier:'unique',difficulty:diff,difficultyVerified:true,difficultyGrade:grade}}}
+function hashiTransformPts(pts){const vals=[...new Set(pts.flat())].sort((a,b)=>a-b),slots=shuffle([1,2,3,4,5,6,7]).slice(0,vals.length).sort((a,b)=>a-b),mp=new Map(vals.map((v,i)=>[v,slots[i]])),mapped=pts.map(([r,c])=>[mp.get(r),mp.get(c)]),mode=Math.floor(psRandom()*8);return mapped.map(([r,c])=>{let x=r-4,y=c-4;if(mode>=4)y=-y;for(let k=0;k<(mode%4);k++)[x,y]=[y,-x];return [x+4,y+4]})}
+function hashiLooksHookedCross(islands,edges){if(!edges||edges.length<7)return false;const seg=edges.map(([a,b])=>{const A=islands[a],B=islands[b];return [A.r,A.c,B.r,B.c]});const key=(r,c)=>`${r},${c}`,deg=new Map();for(const [r1,c1,r2,c2] of seg){deg.set(key(r1,c1),(deg.get(key(r1,c1))||0)+1);deg.set(key(r2,c2),(deg.get(key(r2,c2))||0)+1)}const turns=[...deg.values()].filter(v=>v===2).length;const rs=islands.map(x=>x.r),cs=islands.map(x=>x.c),cr=(Math.min(...rs)+Math.max(...rs))/2,cc=(Math.min(...cs)+Math.max(...cs))/2;let rot=0;for(const q of islands)if(islands.some(z=>Math.abs(z.r-(2*cr-q.r))<.01&&Math.abs(z.c-(2*cc-q.c))<.01))rot++;return islands.length>=8&&turns>=4&&rot===islands.length}
+
+function makeHashi(diff){const bank=HASHI_BANK[diff]||HASHI_BANK.Medium;for(const t of shuffle(bank)){const pts=hashiTransformPts(t.pts),deg=t.pts.map(()=>0);t.edges.forEach(([a,b,k])=>{deg[a]+=k;deg[b]+=k});const islands=pts.map((p,i)=>({r:p[0],c:p[1],n:deg[i]})),chk=hashiCountSolutions(islands,2);if(chk.count===1&&!hashiLooksHookedCross(islands,chk.edges)){const grade={Easy:'forced endpoints and direct counts',Medium:'competing bridge capacities',Hard:'multi-island capacity + connectivity',Expert:'deep connectivity and double-bridge chains'}[diff];return {type:'hashi',islands,edges:chk.edges,validated:true,validationTier:'unique',difficulty:diff,difficultyVerified:true,difficultyGrade:grade}}}
  throw new Error('Could not certify a unique Bridges puzzle. Please generate again.');}
 function hitoriWhiteConnected(black,n){
  const B=new Set(black.map(([r,c])=>`${r},${c}`)),cells=[];for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(!B.has(`${r},${c}`))cells.push([r,c]);if(!cells.length)return false;
@@ -2301,7 +2314,7 @@ function hitoriCountSolutions(grid,limit=2){
 function sameBlack(a,b){const A=new Set((a||[]).map(x=>x.join(','))),B=new Set((b||[]).map(x=>x.join(',')));return A.size===B.size&&[...A].every(x=>B.has(x))}
 function makeHitori(diff){
  const n=6,target={Easy:4,Medium:6,Hard:8,Expert:10}[diff]||6;
- for(let attempt=0;attempt<140;attempt++){
+ for(let attempt=0;attempt<48;attempt++){
   const base=latinSquareN(n),grid=base.map(r=>r.slice()),black=[];
   const cells=shuffle([...Array(n*n).keys()]);
   for(const k of cells){if(black.length>=target)break;const r=Math.floor(k/n),c=k%n;if(black.some(([a,b])=>Math.abs(a-r)+Math.abs(b-c)===1))continue;
@@ -2323,8 +2336,8 @@ function skyscraperBlock(item,solved=false){
  const n=item.solution.length,w=document.createElement('div');w.className='sky-wrap';let h='<table class="sky-table"><tr><td></td>'+item.clues.top.map(x=>`<td class="edge">${x||''}</td>`).join('')+'<td></td></tr>';
  for(let r=0;r<n;r++){h+=`<tr><td class="edge">${item.clues.left[r]||''}</td>`+(solved?item.solution[r]:Array(n).fill('')).map(v=>`<td class="cell">${v||''}</td>`).join('')+`<td class="edge">${item.clues.right[r]||''}</td></tr>`}h+='<tr><td></td>'+item.clues.bottom.map(x=>`<td class="edge">${x||''}</td>`).join('')+'<td></td></tr></table>';w.innerHTML=h;return w;
 }
-function hashiSvg(item,solved=false){const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 360 360');svg.classList.add('hashi-svg');const xy=p=>[45+(p.c-1)*54,45+(p.r-1)*54];if(solved)item.edges.forEach(([a,b,k])=>{const A=xy(item.islands[a]),B=xy(item.islands[b]),dx=B[0]-A[0],dy=B[1]-A[1],L=Math.hypot(dx,dy),ox=dy/L*4,oy=-dx/L*4;for(let z=0;z<k;z++){const off=k===2?(z?4:-4):0,l=document.createElementNS(ns,'line');l.setAttribute('x1',A[0]+ox*(off/4));l.setAttribute('y1',A[1]+oy*(off/4));l.setAttribute('x2',B[0]+ox*(off/4));l.setAttribute('y2',B[1]+oy*(off/4));l.setAttribute('stroke','#111');l.setAttribute('stroke-width','4');svg.appendChild(l)}});item.islands.forEach(q=>{const [x,y]=xy(q),c=document.createElementNS(ns,'circle'),t=document.createElementNS(ns,'text');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','17');c.setAttribute('fill','white');c.setAttribute('stroke','#111');c.setAttribute('stroke-width','3');t.setAttribute('x',x);t.setAttribute('y',y+6);t.setAttribute('text-anchor','middle');t.setAttribute('font-size','18');t.textContent=q.n;svg.append(c,t)});return svg}
-function hitoriBlock(item,solved=false){const t=genericTable(item.puzzle);if(solved){[...t.querySelectorAll('td')].forEach((td,i)=>{let r=Math.floor(i/item.puzzle.length),c=i%item.puzzle.length;if(item.black.some(x=>x[0]===r&&x[1]===c)){td.style.background='#111';td.style.color='#fff'}})}return t}
+function hashiSvg(item,solved=false){const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 360 360');svg.classList.add('hashi-svg');const rs=item.islands.map(q=>q.r),cs=item.islands.map(q=>q.c),r0=Math.min(...rs),r1=Math.max(...rs),c0=Math.min(...cs),c1=Math.max(...cs),span=Math.max(1,r1-r0,c1-c0),step=270/span,offX=(360-(c1-c0)*step)/2,offY=(360-(r1-r0)*step)/2;const xy=p=>[offX+(p.c-c0)*step,offY+(p.r-r0)*step];if(solved)item.edges.forEach(([a,b,k])=>{const A=xy(item.islands[a]),B=xy(item.islands[b]),dx=B[0]-A[0],dy=B[1]-A[1],L=Math.hypot(dx,dy),ox=dy/L*4,oy=-dx/L*4;for(let z=0;z<k;z++){const off=k===2?(z?4:-4):0,l=document.createElementNS(ns,'line');l.setAttribute('x1',A[0]+ox*(off/4));l.setAttribute('y1',A[1]+oy*(off/4));l.setAttribute('x2',B[0]+ox*(off/4));l.setAttribute('y2',B[1]+oy*(off/4));l.setAttribute('stroke','#111');l.setAttribute('stroke-width','4');svg.appendChild(l)}});item.islands.forEach(q=>{const [x,y]=xy(q),c=document.createElementNS(ns,'circle'),t=document.createElementNS(ns,'text');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','17');c.setAttribute('fill','white');c.setAttribute('stroke','#111');c.setAttribute('stroke-width','3');t.setAttribute('x',x);t.setAttribute('y',y+6);t.setAttribute('text-anchor','middle');t.setAttribute('font-size','18');t.textContent=q.n;svg.append(c,t)});return svg}
+function hitoriBlock(item,solved=false){const t=genericTable(item.puzzle);if(solved){[...t.querySelectorAll('td')].forEach((td,i)=>{let r=Math.floor(i/item.puzzle.length),c=i%item.puzzle.length;if(item.black.some(x=>x[0]===r&&x[1]===c)){td.style.background='#d8d8d8';td.style.color='#111';td.style.fontWeight='700'}})}return t}
 
 /* ---------- RENDERING ---------- */
 
@@ -3246,7 +3259,7 @@ function instructionHtml(type){
       `<div class="ht-grid">${card('Know the Target','<div class="ht-big">3×3 with 1–9 → target 15</div>')}${card('Check Every Line','<p>Rows, columns, and both main diagonals must hit the target.</p>')}${card('Use Each Number Once','<div class="ht-big">1 2 3 4 5 6 7 8 9</div>')}</div>${section('Try It Yourself','<p class="ht-center"><strong>Target Sum: 15</strong> — use each number 1–9 once.</p>'+table([[8,'',6],['',5,''],[4,'',2]]))}${section('Complete Solution Example',table([[8,1,6],[3,5,7],[4,9,2]])+'<p class="ht-center"><strong>Row:</strong> 8+1+6=15 &nbsp; <strong>Column:</strong> 8+3+4=15<br><strong>Diagonals:</strong> 8+5+2=15 &nbsp; and &nbsp; 6+5+4=15</p>')}`),
     futoshiki:()=>page('Fill every cell with 1–5 so each row and column uses every digit once and every inequality is true.',`${section('Read the Signs','<p class="ht-center">The <strong>open side faces the larger number</strong>; the point faces the smaller number. The same proportional sign is used horizontally and vertically.</p><div class="ht-big">2 &lt; 4 &nbsp;&nbsp; 5 &gt; 3</div>')}${section('Worked Example','<p class="ht-center">This completed row really contains the inequalities being taught:</p><div class="ht-big">1 &lt; 2 &lt; 3 &lt; 4 &lt; 5</div><p class="ht-center">Every comparison is true, and the row uses 1–5 exactly once.</p>')}${section('Try It Yourself','<div class="ht-big">1 &lt; 2 &lt; □ &lt; 4 &lt; 5</div><p class="ht-center">What belongs in the box? <strong>Answer: 3.</strong> It is the only missing digit and satisfies both signs.</p>')}`),
     skyscrapers:()=>page('Fill each row and column with 1–5 exactly once. An outside clue tells how many buildings are visible from that direction.',`${section('How Visibility Works','<div class="ht-big">3 → &nbsp; 2 &nbsp; 4 &nbsp; 1 &nbsp; 5 &nbsp; 3</div><p class="ht-center">You see 2, then 4, then 5: <strong>3 buildings</strong>. Shorter buildings behind a taller one are hidden.</p>')}${section('Complete Teaching Grid','<table class="ht-sky"><tr><td></td><td class="e">5</td><td class="e">4</td><td class="e">3</td><td class="e">2</td><td class="e">1</td><td></td></tr><tr><td class="e">5</td><td class="b">1</td><td class="b">2</td><td class="b">3</td><td class="b">4</td><td class="b">5</td><td class="e">1</td></tr><tr><td class="e">4</td><td class="b">2</td><td class="b">3</td><td class="b">4</td><td class="b">5</td><td class="b">1</td><td class="e">2</td></tr><tr><td class="e">3</td><td class="b">3</td><td class="b">4</td><td class="b">5</td><td class="b">1</td><td class="b">2</td><td class="e">2</td></tr><tr><td class="e">2</td><td class="b">4</td><td class="b">5</td><td class="b">1</td><td class="b">2</td><td class="b">3</td><td class="e">2</td></tr><tr><td class="e">1</td><td class="b">5</td><td class="b">1</td><td class="b">2</td><td class="b">3</td><td class="b">4</td><td class="e">2</td></tr><tr><td></td><td class="e">1</td><td class="e">2</td><td class="e">2</td><td class="e">2</td><td class="e">2</td><td></td></tr></table><p class="ht-center">The teaching grid shows every clue being demonstrated. In real puzzles, a blank outside position simply means <strong>no clue was provided there</strong>.</p>')}${section('Try It Yourself','<div class="ht-big">→ &nbsp; 3 &nbsp; 1 &nbsp; 4 &nbsp; 2 &nbsp; 5</div><p class="ht-center">How many are visible? <strong>Answer: 3</strong> — 3, then 4, then 5.</p>')}`),
-    hashi:()=>page('Connect every numbered island into one connected network with horizontal or vertical bridges.',`${section('The Rules','<p><strong>1.</strong> An island number is the total bridges touching it. <strong>2.</strong> A pair may have one or two bridges. <strong>3.</strong> Bridges never cross, run diagonally, or pass through an island. <strong>4.</strong> Every island must join one network.</p>')}${section('Worked Example','<div class="ht-big">1 ○────○ 2<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;○ 1</div><p class="ht-center">The center 2 has exactly two bridges total: one left and one down. Each outer 1 has one.</p>')}${section('Try It Yourself','<p class="ht-center"><strong>Unsolved:</strong> two neighboring islands are both 2 and neither can connect anywhere else.</p><div class="ht-big">2 ○ &nbsp;&nbsp;&nbsp;&nbsp; ○ 2</div><p class="ht-center">Decide the connection before reading this: <strong>Answer — two parallel bridges.</strong></p>')}`),
+    hashi:()=>page('Connect every numbered island into one connected network with horizontal or vertical bridges.',`${section('The Rules','<p><strong>1.</strong> An island number is the total bridges touching it. <strong>2.</strong> Bridges run only horizontally or vertically. <strong>3.</strong> Bridges never cross or pass through an island. <strong>4.</strong> Every island must join one network.</p>')}${section('Single & Parallel Bridges','<p class="ht-center">Two neighboring islands may share <strong>one bridge</strong> or <strong>two parallel bridges</strong>. Never more than two.</p><div class="ht-big">1 ○────○ 1<br><br>2 ○════○ 2</div>')}${section('Worked Example','<table class="ht-gridtable" style="width:180px;margin:auto"><tr><td>1</td><td>────</td><td>2</td></tr><tr><td></td><td></td><td>│</td></tr><tr><td></td><td></td><td>1</td></tr></table><p class="ht-center">The 2 has exactly two bridges total: one left and one down. Each outer 1 has one.</p>')}${section('Try It Yourself','<p class="ht-center"><strong>Unsolved:</strong> two neighboring islands are both 2 and neither can connect anywhere else.</p><div class="ht-big">2 ○ &nbsp;&nbsp;&nbsp;&nbsp; ○ 2</div><p class="ht-center">Decide the connection first. <strong>Answer: two parallel bridges.</strong></p>')}`),
     hitori:()=>page('Every starting cell contains a number. Shade cells so unshaded numbers do not repeat in any row or column.',`${section('Three Rules','<p><strong>No repeats:</strong> unshaded numbers are unique in every row/column.<br><strong>No touching:</strong> shaded cells cannot share an edge.<br><strong>Stay connected:</strong> all unshaded cells form one orthogonally connected area.</p>')}${section('Worked Example','<table class="ht-hitori"><tr><td class="blk">2</td><td>3</td><td>2</td></tr><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>3</td><td>1</td><td>2</td></tr></table><p class="ht-center">The top row had two 2s. Shading the left 2 removes that repeat without touching another shaded cell or breaking the white area.</p>')}${section('Try It Yourself','<p class="ht-center">Start with every number visible:</p><table class="ht-hitori"><tr><td>4</td><td>2</td><td>4</td></tr><tr><td>1</td><td>4</td><td>3</td></tr><tr><td>3</td><td>1</td><td>2</td></tr></table><p class="ht-center">The repeated 4s tell you one must be shaded, but use the column, no-touch, and connectivity rules to determine which. The exercise begins <strong>unsolved</strong>.</p>')}`),
     missingnumber:()=>page('Find the pattern in the sequence, then replace the question mark with the missing value.',
       `<div class="ht-grid">${card('Compare Changes','<div class="ht-big">4 → 7 → 10<br>+3 &nbsp; +3</div>')}${card('Find the Rule','<div class="ht-big">3 6 12 24<br>×2 each time</div>')}${card('Check the Whole Pattern','<div class="ht-big">2 4 6 8 10</div><p>The rule must explain every step.</p>')}</div>${section('Try It Yourself','<div class="ht-big">3 &nbsp; 5 &nbsp; 8 &nbsp; ? &nbsp; 21 &nbsp; 34 &nbsp; 55</div>')}${section('Complete Solution Example','<p class="ht-center">3+5=8 &nbsp; 5+8=13 &nbsp; 8+13=21 &nbsp; 13+21=34 &nbsp; 21+34=55<br><strong>Missing number: 13</strong></p>')}`)
@@ -4331,7 +4344,9 @@ function setBuildProgress(active,current=0,total=0,label='Preparing book…',sub
   const pct=total?Math.max(0,Math.min(100,(current/total)*100)):0;
   $('buildProgressBar').style.width=pct+'%';
 }
+let buildCancelRequested=false;
 async function build(){
+ buildCancelRequested=false;
  setProjectSeed($('projectSeed')?.value||'PS-2314');
  cryptoUsedPhrases.clear();
  let mode=$('buildMode').value,plan=[];
@@ -4368,6 +4383,7 @@ async function build(){
    await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,40)));
 
    for(let i=0;i<plan.length;i++){
+     if(buildCancelRequested)throw new Error('__BUILD_CANCELLED__');
      let {type,diff}=plan[i];
      const label=PUZZLE_OPTIONS.find(x=>x[0]===type)?.[1]||type;
 
@@ -4376,6 +4392,7 @@ async function build(){
 
      // Yield to the browser so spinner/progress stays visible on iPhone.
      await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
+     if(buildCancelRequested)throw new Error('__BUILD_CANCELLED__');
 
      let item=
        type==='sudoku'?makeSudoku(diff):
@@ -4419,10 +4436,8 @@ async function build(){
      // v20: regenerate repeat-prone puzzle families before adding them to the book.
      if(type!=='cryptogram'){
        let tries=0, fp=puzzleFingerprint(item);
-       while(arr.some(prev=>puzzleFingerprint(prev)===fp)&&tries++<24){
-         item=makeReplacementForItem({...item,type,difficulty:diff},-1);
-         fp=puzzleFingerprint(item);
-       }
+       while(arr.some(prev=>puzzleFingerprint(prev)===fp)&&tries++<60){if(buildCancelRequested)throw new Error('__BUILD_CANCELLED__');item=makeReplacementForItem({...item,type,difficulty:diff},-1);fp=puzzleFingerprint(item);}
+       if(arr.some(prev=>puzzleFingerprint(prev)===fp))throw new Error(`${label} exhausted its unique-puzzle diversity pool before completing this book. No duplicate was admitted.`);
      }
      item.difficulty=diff;
      arr.push(item);
@@ -4444,9 +4459,8 @@ async function build(){
    setTimeout(()=>setBuildProgress(false),1400);
  }catch(err){
    console.error(err);
-   setBuildProgress(true,0,1,'Build stopped','An error occurred while generating the book.');
-   $('status').textContent='Build stopped — see error message.';
-   alert('The book generator stopped because of an error. Try a smaller batch or another puzzle type.');
+   if(err?.message==='__BUILD_CANCELLED__'){setBuildProgress(false);$('status').textContent='Generation stopped and project cleared.';project={items:[]};render();renderOverview();}
+   else{setBuildProgress(true,0,1,'Build stopped','An error occurred while generating the book.');$('status').textContent='Build stopped — see error message.';alert('The book generator stopped because of an error. Try a smaller batch or another puzzle type.');}
  }finally{
    $('generate').disabled=false;
    $('generate').textContent='Build Book';
@@ -4458,7 +4472,7 @@ async function testOnePuzzle(){
  let item=makeReplacementForItem({type,difficulty:diff},-1);item.difficulty=diff;project={items:[item]};render();$('status').textContent=`Test puzzle • ${type} • ${diff} • ${item.validated===false?'FAILED QC':'validated'}`;
 }
 if($('testOne'))$('testOne').onclick=testOnePuzzle;
-$('generate').onclick=()=>{if(productionLocked())return alert('Production Lock is ON. Unlock the project before regenerating puzzles.');return build()};$('clear').onclick=()=>{if(productionLocked())return alert('Production Lock is ON. Unlock the project before clearing it.');project={items:[]};overviewMandalaReview=false;render();renderOverview()};$('pdf').onclick=createPdfDirect;
+$('generate').onclick=()=>{if(productionLocked())return alert('Production Lock is ON. Unlock the project before regenerating puzzles.');return build()};$('clear').onclick=()=>{if(productionLocked())return alert('Production Lock is ON. Unlock the project before clearing it.');const running=$('generate').disabled;if(!confirm(running?'Stop generation and clear all generated puzzles? This cannot be undone.':'Clear all generated puzzles? This cannot be undone.'))return;if(running)buildCancelRequested=true;project={items:[]};overviewMandalaReview=false;render();renderOverview();$('status').textContent=running?'Stopping generation…':'Project cleared.'};$('pdf').onclick=createPdfDirect;
 $('productionLock').onclick=()=>{project.productionLocked=!project.productionLocked;applyProductionLockState();autosaveProject();$('status').textContent=project.productionLocked?'Production Lock ON • generation and book-layout controls protected.':'Production Lock OFF • project can be edited.'};
 if($('overviewDeleteRejected'))$('overviewDeleteRejected').onclick=deleteRejectedItems;
 if($('overviewRegenerateRejected'))$('overviewRegenerateRejected').onclick=regenerateRejectedItems;
@@ -4610,7 +4624,7 @@ function runQC(){
      }else if(x.type==='mini'){
        const ct=miniCountSolutions(x,2);x.validated=ct===1;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='killer'){
-       const cagesOK=killerCagesMatchSolution(x),ct=cagesOK?(x.validationCached?1:killerCountSolutions(x,2,180000)):0;x.validated=cagesOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
+       const cagesOK=killerCagesMatchSolution(x),lg=cagesOK?killerLogicalSolve(x):{solved:false},ct=lg.solved?1:0;x.logicalCertified=!!lg.solved;x.logicalRounds=lg.rounds||0;x.logicalTechnique=lg.highest||'';x.validated=cagesOK&&ct===1&&x.logicalCertified;x.validationTier=x.validated?'unique':'failed';x.difficultyVerified=x.validated;x.difficultyGrade=x.validated?`logic-only • ${x.logicalTechnique} • ${x.logicalRounds} rounds`:'not logically certified';
      }else if(x.type==='kenken'){
        const cageOK=kenkenCagesMatchSolution(x),ct=cageOK?kenkenCountSolutions(x,2):0;x.validated=cageOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='hidato'){
@@ -4622,13 +4636,13 @@ function runQC(){
        if(x.validationTier==='unique-template'){x.validated=regionOK&&givensOK;}
        else {const ct=regionOK?countIrregular(clone(x.puzzle),x.regions,2):0;x.validated=regionOK&&givensOK&&ct===1;x.validationTier=x.validated?'unique':'failed';}
      }else if(x.type==='futoshiki'){
-       const shape=x.puzzle&&x.solution&&x.puzzle.length===x.solution.length&&x.puzzle.every((row,r)=>row.length===x.solution[r].length&&row.every((v,c)=>!v||v===x.solution[r][c]));const relOK=shape&&(x.relations||[]).every(q=>{const a=x.solution[q.r]?.[q.c],b=x.solution[q.r2]?.[q.c2];return Number.isInteger(a)&&Number.isInteger(b)&&(q.op==='<'?a<b:a>b)}),ct=relOK?futoshikiCountSolutions(x.puzzle,x.relations,2).count:0;x.validated=relOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
+       const shape=x.puzzle&&x.solution&&x.puzzle.length===x.solution.length&&validLatinGrid(x.solution,x.solution.length)&&x.puzzle.every((row,r)=>row.length===x.solution[r].length&&row.every((v,c)=>!v||v===x.solution[r][c]));const relOK=shape&&(x.relations||[]).every(q=>{const a=x.solution[q.r]?.[q.c],b=x.solution[q.r2]?.[q.c2];return Number.isInteger(a)&&Number.isInteger(b)&&(q.op==='<'?a<b:a>b)}),ct=relOK?futoshikiCountSolutions(x.puzzle,x.relations,2).count:0;x.validated=relOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='skyscrapers'){
        const n=x.solution?.length||0,latin=n===5&&x.solution.every(r=>r.length===n&&new Set(r).size===n)&&[0,1,2,3,4].every(c=>new Set(x.solution.map(r=>r[c])).size===n);let clueOK=latin;if(clueOK){for(let r=0;r<n;r++){if(x.clues.left[r]&&visibleCount(x.solution[r])!==x.clues.left[r])clueOK=false;if(x.clues.right[r]&&visibleCount([...x.solution[r]].reverse())!==x.clues.right[r])clueOK=false}for(let c=0;c<n;c++){const col=x.solution.map(r=>r[c]);if(x.clues.top[c]&&visibleCount(col)!==x.clues.top[c])clueOK=false;if(x.clues.bottom[c]&&visibleCount([...col].reverse())!==x.clues.bottom[c])clueOK=false}}const ct=clueOK?skyscraperCountSolutions(x.clues,2).count:0;x.validated=clueOK&&ct===1;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='hashi'){
        const chk=hashiCountSolutions(x.islands||[],2),stored=(x.edges||[]).map(e=>e.join(',')).sort().join('|'),proved=(chk.edges||[]).map(e=>e.join(',')).sort().join('|');x.validated=chk.count===1&&stored===proved;x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='hitori'){
-       const full=Array.isArray(x.puzzle)&&x.puzzle.length>0&&x.puzzle.every(r=>Array.isArray(r)&&r.length===x.puzzle.length&&r.every(Number.isInteger)),chk=full?hitoriCountSolutions(x.puzzle,2):{count:0};x.validated=full&&chk.count===1&&sameBlack(chk.black,x.black)&&hitoriWhiteConnected(x.black,x.puzzle.length);x.validationTier=x.validated?'unique':'failed';
+       const full=Array.isArray(x.puzzle)&&x.puzzle.length>0&&x.puzzle.every(r=>Array.isArray(r)&&r.length===x.puzzle.length&&r.every(Number.isInteger))&&Array.isArray(x.solution)&&x.solution.length===x.puzzle.length&&x.solution.every(r=>Array.isArray(r)&&r.length===x.puzzle.length&&r.every(Number.isInteger)),chk=full?hitoriCountSolutions(x.puzzle,2):{count:0};x.validated=full&&chk.count===1&&sameBlack(chk.black,x.black)&&hitoriWhiteConnected(x.black,x.puzzle.length);x.validationTier=x.validated?'unique':'failed';
      }else if(x.type==='magicsquare'){
        const a=x.solution||[],m=x.magic,ok=a.length===3&&visibleGivensMatch(x,[0,null])&&a.every(r=>r.reduce((q,v)=>q+v,0)===m)&&[0,1,2].every(c=>a.reduce((q,r)=>q+r[c],0)===m)&&a[0][0]+a[1][1]+a[2][2]===m&&a[0][2]+a[1][1]+a[2][0]===m;
        x.validated=ok;x.validationTier=ok?'math':'failed';
@@ -4638,12 +4652,13 @@ function runQC(){
    }catch(err){x.validated=false;x.validationTier='failed';issues.push(`${x.type||'Puzzle'} QC error: ${err.message}`)}
  });
 
+ const seenFP=new Map(),duplicatePairs=[];project.items.forEach((x,i)=>{if(x.type==='cryptogram')return;const fp=puzzleFingerprint(x);if(seenFP.has(fp))duplicatePairs.push(`${seenFP.get(fp)+1} & ${i+1}`);else seenFP.set(fp,i)});if(duplicatePairs.length)issues.push(`Duplicate puzzle fingerprints detected: ${duplicatePairs.join(', ')}.`);else if(project.items.length)successes.push('Duplicate gate: no repeated puzzle fingerprints detected.');
  let failed=project.items.map((x,i)=>(!x.validated||x.validationTier==='failed')?i+1:null).filter(Boolean);
  if(failed.length)issues.push(`Validation failed or is unconfirmed for puzzle(s): ${failed.join(', ')}.`);
  let knownOnly=project.items.map((x,i)=>x.validationTier==='known-answer'?i+1:null).filter(Boolean);
  if(knownOnly.length)warnings.push(`Puzzle(s) ${knownOnly.join(', ')} have a known generated answer but no uniqueness proof.`);
  let structural=project.items.filter(x=>x.validationTier==='structural').length;
- const diffMiss=project.items.map((x,i)=>['sudoku','futoshiki','skyscrapers','hashi','hitori'].includes(x.type)&&x.difficultyVerified===false?`${i+1} (${x.difficulty}: ${x.difficultyGrade||'uncertified'})`:null).filter(Boolean);
+ const diffMiss=project.items.map((x,i)=>['sudoku','killer','futoshiki','skyscrapers','hashi','hitori'].includes(x.type)&&x.difficultyVerified===false?`${i+1} (${x.difficulty}: ${x.difficultyGrade||'uncertified'})`:null).filter(Boolean);
  if(diffMiss.length)issues.push(`Difficulty certification failed: ${diffMiss.join(', ')}. Regenerate these puzzles before publishing.`);
  const expertSudoku=project.items.filter(x=>x.type==='sudoku'&&x.difficulty==='Expert');
  if(expertSudoku.length && expertSudoku.every(x=>x.difficultyVerified))successes.push(`Expert Sudoku certification: ${expertSudoku.length}/${expertSudoku.length} exceed the Hard-tier logical solver and require advanced logic.`);
@@ -5011,7 +5026,7 @@ async function updateOfflineStatus(){
     el.textContent='Offline cache status: service workers not supported in this browser.';
     return;
   }
-  const CACHE_NAME='puzzle-studio-v25.3';
+  const CACHE_NAME='puzzle-studio-v25.4';
   const timeout=(ms)=>new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),ms));
   try{
     // Never leave the UI stuck on Preparing. Registration/activation gets a short window.
